@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,14 +16,31 @@ public class MahjongTileView : MonoBehaviour
         _image.sprite = _tileImages.tileImages[(int)_kind];
     }
 
-    // ��ނ̐ݒ�
+    /// <summary>
+    /// 種類の設定
+    /// </summary>
+    /// <param name="kind">牌種</param>
     public void SetKind(MahjongLogic.TILE_KIND kind)
     {
         _kind = kind;
+
+        if (kind == MahjongLogic.TILE_KIND.NONE)
+        {
+            Destroy(this.gameObject);
+            return;
+        }
+
         _image.sprite = _tileImages.tileImages[(int)_kind];
     }
 
-    // ���W�̐ݒ�
+    public MahjongLogic.TILE_KIND GetKind() => _kind;
+
+    /// <summary>
+    /// 座標の設定
+    /// </summary>
+    /// <param name="pos">移動先座標</param>
+    /// <param name="moveTime">移動時間</param>
+    /// <param name="delayTime">移動開始時間</param>
     public void SetPos(Vector2 pos, float moveTime = 0.0f, float delayTime = 0.0f)
     {
         if (delayTime > 0.0f)
@@ -34,7 +51,7 @@ public class MahjongTileView : MonoBehaviour
 
         if (moveTime > 0.0f)
         {
-            _rectTransform.DOAnchorPos(pos, moveTime).SetEase(Ease.InOutSine);
+            _rectTransform.DOAnchorPos(pos, moveTime).SetEase(Ease.InSine);
             return;
         }
 
@@ -46,7 +63,18 @@ public class MahjongTileView : MonoBehaviour
         SetPos(pos, moveTime);
     }
 
-    // �g�k�̐ݒ�
+    /// <summary>
+    /// 座標の取得
+    /// </summary>
+    /// <returns>座標</returns>
+    public Vector2 GetPos() { return _rectTransform.anchoredPosition; }
+
+    /// <summary>
+    /// 拡縮の設定
+    /// </summary>
+    /// <param name="scale">拡縮</param>
+    /// <param name="scaleTime">拡縮時間</param>
+    /// <param name="delayTime">拡縮開始時間</param>
     public void SetScale(float scale, float scaleTime = 0.0f, float delayTime = 0.0f)
     {
         if (delayTime > 0.0f)

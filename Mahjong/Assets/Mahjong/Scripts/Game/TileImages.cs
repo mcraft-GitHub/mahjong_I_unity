@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 [CreateAssetMenu(fileName = "TileImages", menuName = "Game/TileImages")]
 public class TileImages : ScriptableObject

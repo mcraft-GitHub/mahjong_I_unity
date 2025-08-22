@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class TouchInputHandler : MonoBehaviour
@@ -17,10 +17,10 @@ public class TouchInputHandler : MonoBehaviour
 
     public enum TouchState
     {
-        None,         // ƒ^ƒbƒ`‚³‚ê‚Ä‚¢‚È‚¢ó‘Ôi’Êíj
-        TouchStarted, // ƒ^ƒbƒ`‚ªn‚Ü‚Á‚½uŠÔi‰Ÿ‚³‚ê‚½j
-        TouchHeld,    // ƒ^ƒbƒ`‚ªŒp‘±‚µ‚Ä‚¢‚éó‘Ôi‰Ÿ‚µ‚Á‚Ï‚È‚µj
-        TouchEnded    // ƒ^ƒbƒ`‚ª—£‚³‚ê‚½uŠÔiƒŠƒŠ[ƒX‚³‚ê‚½j
+        None,         // ã‚¿ãƒƒãƒã•ã‚Œã¦ã„ãªã„çŠ¶æ…‹ï¼ˆé€šå¸¸ï¼‰
+        TouchStarted, // ã‚¿ãƒƒãƒãŒå§‹ã¾ã£ãŸç¬é–“ï¼ˆæŠ¼ã•ã‚ŒãŸï¼‰
+        TouchHeld,    // ã‚¿ãƒƒãƒãŒç¶™ç¶šã—ã¦ã„ã‚‹çŠ¶æ…‹ï¼ˆæŠ¼ã—ã£ã±ãªã—ï¼‰
+        TouchEnded    // ã‚¿ãƒƒãƒãŒé›¢ã•ã‚ŒãŸç¬é–“ï¼ˆãƒªãƒªãƒ¼ã‚¹ã•ã‚ŒãŸï¼‰
     }
 
     private TouchState currentTouchState = TouchState.None;
@@ -74,7 +74,7 @@ public class TouchInputHandler : MonoBehaviour
     {
         currentTouchPosition = touchPositionAction.ReadValue<Vector2>();
 
-        // TouchStarted ó‘Ô‚Í‚±‚ÌƒtƒŒ[ƒ€‚ÍˆÛ‚µAã‘‚«‚µ‚È‚¢
+        // TouchStarted çŠ¶æ…‹ã¯ã“ã®ãƒ•ãƒ¬ãƒ¼ãƒ ã¯ç¶­æŒã—ã€ä¸Šæ›¸ãã—ãªã„
         if (!touchStartedThisFrame)
         {
             currentTouchState = TouchState.TouchHeld;
@@ -88,34 +88,34 @@ public class TouchInputHandler : MonoBehaviour
         isDragging = false;
     }
 
-    // Œ»İ‚Ìƒ^ƒbƒ`ó‘Ô‚ğ•Ô‚·iNone, TouchStarted, TouchHeld, TouchEndedj
+    // ç¾åœ¨ã®ã‚¿ãƒƒãƒçŠ¶æ…‹ã‚’è¿”ã™ï¼ˆNone, TouchStarted, TouchHeld, TouchEndedï¼‰
     public TouchState GetTouchState() => currentTouchState;
 
-    // Œ»İ‚Ìƒ^ƒbƒ`À•Wi‚Ü‚½‚Íƒ}ƒEƒXˆÊ’uj‚ğ•Ô‚·
+    // ç¾åœ¨ã®ã‚¿ãƒƒãƒåº§æ¨™ï¼ˆã¾ãŸã¯ãƒã‚¦ã‚¹ä½ç½®ï¼‰ã‚’è¿”ã™
     public Vector2 GetTouchPosition() => currentTouchPosition;
 
-    // ƒhƒ‰ƒbƒO’†‚©‚Ç‚¤‚©‚ğ•Ô‚·iƒ^ƒbƒ`ŠJn‚³‚êA‚Ü‚¾—£‚³‚ê‚Ä‚¢‚È‚¢‚©j
+    // ãƒ‰ãƒ©ãƒƒã‚°ä¸­ã‹ã©ã†ã‹ã‚’è¿”ã™ï¼ˆã‚¿ãƒƒãƒé–‹å§‹ã•ã‚Œã€ã¾ã é›¢ã•ã‚Œã¦ã„ãªã„ã‹ï¼‰
     public bool IsDragging() => isDragging;
 
-    // ƒhƒ‰ƒbƒO‚ªn‚Ü‚Á‚½ˆÊ’uiÅ‰‚Éƒ^ƒbƒ`‚µ‚½À•Wj‚ğ•Ô‚·
+    // ãƒ‰ãƒ©ãƒƒã‚°ãŒå§‹ã¾ã£ãŸä½ç½®ï¼ˆæœ€åˆã«ã‚¿ãƒƒãƒã—ãŸåº§æ¨™ï¼‰ã‚’è¿”ã™
     public Vector2 GetDragStartPosition() => startTouchPosition;
 
-    // Œ»İ‚Ìƒhƒ‰ƒbƒOˆÊ’uiw‚ª¡‚ ‚éˆÊ’uj‚ğ•Ô‚·
+    // ç¾åœ¨ã®ãƒ‰ãƒ©ãƒƒã‚°ä½ç½®ï¼ˆæŒ‡ãŒä»Šã‚ã‚‹ä½ç½®ï¼‰ã‚’è¿”ã™
     public Vector2 GetCurrentDragPosition() => currentTouchPosition;
 
-    // ƒhƒ‰ƒbƒOŠJn‚©‚ç‚ÌŒo‰ßŠÔi•bj‚ğ•Ô‚·
-    // ƒhƒ‰ƒbƒO’†‚Ì‚İƒJƒEƒ“ƒg‚³‚êAw‚ğ—£‚·‚Æ0‚ÉƒŠƒZƒbƒg‚³‚ê‚é
+    // ãƒ‰ãƒ©ãƒƒã‚°é–‹å§‹ã‹ã‚‰ã®çµŒéæ™‚é–“ï¼ˆç§’ï¼‰ã‚’è¿”ã™
+    // ãƒ‰ãƒ©ãƒƒã‚°ä¸­ã®ã¿ã‚«ã‚¦ãƒ³ãƒˆã•ã‚Œã€æŒ‡ã‚’é›¢ã™ã¨0ã«ãƒªã‚»ãƒƒãƒˆã•ã‚Œã‚‹
     public float GetDragDuration() => isDragging ? Time.time - touchStartTime : 0f;
 
     void LateUpdate()
     {
-        // TouchEnded ¨ None ‚Ì‘JˆÚ
+        // TouchEnded â†’ None ã®é·ç§»
         if (currentTouchState == TouchState.TouchEnded)
         {
             currentTouchState = TouchState.None;
         }
 
-        // TouchStarted ‚Í1ƒtƒŒ[ƒ€‚¾‚¯ˆÛ‚µAŸ‚ÌƒtƒŒ[ƒ€‚Å Held ‚É‚·‚é
+        // TouchStarted ã¯1ãƒ•ãƒ¬ãƒ¼ãƒ ã ã‘ç¶­æŒã—ã€æ¬¡ã®ãƒ•ãƒ¬ãƒ¼ãƒ ã§ Held ã«ã™ã‚‹
         if (currentTouchState == TouchState.TouchStarted && touchStartedThisFrame)
         {
             currentTouchState = TouchState.TouchHeld;

@@ -1,54 +1,56 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class GameData
 {
-    // ***** Public•Ï”
-    // ƒpƒYƒ‹‚Ìc‚Ì”v‚Ì”
+    // ***** Publicå¤‰æ•°
+    // ãƒ‘ã‚ºãƒ«ã®ç¸¦ã®ç‰Œã®æ•°
     static public readonly int PUZZLE_BOARD_SIZE_X = 8;
-    // ƒpƒYƒ‹‚Ì‰¡‚Ì”v‚Ì”
+    // ãƒ‘ã‚ºãƒ«ã®æ¨ªã®ç‰Œã®æ•°
     static public readonly int PUZZLE_BOARD_SIZE_Y = 6;
 
-    // ‰æ–Ê‚ÌcƒTƒCƒY‚É‚¨‚¯‚éAƒpƒYƒ‹ + æ“¾”v•\¦‚ÌÅ‘åŠ„‡
+    // ç”»é¢ã®ç¸¦ã‚µã‚¤ã‚ºã«ãŠã‘ã‚‹ã€ãƒ‘ã‚ºãƒ« + å–å¾—ç‰Œè¡¨ç¤ºã®æœ€å¤§å‰²åˆ
     static public readonly float MAX_HEIGHT_UI_RATE = 0.65f;
 
-    // ‰æ–Ê‰º‚Ì‹ó”’‚ÌƒTƒCƒY
+    // ç”»é¢ä¸‹ã®ç©ºç™½ã®ã‚µã‚¤ã‚º
     static public readonly float BUTTOM_SAFE_BLANK = 36.0f;
 
-    // c‚Ì‹ó”’‚ÌƒTƒCƒY
+    // ç¸¦ã®ç©ºç™½ã®ã‚µã‚¤ã‚º
     static public readonly float HEIGHT_BLANK = 24.0f;
 
-    // ƒpƒYƒ‹”Õ–Ê‚Ì˜g‚Ì•‚ÌƒTƒCƒY
+    // ãƒ‘ã‚ºãƒ«ç›¤é¢ã®æ ã®å¹…ã®ã‚µã‚¤ã‚º
     static public readonly float PUZZLE_BLANK = 32.0f;
 
-    // HPƒQ[ƒW‚Ìc‚ÌƒTƒCƒY
+    // HPã‚²ãƒ¼ã‚¸ã®ç¸¦ã®ã‚µã‚¤ã‚º
     static public readonly float HP_GAUGE_BLANK = 36.0f;
 
-    // ƒ^ƒCƒ‹‚Ì‰¡‚ÌÅ’áŒÀ‚Ì‹ó”’
+    // ã‚¿ã‚¤ãƒ«ã®æ¨ªã®æœ€ä½é™ã®ç©ºç™½
     static public readonly float MINIMUM_BLANK = 24.0f;
 
-    // ƒpƒYƒ‹ƒ^ƒCƒ‹‚Ìü‚è‚Ì‹ó”’Š„‡
+    // ãƒ‘ã‚ºãƒ«ã‚¿ã‚¤ãƒ«ã®å‘¨ã‚Šã®ç©ºç™½å‰²åˆ
     static public readonly float PUZZLE_TILE_MARGIN_RATE = 0.05f;
 
-    // ƒ^ƒCƒ‹‚ÌŠî–{ƒTƒCƒY
+    // ã‚¿ã‚¤ãƒ«ã®åŸºæœ¬ã‚µã‚¤ã‚º
     static public readonly Vector2 TILE_SIZE = new Vector2(47.0f, 63.0f);
 
-    // Šl“¾EƒpƒYƒ‹ƒ^ƒCƒ‹‚ÌƒXƒP[ƒ‹(Šî–{ƒTƒCƒY x ƒXƒP[ƒ‹ = ÅIƒTƒCƒY)
+    // ç²å¾—ãƒ»ãƒ‘ã‚ºãƒ«ã‚¿ã‚¤ãƒ«ã®ã‚¹ã‚±ãƒ¼ãƒ«(åŸºæœ¬ã‚µã‚¤ã‚º x ã‚¹ã‚±ãƒ¼ãƒ« = æœ€çµ‚ã‚µã‚¤ã‚º)
     static public float acquiredTilesScale = 2.0f;
     static public float puzzleTilesScale = 3.0f;
 
-    // •À‚×‚ç‚ê‚½Šl“¾EƒpƒYƒ‹ƒ^ƒCƒ‹‚Ì‰¡‚Ì—]”’(Å’áŒÀ‚Ì—]”’ + —]”’ = ÅI—]”’)
+    // ä¸¦ã¹ã‚‰ã‚ŒãŸç²å¾—ãƒ»ãƒ‘ã‚ºãƒ«ã‚¿ã‚¤ãƒ«ã®æ¨ªã®ä½™ç™½(æœ€ä½é™ã®ä½™ç™½ + ä½™ç™½ = æœ€çµ‚ä½™ç™½)
     static public float acquiredTilesMargin = 0.0f;
     static public float puzzleTilesMargin = 0.0f;
 
-    // UI•”•ª‚Ì‚‚³
+    // UIéƒ¨åˆ†ã®é«˜ã•
     static public float uiHeight = 0.0f;
 
-    // ***** Private•Ï”
-    // UI•”•ª‚Ì‡ŒvŒÅ’èƒTƒCƒY(UI•”•ª‚Ì‚‚³ - –ƒ”v)(ƒpƒYƒ‹˜g + ƒpƒYƒ‹˜g + c‹ó”’ + c‹ó”’ + c‹ó”’ + ‰æ–Ê‰º‹ó”’)
+    // ***** Privateå¤‰æ•°
+    // UIéƒ¨åˆ†ã®åˆè¨ˆå›ºå®šã‚µã‚¤ã‚º(UIéƒ¨åˆ†ã®é«˜ã• - éº»é›€ç‰Œ)(ãƒ‘ã‚ºãƒ«æ  + ãƒ‘ã‚ºãƒ«æ  + ç¸¦ç©ºç™½ + ç¸¦ç©ºç™½ + ç¸¦ç©ºç™½ + ç”»é¢ä¸‹ç©ºç™½)
     static private readonly float TOTAL_FIXED_UI_HEIGHT = PUZZLE_BLANK * 2.0f + HEIGHT_BLANK * 3.0f + BUTTOM_SAFE_BLANK;
 
-    // ***** PublicŠÖ”
-    // ‰æ–ÊƒTƒCƒY‚©‚çAƒ^ƒCƒ‹‚ÌƒXƒP[ƒ‹‚Æ—]”’‚ğŒvZ‚·‚é
+    // ***** Publicé–¢æ•°
+    /// <summary>
+    ///  ç”»é¢ã‚µã‚¤ã‚ºã‹ã‚‰ã€ã‚¿ã‚¤ãƒ«ã®ã‚¹ã‚±ãƒ¼ãƒ«ã¨ä½™ç™½ã‚’è¨ˆç®—ã™ã‚‹
+    /// </summary>
     static public void CalcTileScaleAndMargin()
     {
         int width = Screen.width;
@@ -57,29 +59,29 @@ public class GameData
         acquiredTilesMargin = 0.0f;
         puzzleTilesMargin = 0.0f;
 
-        // ‰æ–Ê‚Ì‰¡ƒTƒCƒY‚©‚ç”v‚Ì‘å‚«‚³‚ğ‹‚ß‚é
+        // ç”»é¢ã®æ¨ªã‚µã‚¤ã‚ºã‹ã‚‰ç‰Œã®å¤§ãã•ã‚’æ±‚ã‚ã‚‹
         acquiredTilesScale = (width - (MINIMUM_BLANK + acquiredTilesMargin) * 2.0f) / (12.0f * TILE_SIZE.x);
         puzzleTilesScale = (width - (MINIMUM_BLANK + puzzleTilesMargin + PUZZLE_BLANK) * 2.0f) / (PUZZLE_BOARD_SIZE_X * TILE_SIZE.x);
 
-        // ‹‚ß‚½”v‚Ì‘å‚«‚³‚©‚çUI•”•ª‚Ì‚‚³‚ğ‹‚ß‚é
+        // æ±‚ã‚ãŸç‰Œã®å¤§ãã•ã‹ã‚‰UIéƒ¨åˆ†ã®é«˜ã•ã‚’æ±‚ã‚ã‚‹
         uiHeight = (acquiredTilesScale * TILE_SIZE.y * 2.0f) + (puzzleTilesScale * TILE_SIZE.y * PUZZLE_BOARD_SIZE_Y) + TOTAL_FIXED_UI_HEIGHT;
 
-        // UI•”•ª‚Ìc‚ÌŠ„‡‚ªÅ‘å’l‚ğ’´‚¦‚Ä‚¢‚È‚¯‚ê‚ÎŠm’è
+        // UIéƒ¨åˆ†ã®ç¸¦ã®å‰²åˆãŒæœ€å¤§å€¤ã‚’è¶…ãˆã¦ã„ãªã‘ã‚Œã°ç¢ºå®š
         if (uiHeight <= height * MAX_HEIGHT_UI_RATE)
             return;
 
-        // 1‚Â‚Ì”v‚É‚Â‚«A‚Ç‚Ì‚­‚ç‚¢í‚é‚Ì‚©‚ğŒvZ‚·‚é
+        // 1ã¤ã®ç‰Œã«ã¤ãã€ã©ã®ãã‚‰ã„å‰Šã‚‹ã®ã‹ã‚’è¨ˆç®—ã™ã‚‹
         float cutHeight = (uiHeight - height * MAX_HEIGHT_UI_RATE) / (PUZZLE_BOARD_SIZE_Y + 2.0f) / TILE_SIZE.y;
 
-        // ”v‚Ì‘å‚«‚³‚ÌŒˆ’è
+        // ç‰Œã®å¤§ãã•ã®æ±ºå®š
         acquiredTilesScale -= cutHeight;
         puzzleTilesScale -= cutHeight;
 
-        // ‰¡‚Ì—]”’‚ÌŒˆ’è
+        // æ¨ªã®ä½™ç™½ã®æ±ºå®š
         acquiredTilesMargin = (width - TILE_SIZE.x * acquiredTilesScale * 12.0f) * 0.5f - MINIMUM_BLANK;
         puzzleTilesMargin = (width - TILE_SIZE.x * puzzleTilesScale * 8.0f) * 0.5f - MINIMUM_BLANK - PUZZLE_BLANK;
         
-        // ‘S‘Ì‚Ì‚‚³ * MAX_HEIGHT_UI_RATO ‚Ì‚Í‚¸‚¾‚¯‚Çˆê‰ŒvZ
+        // å…¨ä½“ã®é«˜ã• * MAX_HEIGHT_UI_RATO ã®ã¯ãšã ã‘ã©ä¸€å¿œè¨ˆç®—
         uiHeight = (acquiredTilesScale * TILE_SIZE.y * 2.0f) + (puzzleTilesScale * TILE_SIZE.y * PUZZLE_BOARD_SIZE_Y) + TOTAL_FIXED_UI_HEIGHT;
     }
 }

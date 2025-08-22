@@ -1,19 +1,38 @@
+﻿using System.Collections.Generic;
+using System.Linq;
+using NUnit.Framework;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ViewManager : MonoBehaviour
 {
-    // �����v�v���n�u
+    // パズル牌の移動時間
+    public static readonly float PUZZLE_TILE_MOVE_TIME = 0.15f;
+
+    // パズル牌の落下時間(1マス)
+    public static readonly float PUZZLE_TILE_FALL_TIME = 0.2f;
+
+    // 麻雀牌プレハブ
     [SerializeField] private GameObject _tilePrefab;
 
-    // �l���v�̐e�I�u�W�F�N�gTransform
+    // 獲得牌の親オブジェクトTransform
     [SerializeField] private Transform _acquiredTilesParent;
-    // �p�Y���v�̐e�I�u�W�F�N�gTransform
+    // パズル牌の親オブジェクトTransform
     [SerializeField] private Transform _puzzleTilesParent;
 
-    // �Q�[���R���g���[���[
+    // ゲームコントローラー
     private GameController _gameController;
-    // �p�Y���}�l�[�W���[
+    // パズルマネージャー
     private PuzzleManager _puzzleManager;
+
+    // パズル牌の基本位置(0,0)
+    private Vector2? _basePuzzleTilePos = null;
+
+    // パズル牌オブジェクト
+    private MahjongTileView[,] _boardTileObjects = new MahjongTileView[GameData.PUZZLE_BOARD_SIZE_Y, GameData.PUZZLE_BOARD_SIZE_X];
+
+    // X列ごとの削除するパズル牌のYインデックス(_destroyPuzzleTilesY[ X列 ][ 0～ ] == 削除する牌のY)
+    List<int>[] _destroyPuzzleTilesY = Enumerable.Range(0, GameData.PUZZLE_BOARD_SIZE_X).Select(_ => new List<int>()).ToArray();
 
     void Start()
     {
@@ -25,54 +44,59 @@ public class ViewManager : MonoBehaviour
         
     }
 
-    // �p�Y���}�l�[�W���[�̃Z�b�g
+    /// <summary>
+    /// 必要クラスのセット
+    /// </summary>
+    /// <param name="gameController">ゲームコントローラー</param>
+    /// <param name="puzzleManager">パズルマネージャー</param>
     public void SetClass(GameController gameController, PuzzleManager puzzleManager)
     {
         _gameController = gameController;
         _puzzleManager = puzzleManager;
     }
 
-    // �p�Y���Ֆʂ̔v�̐���
+    /// <summary>
+    /// パズル盤面の牌の生成
+    /// </summary>
     public void CreatePuzzleBoard()
     { 
-        MahjongLogic.TILE_KIND[,] boardTiles = _puzzleManager._boardTiles;
+        MahjongLogic.TILE_KIND[,] boardTiles = _puzzleManager.boardTiles;
 
-        // �p�Y���Ֆʂ̊J�n�ʒu�̌v�Z
-        Vector2 puzzleTileSize = GameData.TILE_SIZE * GameData.puzzleTilesScale;
-        Vector2 pos = new Vector2(
-            puzzleTileSize.x * GameData.PUZZLE_BOARD_SIZE_X * -0.5f + puzzleTileSize.x * 0.5f,
-            GameData.uiHeight - GameData.HEIGHT_BLANK - GameData.PUZZLE_BLANK - puzzleTileSize.y * 0.5f
-        );
-        // ���[�v�Ő���
+        // ループで生成
         for (int y = 0; y < boardTiles.GetLength(0); y++)
         {
             for (int x = 0; x < boardTiles.GetLength(1); x++)
             {
                 GameObject obj = Instantiate(_tilePrefab, _puzzleTilesParent);
                 MahjongTileView tile = obj.GetComponent<MahjongTileView>();
-                tile.SetPos(new Vector2(pos.x + x * puzzleTileSize.x, pos.y - y * puzzleTileSize.y));
+                _boardTileObjects[y, x] = tile;
+                tile.SetPos(CalcPositionFromIndex(new Vector2Int(x, y)));
                 tile.SetScale(GameData.puzzleTilesScale * (1.0f - GameData.PUZZLE_TILE_MARGIN_RATE));
-                // �v�ނ̃Z�b�g
+                // 牌類のセット
                 tile.SetKind(boardTiles[y, x]);
             }
         }
     }
 
-    // �^�b�`����Ă���p�Y���v�C���f�b�N�X
+    /// <summary>
+    /// タッチされているパズル牌インデックス(この処理は正直このクラスじゃない気がする)
+    /// </summary>
+    /// <param name="touchPos">タッチ座標</param>
+    /// <returns>タッチされた盤面インデックス(盤面外の場合はnull)</returns>
     public Vector2Int? CalcTouchPuzzleTileIndex(Vector2 touchPos)
     {
-        // �^�񒆉���(0,0)��
+        // 真ん中下を(0,0)に
         touchPos.x -= Screen.width * 0.5f;
 
-        // �p�Y���Ֆʂ̎l���ʒu�̌v�Z
+        // パズル盤面の四隅位置の計算
         Vector2 puzzleTileSize = GameData.TILE_SIZE * GameData.puzzleTilesScale;
-        Vector2 leftUp = new Vector2(puzzleTileSize.x * GameData.PUZZLE_BOARD_SIZE_X * -0.5f,�@GameData.uiHeight - GameData.HEIGHT_BLANK - GameData.PUZZLE_BLANK);
+        Vector2 leftUp = new Vector2(puzzleTileSize.x * GameData.PUZZLE_BOARD_SIZE_X * -0.5f,　GameData.uiHeight - GameData.HEIGHT_BLANK - GameData.PUZZLE_BLANK);
         Vector2 rightButtom = new Vector2(-leftUp.x, leftUp.y - puzzleTileSize.y * GameData.PUZZLE_BOARD_SIZE_Y);
 
         if (leftUp.x > touchPos.x || touchPos.x > rightButtom.x || rightButtom.y > touchPos.y || touchPos.y > leftUp.y)
             return null;
 
-        // X���W��0�ȏォ0�ȉ����Ń��[�v�̓Y������ς���(�኱���������Ȃ邯�ǉ��̔v�̐�����ɂȂ����玀��)
+        // X座標が0以上か0以下かでループの添え字を変える(若干処理早くなるけど横の牌の数が奇数になったら死ぬ)
         int startIdx = 0;
         int endIdx = GameData.PUZZLE_BOARD_SIZE_X;
         if (touchPos.x <= 0)
@@ -80,7 +104,7 @@ public class ViewManager : MonoBehaviour
         else
             startIdx = GameData.PUZZLE_BOARD_SIZE_X / 2;
 
-        // ���[�v�łǂ����^�b�`����Ă���𒲂ׂ�
+        // ループでどこがタッチされているを調べる
         for (int y = 0; y < GameData.PUZZLE_BOARD_SIZE_Y; y++)
         {
             Vector2 tileLeftUp = new Vector2(leftUp.x + startIdx * puzzleTileSize.x, leftUp.y - y * puzzleTileSize.y);
@@ -88,16 +112,131 @@ public class ViewManager : MonoBehaviour
             {
                 Vector2 tileRightButtom = new Vector2(tileLeftUp.x + puzzleTileSize.x, tileLeftUp.y - puzzleTileSize.y);
 
-                // �^�b�`����Ă��邩
+                // タッチされているか
                 if (tileLeftUp.x <= touchPos.x && touchPos.x <= tileRightButtom.x && tileRightButtom.y <= touchPos.y && touchPos.y <= tileLeftUp.y)
-                {
                     return new Vector2Int(x, y);
-                }
 
                 tileLeftUp.x = tileRightButtom.x;
             }
         }
 
         return null;
+    }
+
+    /// <summary>
+    /// パズル牌の入れ替え
+    /// </summary>
+    /// <param name="tile1">入れ替えるパズル牌1</param>
+    /// <param name="tile2">入れ替えるパズル牌2</param>
+    public void SwitchingPuzzleTile(Vector2Int tile1, Vector2Int tile2)
+    {
+        // 座標の入れ替え
+        _boardTileObjects[tile1.y, tile1.x].SetPos(CalcPositionFromIndex(tile2), PUZZLE_TILE_MOVE_TIME);
+        _boardTileObjects[tile2.y, tile2.x].SetPos(CalcPositionFromIndex(tile1), PUZZLE_TILE_MOVE_TIME);
+
+        // 配列の入れ替え
+        (_boardTileObjects[tile1.y, tile1.x], _boardTileObjects[tile2.y, tile2.x]) = (_boardTileObjects[tile2.y, tile2.x], _boardTileObjects[tile1.y, tile1.x]);
+    }
+
+    /// <summary>
+    /// パズル牌の削除
+    /// </summary>
+    /// <param name="index">削除牌インデックス</param>
+    public void DestroyPuzzleTile(Vector2Int index)
+    {
+        _boardTileObjects[index.y, index.x].SetKind(MahjongLogic.TILE_KIND.NONE);
+    }
+
+    /// <summary>
+    /// パズル牌の落下
+    /// </summary>
+    public void FallPuzzleTile()
+    {
+        MahjongLogic.TILE_KIND[,] boardTiles = _puzzleManager.boardTiles;
+        List<Vector2Int[]> matchIndex = _puzzleManager.matchingTilesIndex;
+
+        // 落ちるX列がどこか
+        bool[] isFallX = Enumerable.Range(0, GameData.PUZZLE_BOARD_SIZE_X).Select(_ => false).ToArray();
+        for (int i = 0; i < matchIndex.Count; i++) 
+        {
+            for (int j = 0; j < 3; j++)
+                isFallX[matchIndex[i][j].x] = true;
+        }
+
+        // 列ごとに考える
+        for (int x = 0; x < GameData.PUZZLE_BOARD_SIZE_X; x++)
+        {
+            // 落下しなければ次へ
+            if (!isFallX[x])
+                continue;
+
+            // 下から更新していく
+            int matchTileCount = 0; // 処理済み牌カウント(ずれ)
+            for (int y = GameData.PUZZLE_BOARD_SIZE_Y - 1; y >= 0; y--)
+            {
+                if (_boardTileObjects[y, x] == null || _boardTileObjects[y, x].GetKind() == MahjongLogic.TILE_KIND.NONE)
+                    matchTileCount++;
+                else
+                {
+                    // まだずれていなければスルー
+                    if (matchTileCount == 0)
+                        continue;
+
+                    // ずれた分だけ下に行く
+                    _boardTileObjects[y + matchTileCount, x] = _boardTileObjects[y, x];
+                    // 移動先座標の設定
+                    _boardTileObjects[y, x].SetPos(CalcPositionFromIndex(new Vector2Int(x, y + matchTileCount)), PUZZLE_TILE_FALL_TIME * matchTileCount);
+                }
+            }
+
+            // 新しい牌の生成・座標指定・移動先座標の設定
+            for (int i = 1; i <= matchTileCount; i++)
+            {
+                // 生成
+                GameObject obj = Instantiate(_tilePrefab, _puzzleTilesParent);
+                MahjongTileView tile = obj.GetComponent<MahjongTileView>();
+                _boardTileObjects[(matchTileCount - i), x] = tile;
+                tile.SetPos(CalcPositionFromIndex(new Vector2Int(x, -i)));
+                tile.SetScale(GameData.puzzleTilesScale * (1.0f - GameData.PUZZLE_TILE_MARGIN_RATE));
+                // 牌類のセット
+                tile.SetKind(boardTiles[(matchTileCount - i), x]);
+                // 移動先座標
+                tile.SetPos(CalcPositionFromIndex(new Vector2Int(x, (matchTileCount - i))), PUZZLE_TILE_FALL_TIME * matchTileCount);
+            }
+        }
+    }
+
+    /// <summary>
+    /// パズル牌の削除
+    /// </summary>
+    public void ClearPazzleBoard()
+    {
+        for (int y = 0; y < _boardTileObjects.GetLength(0); y++)
+        {
+            for (int x = 0; x < _boardTileObjects.GetLength(1); x++)
+            {
+                _boardTileObjects[y, x].SetKind(MahjongLogic.TILE_KIND.NONE);
+            }
+        }
+    }
+
+    /// <summary>
+    /// パズル牌の添え字から画面上の座標を計算する
+    /// </summary>
+    /// <param name="index">計算牌の盤面インデックス</param>
+    /// <returns>画面上の座標</returns>
+    private Vector2 CalcPositionFromIndex(Vector2Int index)
+    {
+        // パズル牌の大きさ
+        Vector2 puzzleTileSize = GameData.TILE_SIZE * GameData.puzzleTilesScale;
+
+        // 基本位置(0,0)
+        if (!_basePuzzleTilePos.HasValue)
+            _basePuzzleTilePos = new Vector2(
+                puzzleTileSize.x * GameData.PUZZLE_BOARD_SIZE_X * -0.5f + puzzleTileSize.x * 0.5f,
+                GameData.uiHeight - GameData.HEIGHT_BLANK - GameData.PUZZLE_BLANK - puzzleTileSize.y * 0.5f
+            );
+
+        return new Vector2(_basePuzzleTilePos.Value.x + index.x * puzzleTileSize.x, _basePuzzleTilePos.Value.y - index.y * puzzleTileSize.y);
     }
 }
