@@ -44,7 +44,10 @@ public class PuzzleManager
 
 
     // ***** Public関数
-    // パズルの初期化
+    /// <summary>
+    /// パズルの初期化
+    /// </summary>
+    /// <param name="useTiles">パズルに使用する牌の種類リスト</param>
     public void InitPuzzle(List<MahjongLogic.TILE_KIND> useTiles)
     {
         _useTiles = useTiles;
@@ -55,7 +58,10 @@ public class PuzzleManager
         matchingTilesIndex.Clear();
     }
 
-    // 指移動中
+    /// <summary>
+    /// 指移動中
+    /// </summary>
+    /// <param name="index">選択中盤面インデックス</param>
     public void MoveNow(Vector2Int index)
     {
         if (_beginMoveIndex.HasValue)
@@ -79,7 +85,10 @@ public class PuzzleManager
         }
     }
 
-    // 指移動終了
+    /// <summary>
+    /// 指移動終了
+    /// </summary>
+    /// <param name="index">選択中盤面インデックス</param>
     public void MoveEnd(Vector2Int index)
     {
         // 移動していない
@@ -96,7 +105,9 @@ public class PuzzleManager
         _beginMoveIndex = null;
     }
 
-    // マッチング処理の終了
+    /// <summary>
+    /// マッチング処理の終了
+    /// </summary>
     public void FinishMatching()
     {
         // いろいろクリア
@@ -128,7 +139,9 @@ public class PuzzleManager
     }
 
     // ***** Private関数
-    // ボードタイルの初期化
+    /// <summary>
+    /// ボードタイルの初期化
+    /// </summary>
     private void InitBoardTiles()
     {
         int kindNum = _useTiles.Count;
@@ -163,7 +176,11 @@ public class PuzzleManager
         }
     }
 
-    // 入れ替え処理(入れ替え＆マッチ判定)
+    /// <summary>
+    /// 入れ替え処理(入れ替え＆マッチ判定)
+    /// </summary>
+    /// <param name="tile1">入れ替え牌の盤面インデックス1</param>
+    /// <param name="tile2">入れ替え牌の盤面インデックス2</param>
     private void SwitchingTile(Vector2Int tile1, Vector2Int tile2)
     {
         // 入れ替え処理
@@ -190,7 +207,12 @@ public class PuzzleManager
             MatchingProcess();
     }
 
-    // マッチしているかの判定(prev:前段階のマッチチェック)
+    /// <summary>
+    /// マッチしているかの判定
+    /// </summary>
+    /// <param name="index">チェック牌の盤面インデックス</param>
+    /// <param name="prev">事前チェックか(マッチ時の処理をしないか)</param>
+    /// <returns>マッチしたか</returns>
     private bool MatchingCheck(Vector2Int index, bool prev = false)
     {
         // 上下左右の牌種
@@ -240,7 +262,9 @@ public class PuzzleManager
         return false;
     }
 
-    // マッチしていた場合の処理
+    /// <summary>
+    /// マッチしていた場合の処理
+    /// </summary>
     private void MatchingProcess()
     {
         Debug.Log("ステート変更：" + state + " > " + GameState.MATCH);
@@ -264,7 +288,10 @@ public class PuzzleManager
         }
     }
 
-    // 周りとマッチしないランダムな牌種の設定
+    /// <summary>
+    /// 周りとマッチしないランダムな牌種の設定
+    /// </summary>
+    /// <param name="index">設定牌の盤面インデックス</param>
     private void SetBoardUnmatchRandomKind(Vector2Int index)
     {
         bool isMatch = true;

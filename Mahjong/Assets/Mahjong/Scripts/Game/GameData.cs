@@ -48,7 +48,9 @@ public class GameData
     static private readonly float TOTAL_FIXED_UI_HEIGHT = PUZZLE_BLANK * 2.0f + HEIGHT_BLANK * 3.0f + BUTTOM_SAFE_BLANK;
 
     // ***** Public関数
-    // 画面サイズから、タイルのスケールと余白を計算する
+    /// <summary>
+    ///  画面サイズから、タイルのスケールと余白を計算する
+    /// </summary>
     static public void CalcTileScaleAndMargin()
     {
         int width = Screen.width;

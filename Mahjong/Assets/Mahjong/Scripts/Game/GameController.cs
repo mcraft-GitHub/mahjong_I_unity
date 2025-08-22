@@ -61,7 +61,9 @@ public class GameController : MonoBehaviour
         _prevState = prevState;
     }
 
-    // ステートがREADYの際の処理
+    /// <summary>
+    /// ステートがREADYの際の処理
+    /// </summary>
     private void UpdateReady()
     {
         // 切り替わったら現在の位置を初期化
@@ -108,7 +110,9 @@ public class GameController : MonoBehaviour
         }
     }
 
-    // ステートがMATCHの際の処理
+    /// <summary>
+    /// ステートがMATCHの際の処理
+    /// </summary>
     private void UpdateMatch()
     {
         // マッチ処理
@@ -118,7 +122,9 @@ public class GameController : MonoBehaviour
         }
     }
 
-    // ゲームの初期化
+    /// <summary>
+    /// ゲームの初期化
+    /// </summary>
     private void InitGame()
     {
         // 使用する牌
@@ -146,7 +152,10 @@ public class GameController : MonoBehaviour
         _viewManager.CreatePuzzleBoard();
     }
 
-    // マッチ時の処理
+    /// <summary>
+    /// マッチ時の処理
+    /// </summary>
+    /// <returns>IEnumerator</returns>
     IEnumerator ScalePosCoroutine()
     {
         // アニメーション開始

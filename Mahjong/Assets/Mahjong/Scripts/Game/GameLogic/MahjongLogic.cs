@@ -45,7 +45,11 @@ public class MahjongLogic
         MAX,
     }
 
-    // 萬子、筒子、索子、字牌の判定(1,2,3,4)
+    /// <summary>
+    /// 萬子、筒子、索子、字牌の判定
+    /// </summary>
+    /// <param name="k">牌種</param>
+    /// <returns>萬子:1、筒子:2、索子:3、字牌:4</returns>
     static public int CalcMPST(TILE_KIND k)
     {
         if (k == TILE_KIND.NONE)
@@ -68,7 +72,13 @@ public class MahjongLogic
         }
     }
 
-    // 面子かどうかの判定
+    /// <summary>
+    /// 面子かどうかの判定
+    /// </summary>
+    /// <param name="k1">牌種1</param>
+    /// <param name="k2">牌種2</param>
+    /// <param name="k3">牌種3</param>
+    /// <returns>面子か</returns>
     public static bool CheckMentu(TILE_KIND k1, TILE_KIND k2, TILE_KIND k3)
     {
         // 種類判定
