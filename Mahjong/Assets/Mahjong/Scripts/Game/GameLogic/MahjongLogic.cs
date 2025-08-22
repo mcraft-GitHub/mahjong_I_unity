@@ -74,7 +74,7 @@ public class MahjongLogic
         // 種類判定
         int[] mpst = { CalcMPST(k1), CalcMPST(k2), CalcMPST(k3) };
 
-        if (mpst[1] != mpst[2] || mpst[1] != mpst[3] || mpst[1] == 0)
+        if (mpst[0] != mpst[1] || mpst[0] != mpst[2] || mpst[0] == 0)
             return false;
 
         // 刻子
@@ -82,7 +82,7 @@ public class MahjongLogic
             return true;
 
         // 字牌の場合は順子がないので終了
-        if (mpst[1] == 4)
+        if (mpst[0] == 4)
             return false;
 
         // 小さい順に並び変え
@@ -90,7 +90,7 @@ public class MahjongLogic
         Array.Sort(nks);
 
         // 1づつ増えていれば順子
-        if (nks[0] == nks[1] - 1 && nks[0] == nks[1] - 2)
+        if (nks[0] == nks[1] - 1 && nks[0] == nks[2] - 2)
             return true;
 
         return false;

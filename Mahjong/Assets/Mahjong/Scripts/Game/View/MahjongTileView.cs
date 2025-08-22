@@ -20,8 +20,17 @@ public class MahjongTileView : MonoBehaviour
     public void SetKind(MahjongLogic.TILE_KIND kind)
     {
         _kind = kind;
+
+        if (kind == MahjongLogic.TILE_KIND.NONE)
+        {
+            Destroy(this.gameObject);
+            return;
+        }
+
         _image.sprite = _tileImages.tileImages[(int)_kind];
     }
+
+    public MahjongLogic.TILE_KIND GetKind() => _kind;
 
     // ç¿ïWÇÃê›íË
     public void SetPos(Vector2 pos, float moveTime = 0.0f, float delayTime = 0.0f)
@@ -34,7 +43,7 @@ public class MahjongTileView : MonoBehaviour
 
         if (moveTime > 0.0f)
         {
-            _rectTransform.DOAnchorPos(pos, moveTime).SetEase(Ease.InOutSine);
+            _rectTransform.DOAnchorPos(pos, moveTime).SetEase(Ease.InSine);
             return;
         }
 
@@ -45,6 +54,9 @@ public class MahjongTileView : MonoBehaviour
         yield return new WaitForSeconds(delayTime);
         SetPos(pos, moveTime);
     }
+
+    // ç¿ïWÇÃéÊìæ
+    public Vector2 GetPos() { return _rectTransform.anchoredPosition; }
 
     // ägèkÇÃê›íË
     public void SetScale(float scale, float scaleTime = 0.0f, float delayTime = 0.0f)
