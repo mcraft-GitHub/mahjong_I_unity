@@ -1,10 +1,10 @@
-using System;
+ο»Ώusing System;
 using System.Net.NetworkInformation;
 using UnityEngine;
 
 public class MahjongLogic
 {
-    // ”vν
+    // η‰η¨®
     public enum TILE_KIND
     {
         NONE = -1,
@@ -45,7 +45,7 @@ public class MahjongLogic
         MAX,
     }
 
-    // δέqA“›qAυqA”v‚Μ”»’θ(1,2,3,4)
+    // θ¬ε­γ€η­’ε­γ€η΄Άε­γ€ε­—η‰γ®ε¤ε®(1,2,3,4)
     static public int CalcMPST(TILE_KIND k)
     {
         if (k == TILE_KIND.NONE)
@@ -68,28 +68,28 @@ public class MahjongLogic
         }
     }
 
-    // –Κq‚©‚Η‚¤‚©‚Μ”»’θ
+    // ιΆε­γ‹γ©γ†γ‹γ®ε¤ε®
     public static bool CheckMentu(TILE_KIND k1, TILE_KIND k2, TILE_KIND k3)
     {
-        // ν—ή”»’θ
+        // η¨®ι΅ε¤ε®
         int[] mpst = { CalcMPST(k1), CalcMPST(k2), CalcMPST(k3) };
 
         if (mpst[0] != mpst[1] || mpst[0] != mpst[2] || mpst[0] == 0)
             return false;
 
-        // q
+        // ε»ε­
         if (k1 == k2 && k1 == k3)
             return true;
 
-        // ”v‚Μκ‡‚Ν‡q‚ª‚Θ‚Ά‚Μ‚ΕI—Ή
+        // ε­—η‰γ®ε ΄εγ―ι †ε­γγªγ„γ®γ§ηµ‚δΊ†
         if (mpst[0] == 4)
             return false;
 
-        // ¬‚³‚Ά‡‚Ι•ΐ‚Ρ•Ο‚¦
+        // ε°γ•γ„ι †γ«δΈ¦γ³ε¤‰γ
         int[] nks = { (int)k1, (int)k2, (int)k3 };
         Array.Sort(nks);
 
-        // 1‚Γ‚Β‘‚¦‚Δ‚Ά‚κ‚Ξ‡q
+        // 1γ¥γ¤εΆ—γγ¦γ„γ‚γ°ι †ε­
         if (nks[0] == nks[1] - 1 && nks[0] == nks[2] - 2)
             return true;
 

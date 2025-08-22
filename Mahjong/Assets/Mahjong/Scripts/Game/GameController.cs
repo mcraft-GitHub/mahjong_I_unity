@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
@@ -6,39 +6,39 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using static UnityEditor.PlayerSettings;
 
-// ƒ}ƒbƒ` ¨ ˆê’â~ ¨ è”v‚É’Ç‰Á ¨ è”vŠ®¬‚È‚çUŒ‚ ¨ ‚Ü‚¾ƒ}ƒbƒ`‚ª‚ ‚é‚È‚ç[è”v‚É’Ç‰Á]‚Ö ¨ ’â~‰ğœ ¨ —‚¿‚é ¨ ƒ}ƒbƒ`”»’è ¨ Å‰‚Ö
+// ãƒãƒƒãƒ â†’ ä¸€æ™‚åœæ­¢ â†’ æ‰‹ç‰Œã«è¿½åŠ  â†’ æ‰‹ç‰Œå®Œæˆãªã‚‰æ”»æ’ƒ â†’ ã¾ã ãƒãƒƒãƒãŒã‚ã‚‹ãªã‚‰[æ‰‹ç‰Œã«è¿½åŠ ]ã¸ â†’ åœæ­¢è§£é™¤ â†’ è½ã¡ã‚‹ â†’ ãƒãƒƒãƒåˆ¤å®š â†’ æœ€åˆã¸
 
 public class GameController : MonoBehaviour
 {
     [SerializeField] private TouchInputHandler _input;
     [SerializeField] private ViewManager _viewManager;
 
-    // ƒpƒYƒ‹ƒ}ƒl[ƒWƒƒ[
+    // ãƒ‘ã‚ºãƒ«ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼
     private PuzzleManager _puzzleManager;
 
-    // ‘OƒtƒŒ[ƒ€‚ÌƒXƒe[ƒg
+    // å‰ãƒ•ãƒ¬ãƒ¼ãƒ ã®ã‚¹ãƒ†ãƒ¼ãƒˆ
     private PuzzleManager.GameState _prevState = PuzzleManager.GameState.PAUSE;
 
     // ***** READY
-    // ˆÚ“®ŠJnˆÊ’u
+    // ç§»å‹•é–‹å§‹ä½ç½®
     private Vector2Int? _currentMoveIndex = null;
 
     // ***** MATCH
-    // ƒAƒjƒ[ƒVƒ‡ƒ“’†‚©
+    // ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ä¸­ã‹
     private bool _isAnimation = false;
 
     void Start()
     {
-        // –ƒ”v‚ÌƒXƒP[ƒ‹‚ÆŒ„ŠÔ‚ÌŒvZ
+        // éº»é›€ç‰Œã®ã‚¹ã‚±ãƒ¼ãƒ«ã¨éš™é–“ã®è¨ˆç®—
         GameData.CalcTileScaleAndMargin();
 
-        // ƒpƒYƒ‹ƒ}ƒl[ƒWƒƒ[‚Ì¶¬
+        // ãƒ‘ã‚ºãƒ«ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼ã®ç”Ÿæˆ
         _puzzleManager = new PuzzleManager();
 
-        // ƒpƒYƒ‹ƒ}ƒl[ƒWƒƒ[‚ÌƒZƒbƒg
+        // ãƒ‘ã‚ºãƒ«ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼ã®ã‚»ãƒƒãƒˆ
         _viewManager.SetClass(this, _puzzleManager);
 
-        // ƒQ[ƒ€‚Ì‰Šú‰»
+        // ã‚²ãƒ¼ãƒ ã®åˆæœŸåŒ–
         InitGame();
     }
 
@@ -61,16 +61,16 @@ public class GameController : MonoBehaviour
         _prevState = prevState;
     }
 
-    // ƒXƒe[ƒg‚ªREADY‚ÌÛ‚Ìˆ—
+    // ã‚¹ãƒ†ãƒ¼ãƒˆãŒREADYã®éš›ã®å‡¦ç†
     private void UpdateReady()
     {
-        // Ø‚è‘Ö‚í‚Á‚½‚çŒ»İ‚ÌˆÊ’u‚ğ‰Šú‰»
+        // åˆ‡ã‚Šæ›¿ã‚ã£ãŸã‚‰ç¾åœ¨ã®ä½ç½®ã‚’åˆæœŸåŒ–
         if (_prevState != PuzzleManager.GameState.READY)
             _currentMoveIndex = null;
 
         if (!_currentMoveIndex.HasValue)
         {
-            // ˆÚ“®ŠJn‹^˜f
+            // ç§»å‹•é–‹å§‹ç–‘æƒ‘
             if (_input.GetTouchState() == TouchInputHandler.TouchState.TouchStarted)
             {
                 _currentMoveIndex = _viewManager.CalcTouchPuzzleTileIndex(_input.GetCurrentDragPosition());
@@ -80,7 +80,7 @@ public class GameController : MonoBehaviour
         }
         else
         {
-            // ˆÚ“®I—¹
+            // ç§»å‹•çµ‚äº†
             if (_input.GetTouchState() == TouchInputHandler.TouchState.TouchEnded || _input.GetTouchState() == TouchInputHandler.TouchState.None)
             {
                 _puzzleManager.MoveEnd(_currentMoveIndex.Value);
@@ -88,9 +88,9 @@ public class GameController : MonoBehaviour
                 return;
             }
 
-            // ‘I‘ğƒpƒYƒ‹”v‚ÌŒvZ
+            // é¸æŠãƒ‘ã‚ºãƒ«ç‰Œã®è¨ˆç®—
             Vector2Int? newIndex = _viewManager.CalcTouchPuzzleTileIndex(_input.GetCurrentDragPosition());
-            // ˆÚ“®I—¹
+            // ç§»å‹•çµ‚äº†
             if (!newIndex.HasValue)
             {
                 _puzzleManager.MoveEnd(_currentMoveIndex.Value);
@@ -98,7 +98,7 @@ public class GameController : MonoBehaviour
                 return;
             }
 
-            // ˆÚ“®
+            // ç§»å‹•
             if (newIndex.Value.x != _currentMoveIndex.Value.x || newIndex.Value.y != _currentMoveIndex.Value.y)
             {
                 _viewManager.SwitchingPuzzleTile(_currentMoveIndex.Value, newIndex.Value);
@@ -108,20 +108,20 @@ public class GameController : MonoBehaviour
         }
     }
 
-    // ƒXƒe[ƒg‚ªMATCH‚ÌÛ‚Ìˆ—
+    // ã‚¹ãƒ†ãƒ¼ãƒˆãŒMATCHã®éš›ã®å‡¦ç†
     private void UpdateMatch()
     {
-        // ƒ}ƒbƒ`ˆ—
+        // ãƒãƒƒãƒå‡¦ç†
         if (!_isAnimation && _puzzleManager.matchingTilesIndex.Count > 0)
         {
             StartCoroutine(ScalePosCoroutine());
         }
     }
 
-    // ƒQ[ƒ€‚Ì‰Šú‰»
+    // ã‚²ãƒ¼ãƒ ã®åˆæœŸåŒ–
     private void InitGame()
     {
-        // g—p‚·‚é”v
+        // ä½¿ç”¨ã™ã‚‹ç‰Œ
         List<MahjongLogic.TILE_KIND> useTileKinds = new List<MahjongLogic.TILE_KIND>();
         useTileKinds.Add(MahjongLogic.TILE_KIND.MAN_1);
         useTileKinds.Add(MahjongLogic.TILE_KIND.MAN_2);
@@ -139,23 +139,23 @@ public class GameController : MonoBehaviour
         useTileKinds.Add(MahjongLogic.TILE_KIND.HAKU);
         useTileKinds.Add(MahjongLogic.TILE_KIND.HATU);
         useTileKinds.Add(MahjongLogic.TILE_KIND.TYUN);
-        // ƒpƒYƒ‹‚Ì‰Šú‰»
+        // ãƒ‘ã‚ºãƒ«ã®åˆæœŸåŒ–
         _puzzleManager.InitPuzzle(useTileKinds);
 
-        // ”v‚Ì”z’u
+        // ç‰Œã®é…ç½®
         _viewManager.CreatePuzzleBoard();
     }
 
-    // ƒ}ƒbƒ`‚Ìˆ—
+    // ãƒãƒƒãƒæ™‚ã®å‡¦ç†
     IEnumerator ScalePosCoroutine()
     {
-        // ƒAƒjƒ[ƒVƒ‡ƒ“ŠJn
+        // ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³é–‹å§‹
         _isAnimation = true;
 
-        // Å’·—‰ºŠÔ‚ğŒvZ‚·‚é‚½‚ß‚ÉŠeX—ñ‚ÌÁ‚¦‚é”v‚Ì”‚ğ•Û
+        // æœ€é•·è½ä¸‹æ™‚é–“ã‚’è¨ˆç®—ã™ã‚‹ãŸã‚ã«å„Xåˆ—ã®æ¶ˆãˆã‚‹ç‰Œã®æ•°ã‚’ä¿æŒ
         int[] fallY = Enumerable.Range(0, GameData.PUZZLE_BOARD_SIZE_X).Select(_ => 0).ToArray();
 
-        // ƒ}ƒbƒ`”v‚Ìíœ
+        // ãƒãƒƒãƒç‰Œã®å‰Šé™¤
         for (int i = 0; i < _puzzleManager.matchingTilesIndex.Count; i++)
         {
             for (int j = 0; j < _puzzleManager.matchingTilesIndex[i].Length; j++)
@@ -163,20 +163,20 @@ public class GameController : MonoBehaviour
                 fallY[_puzzleManager.matchingTilesIndex[i][j].x]++;
                 _viewManager.DestroyPuzzleTile(_puzzleManager.matchingTilesIndex[i][j]);
             }
-            // ‚¿‚å‚Á‚Æ~‚ß‚é(‚±‚±‚Åè”v‚É‰Á‚¦‚é‰‰o&è”v‚ª‘µ‚Á‚½‚çUŒ‚‚Æ‚©‚à)
+            // ã¡ã‚‡ã£ã¨æ­¢ã‚ã‚‹(ã“ã“ã§æ‰‹ç‰Œã«åŠ ãˆã‚‹æ¼”å‡º&æ‰‹ç‰ŒãŒæƒã£ãŸã‚‰æ”»æ’ƒã¨ã‹ã‚‚)
             yield return new WaitForSeconds(0.5f);
         }
 
-        // —‚Æ‚·
+        // è½ã¨ã™
         _viewManager.FallPuzzleTile();
 
-        // —‰ºŠÔ
+        // è½ä¸‹æ™‚é–“
         yield return new WaitForSeconds(fallY.Max() * ViewManager.PUZZLE_TILE_FALL_TIME);
 
-        // ƒAƒjƒ[ƒVƒ‡ƒ“I—¹
+        // ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³çµ‚äº†
         _isAnimation = false;
 
-        // ƒ}ƒbƒ`I—¹
+        // ãƒãƒƒãƒçµ‚äº†
         _puzzleManager.FinishMatching();
     }
 }

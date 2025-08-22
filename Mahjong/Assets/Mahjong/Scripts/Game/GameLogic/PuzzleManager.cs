@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
@@ -8,43 +8,43 @@ public class PuzzleManager
 {
     public enum GameState
     {
-        READY = 0, // €”õŠ®—¹(ƒvƒŒƒCƒ„[‘€ì‰Â)
-        MATCH, // ”vˆÚ“®’†(ƒvƒŒƒCƒ„[‘€ì•s‰Â)
-        PREV_MOVE, // ˆÚ“®”v–ß‚µ’†(ƒvƒŒƒCƒ„[‘€ì•s‰Â)©‚±‚ê‚¢‚ç‚È‚¢‚©‚àBg—pŸ‘æ
-        PAUSE, // ˆê’â~’†(ƒvƒŒƒCƒ„[‘€ì•s‰Â)
+        READY = 0, // æº–å‚™å®Œäº†(ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼æ“ä½œå¯)
+        MATCH, // ç‰Œç§»å‹•ä¸­(ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼æ“ä½œä¸å¯)
+        PREV_MOVE, // ç§»å‹•ç‰Œæˆ»ã—ä¸­(ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼æ“ä½œä¸å¯)â†ã“ã‚Œã„ã‚‰ãªã„ã‹ã‚‚ã€‚ä½¿ç”¨æ¬¡ç¬¬
+        PAUSE, // ä¸€æ™‚åœæ­¢ä¸­(ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼æ“ä½œä¸å¯)
         MAX,
     }
 
-    // ***** Public•Ï”
-    // ƒQ[ƒ€ƒXƒe[ƒg
+    // ***** Publicå¤‰æ•°
+    // ã‚²ãƒ¼ãƒ ã‚¹ãƒ†ãƒ¼ãƒˆ
     public GameState state { get; private set; } = GameState.READY;
 
-    // ƒ{[ƒhƒ^ƒCƒ‹”z—ñ
+    // ãƒœãƒ¼ãƒ‰ã‚¿ã‚¤ãƒ«é…åˆ—
     public MahjongLogic.TILE_KIND[,] boardTiles { get; } = new MahjongLogic.TILE_KIND[GameData.PUZZLE_BOARD_SIZE_Y, GameData.PUZZLE_BOARD_SIZE_X];
 
     // *** READY
 
     // *** MATCH
-    // ƒ}ƒbƒ`”vƒCƒ“ƒfƒbƒNƒX
+    // ãƒãƒƒãƒç‰Œã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹
     public List<Vector2Int[]> matchingTilesIndex { get; } = new List<Vector2Int[]>();
 
-    // ***** Private•Ï”
-    // g—p”víƒŠƒXƒg
+    // ***** Privateå¤‰æ•°
+    // ä½¿ç”¨ç‰Œç¨®ãƒªã‚¹ãƒˆ
     private List<MahjongLogic.TILE_KIND> _useTiles;
 
     // *** READY
-    // ˆÚ“®ŠJnˆÊ’u
+    // ç§»å‹•é–‹å§‹ä½ç½®
     private Vector2Int? _beginMoveIndex = null;
-    // Œ»İˆÚ“®ˆÊ’u
+    // ç¾åœ¨ç§»å‹•ä½ç½®
     private Vector2Int _nowMoveIndex;
-    // ˆÚ“®ˆÊ’u—š—ğ
+    // ç§»å‹•ä½ç½®å±¥æ­´
     private List<Vector2> _moveIndexHistory = new List<Vector2>();
 
     // *** MATCH
 
 
-    // ***** PublicŠÖ”
-    // ƒpƒYƒ‹‚Ì‰Šú‰»
+    // ***** Publicé–¢æ•°
+    // ãƒ‘ã‚ºãƒ«ã®åˆæœŸåŒ–
     public void InitPuzzle(List<MahjongLogic.TILE_KIND> useTiles)
     {
         _useTiles = useTiles;
@@ -55,23 +55,23 @@ public class PuzzleManager
         matchingTilesIndex.Clear();
     }
 
-    // wˆÚ“®’†
+    // æŒ‡ç§»å‹•ä¸­
     public void MoveNow(Vector2Int index)
     {
         if (_beginMoveIndex.HasValue)
         {
-            // ˆÚ“®‚µ‚Ä‚¢‚é
+            // ç§»å‹•ã—ã¦ã„ã‚‹
             if (_nowMoveIndex.x != index.x || _nowMoveIndex.y != index.y)
             {
                 _moveIndexHistory.Add(index);
-                // ƒ}ƒbƒ`”»’è
+                // ãƒãƒƒãƒåˆ¤å®š
                 SwitchingTile(_nowMoveIndex, index);
             }
             _nowMoveIndex = index;
         }
         else
         {
-            // ŠJn
+            // é–‹å§‹
             _beginMoveIndex = index;
             _nowMoveIndex = index;
             _moveIndexHistory.Clear();
@@ -79,33 +79,33 @@ public class PuzzleManager
         }
     }
 
-    // wˆÚ“®I—¹
+    // æŒ‡ç§»å‹•çµ‚äº†
     public void MoveEnd(Vector2Int index)
     {
-        // ˆÚ“®‚µ‚Ä‚¢‚È‚¢
+        // ç§»å‹•ã—ã¦ã„ãªã„
         if (_moveIndexHistory.Count <= 1)
         {
             _beginMoveIndex = null;
             return;
         }
 
-        // ˆÚ“®‚µ‚Ä‚¢‚é
-        //Debug.Log("ƒXƒe[ƒg•ÏXF" + state + " > " + GameState.PREV_MOVE);
+        // ç§»å‹•ã—ã¦ã„ã‚‹
+        //Debug.Log("ã‚¹ãƒ†ãƒ¼ãƒˆå¤‰æ›´ï¼š" + state + " > " + GameState.PREV_MOVE);
         //state = GameState.PREV_MOVE;
 
         _beginMoveIndex = null;
     }
 
-    // ƒ}ƒbƒ`ƒ“ƒOˆ—‚ÌI—¹
+    // ãƒãƒƒãƒãƒ³ã‚°å‡¦ç†ã®çµ‚äº†
     public void FinishMatching()
     {
-        // ‚¢‚ë‚¢‚ëƒNƒŠƒA
+        // ã„ã‚ã„ã‚ã‚¯ãƒªã‚¢
         _beginMoveIndex = null;
         _moveIndexHistory.Clear();
         matchingTilesIndex.Clear();
 
-        // —‚¿ƒRƒ“‚Ì”»’è(ƒRƒ“ƒ{‚¶‚á‚È‚¢‚¯‚Ç)
-        // ‚Ù‚ñ‚Æ‚Í—‚¿‚½—ñ‚Ìü‚è‚Ì”v‚¾‚¯‚Å‚¢‚¢‚¯‚ÇA‘S•”Šm”F
+        // è½ã¡ã‚³ãƒ³ã®åˆ¤å®š(ã‚³ãƒ³ãƒœã˜ã‚ƒãªã„ã‘ã©)
+        // ã»ã‚“ã¨ã¯è½ã¡ãŸåˆ—ã®å‘¨ã‚Šã®ç‰Œã ã‘ã§ã„ã„ã‘ã©ã€å…¨éƒ¨ç¢ºèª
         for (int y = 0; y < GameData.PUZZLE_BOARD_SIZE_Y; y++)
         {
             for (int x = 0; x < GameData.PUZZLE_BOARD_SIZE_X; x++)
@@ -116,24 +116,24 @@ public class PuzzleManager
 
         if (matchingTilesIndex.Count > 0)
         {
-            // ƒ}ƒbƒ`‚µ‚Ä‚¢‚é
+            // ãƒãƒƒãƒã—ã¦ã„ã‚‹
             MatchingProcess();
         }
         else
         {
-            // ƒ}ƒbƒ`‚µ‚Ä‚¢‚È‚¢
-            Debug.Log("ƒXƒe[ƒg•ÏXF" + state + " > " + GameState.READY);
+            // ãƒãƒƒãƒã—ã¦ã„ãªã„
+            Debug.Log("ã‚¹ãƒ†ãƒ¼ãƒˆå¤‰æ›´ï¼š" + state + " > " + GameState.READY);
             state = GameState.READY;
         }
     }
 
-    // ***** PrivateŠÖ”
-    // ƒ{[ƒhƒ^ƒCƒ‹‚Ì‰Šú‰»
+    // ***** Privateé–¢æ•°
+    // ãƒœãƒ¼ãƒ‰ã‚¿ã‚¤ãƒ«ã®åˆæœŸåŒ–
     private void InitBoardTiles()
     {
         int kindNum = _useTiles.Count;
 
-        // ƒ‰ƒ“ƒ_ƒ€‚É¶¬
+        // ãƒ©ãƒ³ãƒ€ãƒ ã«ç”Ÿæˆ
         for (int y = 0; y < GameData.PUZZLE_BOARD_SIZE_Y; y++)
         {
             for (int x = 0; x < GameData.PUZZLE_BOARD_SIZE_X; x++)
@@ -142,7 +142,7 @@ public class PuzzleManager
             }
         }
 
-        // ‰è‚Åƒ}ƒbƒ`‚µ‚Ä‚¢‚éêŠ‚ğC³
+        // åˆæ‰‹ã§ãƒãƒƒãƒã—ã¦ã„ã‚‹å ´æ‰€ã‚’ä¿®æ­£
         for (int y = 0; y < GameData.PUZZLE_BOARD_SIZE_Y; y++)
         {
             for (int x = 0; x < GameData.PUZZLE_BOARD_SIZE_X; x++)
@@ -152,31 +152,31 @@ public class PuzzleManager
             }
         }
 
-        // Ä“xŠm”F
+        // å†åº¦ç¢ºèª
         for (int y = 0; y < GameData.PUZZLE_BOARD_SIZE_Y; y++)
         {
             for (int x = 0; x < GameData.PUZZLE_BOARD_SIZE_X; x++)
             {
                 if (MatchingCheck(new Vector2Int(x, y), true))
-                    Debug.Log("ƒoƒO‚âI‰èƒ}ƒbƒ`IF" + new Vector2Int(x, y));
+                    Debug.Log("ãƒã‚°ã‚„ï¼åˆæ‰‹ãƒãƒƒãƒï¼ï¼š" + new Vector2Int(x, y));
             }
         }
     }
 
-    // “ü‚ê‘Ö‚¦ˆ—(“ü‚ê‘Ö‚¦•ƒ}ƒbƒ`”»’è)
+    // å…¥ã‚Œæ›¿ãˆå‡¦ç†(å…¥ã‚Œæ›¿ãˆï¼†ãƒãƒƒãƒåˆ¤å®š)
     private void SwitchingTile(Vector2Int tile1, Vector2Int tile2)
     {
-        // “ü‚ê‘Ö‚¦ˆ—
+        // å…¥ã‚Œæ›¿ãˆå‡¦ç†
         (boardTiles[tile1.y, tile1.x], boardTiles[tile2.y, tile2.x]) = (boardTiles[tile2.y, tile2.x], boardTiles[tile1.y, tile1.x]);
 
-        // ƒ}ƒbƒ`‚µ‚Ä‚¢‚é‚©
+        // ãƒãƒƒãƒã—ã¦ã„ã‚‹ã‹
         bool isMatch = false;
 
-        // “ü‚ê‘Ö‚¦‚½”v‚Ìƒ}ƒbƒ`”»’è
+        // å…¥ã‚Œæ›¿ãˆãŸç‰Œã®ãƒãƒƒãƒåˆ¤å®š
         isMatch = MatchingCheck(tile1) || isMatch;
         isMatch = MatchingCheck(tile2) || isMatch;
 
-        // “ü‚ê‘Ö‚¦‚½”v‚Ìü‚è‚Ì”v‚Ìƒ}ƒbƒ`”»’è
+        // å…¥ã‚Œæ›¿ãˆãŸç‰Œã®å‘¨ã‚Šã®ç‰Œã®ãƒãƒƒãƒåˆ¤å®š
         if (tile1.y > 0) isMatch = MatchingCheck(new Vector2Int(tile1.x, tile1.y - 1)) || isMatch;
         if (tile1.y < GameData.PUZZLE_BOARD_SIZE_Y - 1) isMatch = MatchingCheck(new Vector2Int(tile1.x, tile1.y + 1)) || isMatch;
         if (tile1.x > 0) isMatch = MatchingCheck(new Vector2Int(tile1.x - 1, tile1.y)) || isMatch;
@@ -190,14 +190,14 @@ public class PuzzleManager
             MatchingProcess();
     }
 
-    // ƒ}ƒbƒ`‚µ‚Ä‚¢‚é‚©‚Ì”»’è(prev:‘O’iŠK‚Ìƒ}ƒbƒ`ƒ`ƒFƒbƒN)
+    // ãƒãƒƒãƒã—ã¦ã„ã‚‹ã‹ã®åˆ¤å®š(prev:å‰æ®µéšã®ãƒãƒƒãƒãƒã‚§ãƒƒã‚¯)
     private bool MatchingCheck(Vector2Int index, bool prev = false)
     {
-        // ã‰º¶‰E‚Ì”ví
+        // ä¸Šä¸‹å·¦å³ã®ç‰Œç¨®
         MahjongLogic.TILE_KIND[] adjacentTile = {
             MahjongLogic.TILE_KIND.NONE, MahjongLogic.TILE_KIND.NONE, MahjongLogic.TILE_KIND.NONE, MahjongLogic.TILE_KIND.NONE };
 
-        // ¶‰E
+        // å·¦å³
         if (index.x > 0)
             adjacentTile[2] = boardTiles[index.y, index.x - 1];
         if (index.x < GameData.PUZZLE_BOARD_SIZE_X - 1)
@@ -206,18 +206,18 @@ public class PuzzleManager
         {
             if (!prev)
             {
-                // ƒ}ƒbƒ`‚µ‚½”v‚ğ‚È‚­‚·
+                // ãƒãƒƒãƒã—ãŸç‰Œã‚’ãªãã™
                 boardTiles[index.y, index.x] = MahjongLogic.TILE_KIND.NONE;
                 boardTiles[index.y, index.x - 1] = MahjongLogic.TILE_KIND.NONE;
                 boardTiles[index.y, index.x + 1] = MahjongLogic.TILE_KIND.NONE;
-                // ’Ç‰Á
+                // è¿½åŠ 
                 matchingTilesIndex.Add(new Vector2Int[3] { index, new Vector2Int(index.x - 1, index.y), new Vector2Int(index.x + 1, index.y) });
             }
                 
             return true;
         }
 
-        // ã‰º
+        // ä¸Šä¸‹
         if (index.y > 0)
             adjacentTile[0] = boardTiles[index.y - 1, index.x];
         if (index.y < GameData.PUZZLE_BOARD_SIZE_Y - 1)
@@ -226,11 +226,11 @@ public class PuzzleManager
         {
             if (!prev)
             {
-                // ƒ}ƒbƒ`‚µ‚½”v‚ğ‚È‚­‚·
+                // ãƒãƒƒãƒã—ãŸç‰Œã‚’ãªãã™
                 boardTiles[index.y, index.x] = MahjongLogic.TILE_KIND.NONE;
                 boardTiles[index.y - 1, index.x] = MahjongLogic.TILE_KIND.NONE;
                 boardTiles[index.y + 1, index.x] = MahjongLogic.TILE_KIND.NONE;
-                // ’Ç‰Á
+                // è¿½åŠ 
                 matchingTilesIndex.Add(new Vector2Int[3] { new Vector2Int(index.x, index.y - 1), index, new Vector2Int(index.x, index.y + 1) });
             }
 
@@ -240,13 +240,13 @@ public class PuzzleManager
         return false;
     }
 
-    // ƒ}ƒbƒ`‚µ‚Ä‚¢‚½ê‡‚Ìˆ—
+    // ãƒãƒƒãƒã—ã¦ã„ãŸå ´åˆã®å‡¦ç†
     private void MatchingProcess()
     {
-        Debug.Log("ƒXƒe[ƒg•ÏXF" + state + " > " + GameState.MATCH);
+        Debug.Log("ã‚¹ãƒ†ãƒ¼ãƒˆå¤‰æ›´ï¼š" + state + " > " + GameState.MATCH);
         state = GameState.MATCH;
 
-        // ”v‚ğ—‚Æ‚·
+        // ç‰Œã‚’è½ã¨ã™
         int kindNum = _useTiles.Count;
         for (int i = 0; i < matchingTilesIndex.Count; i++)
         {
@@ -254,33 +254,33 @@ public class PuzzleManager
             {
                 Vector2Int idx = matchingTilesIndex[i][j];
 
-                // ‰º‚É‚É‚¸‚ç‚·
+                // ä¸‹ã«ã«ãšã‚‰ã™
                 for (int y = idx.y; y > 0; y--)
                     boardTiles[y, idx.x] = boardTiles[y - 1, idx.x];
 
-                // ˆê”Ôã‚É‚Íƒ‰ƒ“ƒ_ƒ€‚Ì”ví‚ğ“ü‚ê‚é
+                // ä¸€ç•ªä¸Šã«ã¯ãƒ©ãƒ³ãƒ€ãƒ ã®ç‰Œç¨®ã‚’å…¥ã‚Œã‚‹
                 boardTiles[0, idx.x] = _useTiles[UnityEngine.Random.Range(0, kindNum)];
             }
         }
     }
 
-    // ü‚è‚Æƒ}ƒbƒ`‚µ‚È‚¢ƒ‰ƒ“ƒ_ƒ€‚È”ví‚Ìİ’è
+    // å‘¨ã‚Šã¨ãƒãƒƒãƒã—ãªã„ãƒ©ãƒ³ãƒ€ãƒ ãªç‰Œç¨®ã®è¨­å®š
     private void SetBoardUnmatchRandomKind(Vector2Int index)
     {
         bool isMatch = true;
         int kindNum = _useTiles.Count;
-        // ƒ‰ƒ“ƒ_ƒ€‚Å¶¬‚µ‘±‚¯‚Äuƒ}ƒbƒ`‚µ‚Ä‚È‚©‚Á‚½‚çƒ‰ƒbƒL[v‚Á‚Ä‚¢‚¤ƒR[ƒh‚¾‚©‚ç‚ ‚ñ‚Ü‚è‚æ‚­‚È‚¢ƒRƒR
+        // ãƒ©ãƒ³ãƒ€ãƒ ã§ç”Ÿæˆã—ç¶šã‘ã¦ã€Œãƒãƒƒãƒã—ã¦ãªã‹ã£ãŸã‚‰ãƒ©ãƒƒã‚­ãƒ¼ã€ã£ã¦ã„ã†ã‚³ãƒ¼ãƒ‰ã ã‹ã‚‰ã‚ã‚“ã¾ã‚Šã‚ˆããªã„ã‚³ã‚³
         while (isMatch)
         {
-            Debug.Log("–³ŒÀƒ‹[ƒv‹^˜f");
+            Debug.Log("ç„¡é™ãƒ«ãƒ¼ãƒ—ç–‘æƒ‘");
 
             isMatch = false;
 
-            // ‚à‚¤ˆê“xƒ‰ƒ“ƒ_ƒ€æ“¾
+            // ã‚‚ã†ä¸€åº¦ãƒ©ãƒ³ãƒ€ãƒ å–å¾—
             boardTiles[index.y, index.x] = _useTiles[UnityEngine.Random.Range(0, kindNum)];
 
             if (MatchingCheck(new Vector2Int(index.x, index.y), true)) { isMatch = true; continue; }
-            // ã‰º¶‰E‚ÌŠm”F
+            // ä¸Šä¸‹å·¦å³ã®ç¢ºèª
             if (index.y > 0 && MatchingCheck(new Vector2Int(index.x, index.y - 1), true)) { isMatch = true; continue; }
             if (index.y < GameData.PUZZLE_BOARD_SIZE_Y - 1 && MatchingCheck(new Vector2Int(index.x, index.y + 1), true)) { isMatch = true; continue; }
             if (index.x > 0 && MatchingCheck(new Vector2Int(index.x - 1, index.y), true)) { isMatch = true; continue; }

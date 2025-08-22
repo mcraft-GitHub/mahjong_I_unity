@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,7 +16,7 @@ public class MahjongTileView : MonoBehaviour
         _image.sprite = _tileImages.tileImages[(int)_kind];
     }
 
-    // Ží—Þ‚ÌÝ’è
+    // ç¨®é¡žã®è¨­å®š
     public void SetKind(MahjongLogic.TILE_KIND kind)
     {
         _kind = kind;
@@ -32,7 +32,7 @@ public class MahjongTileView : MonoBehaviour
 
     public MahjongLogic.TILE_KIND GetKind() => _kind;
 
-    // À•W‚ÌÝ’è
+    // åº§æ¨™ã®è¨­å®š
     public void SetPos(Vector2 pos, float moveTime = 0.0f, float delayTime = 0.0f)
     {
         if (delayTime > 0.0f)
@@ -55,10 +55,10 @@ public class MahjongTileView : MonoBehaviour
         SetPos(pos, moveTime);
     }
 
-    // À•W‚ÌŽæ“¾
+    // åº§æ¨™ã®å–å¾—
     public Vector2 GetPos() { return _rectTransform.anchoredPosition; }
 
-    // Šgk‚ÌÝ’è
+    // æ‹¡ç¸®ã®è¨­å®š
     public void SetScale(float scale, float scaleTime = 0.0f, float delayTime = 0.0f)
     {
         if (delayTime > 0.0f)

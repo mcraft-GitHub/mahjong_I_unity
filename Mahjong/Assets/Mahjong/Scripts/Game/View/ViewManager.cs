@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using Unity.VisualScripting;
@@ -6,32 +6,32 @@ using UnityEngine;
 
 public class ViewManager : MonoBehaviour
 {
-    // ƒpƒYƒ‹”v‚ÌˆÚ“®ŠÔ
+    // ãƒ‘ã‚ºãƒ«ç‰Œã®ç§»å‹•æ™‚é–“
     public static readonly float PUZZLE_TILE_MOVE_TIME = 0.15f;
 
-    // ƒpƒYƒ‹”v‚Ì—‰ºŠÔ(1ƒ}ƒX)
+    // ãƒ‘ã‚ºãƒ«ç‰Œã®è½ä¸‹æ™‚é–“(1ãƒã‚¹)
     public static readonly float PUZZLE_TILE_FALL_TIME = 0.2f;
 
-    // –ƒ”vƒvƒŒƒnƒu
+    // éº»é›€ç‰Œãƒ—ãƒ¬ãƒãƒ–
     [SerializeField] private GameObject _tilePrefab;
 
-    // Šl“¾”v‚ÌeƒIƒuƒWƒFƒNƒgTransform
+    // ç²å¾—ç‰Œã®è¦ªã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆTransform
     [SerializeField] private Transform _acquiredTilesParent;
-    // ƒpƒYƒ‹”v‚ÌeƒIƒuƒWƒFƒNƒgTransform
+    // ãƒ‘ã‚ºãƒ«ç‰Œã®è¦ªã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆTransform
     [SerializeField] private Transform _puzzleTilesParent;
 
-    // ƒQ[ƒ€ƒRƒ“ƒgƒ[ƒ‰[
+    // ã‚²ãƒ¼ãƒ ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼
     private GameController _gameController;
-    // ƒpƒYƒ‹ƒ}ƒl[ƒWƒƒ[
+    // ãƒ‘ã‚ºãƒ«ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼
     private PuzzleManager _puzzleManager;
 
-    // ƒpƒYƒ‹”v‚ÌŠî–{ˆÊ’u(0,0)
+    // ãƒ‘ã‚ºãƒ«ç‰Œã®åŸºæœ¬ä½ç½®(0,0)
     private Vector2? _basePuzzleTilePos = null;
 
-    // ƒpƒYƒ‹”vƒIƒuƒWƒFƒNƒg
+    // ãƒ‘ã‚ºãƒ«ç‰Œã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
     private MahjongTileView[,] _boardTileObjects = new MahjongTileView[GameData.PUZZLE_BOARD_SIZE_Y, GameData.PUZZLE_BOARD_SIZE_X];
 
-    // X—ñ‚²‚Æ‚Ìíœ‚·‚éƒpƒYƒ‹”v‚ÌYƒCƒ“ƒfƒbƒNƒX(_destroyPuzzleTilesY[ X—ñ ][ 0` ] == íœ‚·‚é”v‚ÌY)
+    // Xåˆ—ã”ã¨ã®å‰Šé™¤ã™ã‚‹ãƒ‘ã‚ºãƒ«ç‰Œã®Yã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹(_destroyPuzzleTilesY[ Xåˆ— ][ 0ï½ ] == å‰Šé™¤ã™ã‚‹ç‰Œã®Y)
     List<int>[] _destroyPuzzleTilesY = Enumerable.Range(0, GameData.PUZZLE_BOARD_SIZE_X).Select(_ => new List<int>()).ToArray();
 
     void Start()
@@ -44,19 +44,19 @@ public class ViewManager : MonoBehaviour
         
     }
 
-    // ƒpƒYƒ‹ƒ}ƒl[ƒWƒƒ[‚ÌƒZƒbƒg
+    // ãƒ‘ã‚ºãƒ«ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼ã®ã‚»ãƒƒãƒˆ
     public void SetClass(GameController gameController, PuzzleManager puzzleManager)
     {
         _gameController = gameController;
         _puzzleManager = puzzleManager;
     }
 
-    // ƒpƒYƒ‹”Õ–Ê‚Ì”v‚Ì¶¬
+    // ãƒ‘ã‚ºãƒ«ç›¤é¢ã®ç‰Œã®ç”Ÿæˆ
     public void CreatePuzzleBoard()
     { 
         MahjongLogic.TILE_KIND[,] boardTiles = _puzzleManager.boardTiles;
 
-        // ƒ‹[ƒv‚Å¶¬
+        // ãƒ«ãƒ¼ãƒ—ã§ç”Ÿæˆ
         for (int y = 0; y < boardTiles.GetLength(0); y++)
         {
             for (int x = 0; x < boardTiles.GetLength(1); x++)
@@ -66,27 +66,27 @@ public class ViewManager : MonoBehaviour
                 _boardTileObjects[y, x] = tile;
                 tile.SetPos(CalcPositionFromIndex(new Vector2Int(x, y)));
                 tile.SetScale(GameData.puzzleTilesScale * (1.0f - GameData.PUZZLE_TILE_MARGIN_RATE));
-                // ”v—Ş‚ÌƒZƒbƒg
+                // ç‰Œé¡ã®ã‚»ãƒƒãƒˆ
                 tile.SetKind(boardTiles[y, x]);
             }
         }
     }
 
-    // ƒ^ƒbƒ`‚³‚ê‚Ä‚¢‚éƒpƒYƒ‹”vƒCƒ“ƒfƒbƒNƒX(‚±‚Ìˆ—‚Í³’¼‚±‚±‚¶‚á‚È‚¢‹C‚ª‚·‚é)
+    // ã‚¿ãƒƒãƒã•ã‚Œã¦ã„ã‚‹ãƒ‘ã‚ºãƒ«ç‰Œã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹(ã“ã®å‡¦ç†ã¯æ­£ç›´ã“ã“ã˜ã‚ƒãªã„æ°—ãŒã™ã‚‹)
     public Vector2Int? CalcTouchPuzzleTileIndex(Vector2 touchPos)
     {
-        // ^‚ñ’†‰º‚ğ(0,0)‚É
+        // çœŸã‚“ä¸­ä¸‹ã‚’(0,0)ã«
         touchPos.x -= Screen.width * 0.5f;
 
-        // ƒpƒYƒ‹”Õ–Ê‚Ìl‹÷ˆÊ’u‚ÌŒvZ
+        // ãƒ‘ã‚ºãƒ«ç›¤é¢ã®å››éš…ä½ç½®ã®è¨ˆç®—
         Vector2 puzzleTileSize = GameData.TILE_SIZE * GameData.puzzleTilesScale;
-        Vector2 leftUp = new Vector2(puzzleTileSize.x * GameData.PUZZLE_BOARD_SIZE_X * -0.5f,@GameData.uiHeight - GameData.HEIGHT_BLANK - GameData.PUZZLE_BLANK);
+        Vector2 leftUp = new Vector2(puzzleTileSize.x * GameData.PUZZLE_BOARD_SIZE_X * -0.5f,ã€€GameData.uiHeight - GameData.HEIGHT_BLANK - GameData.PUZZLE_BLANK);
         Vector2 rightButtom = new Vector2(-leftUp.x, leftUp.y - puzzleTileSize.y * GameData.PUZZLE_BOARD_SIZE_Y);
 
         if (leftUp.x > touchPos.x || touchPos.x > rightButtom.x || rightButtom.y > touchPos.y || touchPos.y > leftUp.y)
             return null;
 
-        // XÀ•W‚ª0ˆÈã‚©0ˆÈ‰º‚©‚Åƒ‹[ƒv‚Ì“Y‚¦š‚ğ•Ï‚¦‚é(áŠ±ˆ—‘‚­‚È‚é‚¯‚Ç‰¡‚Ì”v‚Ì”‚ªŠï”‚É‚È‚Á‚½‚ç€‚Ê)
+        // Xåº§æ¨™ãŒ0ä»¥ä¸Šã‹0ä»¥ä¸‹ã‹ã§ãƒ«ãƒ¼ãƒ—ã®æ·»ãˆå­—ã‚’å¤‰ãˆã‚‹(è‹¥å¹²å‡¦ç†æ—©ããªã‚‹ã‘ã©æ¨ªã®ç‰Œã®æ•°ãŒå¥‡æ•°ã«ãªã£ãŸã‚‰æ­»ã¬)
         int startIdx = 0;
         int endIdx = GameData.PUZZLE_BOARD_SIZE_X;
         if (touchPos.x <= 0)
@@ -94,7 +94,7 @@ public class ViewManager : MonoBehaviour
         else
             startIdx = GameData.PUZZLE_BOARD_SIZE_X / 2;
 
-        // ƒ‹[ƒv‚Å‚Ç‚±‚ªƒ^ƒbƒ`‚³‚ê‚Ä‚¢‚é‚ğ’²‚×‚é
+        // ãƒ«ãƒ¼ãƒ—ã§ã©ã“ãŒã‚¿ãƒƒãƒã•ã‚Œã¦ã„ã‚‹ã‚’èª¿ã¹ã‚‹
         for (int y = 0; y < GameData.PUZZLE_BOARD_SIZE_Y; y++)
         {
             Vector2 tileLeftUp = new Vector2(leftUp.x + startIdx * puzzleTileSize.x, leftUp.y - y * puzzleTileSize.y);
@@ -102,7 +102,7 @@ public class ViewManager : MonoBehaviour
             {
                 Vector2 tileRightButtom = new Vector2(tileLeftUp.x + puzzleTileSize.x, tileLeftUp.y - puzzleTileSize.y);
 
-                // ƒ^ƒbƒ`‚³‚ê‚Ä‚¢‚é‚©
+                // ã‚¿ãƒƒãƒã•ã‚Œã¦ã„ã‚‹ã‹
                 if (tileLeftUp.x <= touchPos.x && touchPos.x <= tileRightButtom.x && tileRightButtom.y <= touchPos.y && touchPos.y <= tileLeftUp.y)
                     return new Vector2Int(x, y);
 
@@ -113,30 +113,30 @@ public class ViewManager : MonoBehaviour
         return null;
     }
 
-    // ƒpƒYƒ‹”v‚Ì“ü‚ê‘Ö‚¦
+    // ãƒ‘ã‚ºãƒ«ç‰Œã®å…¥ã‚Œæ›¿ãˆ
     public void SwitchingPuzzleTile(Vector2Int tile1, Vector2Int tile2)
     {
-        // À•W‚Ì“ü‚ê‘Ö‚¦
+        // åº§æ¨™ã®å…¥ã‚Œæ›¿ãˆ
         _boardTileObjects[tile1.y, tile1.x].SetPos(CalcPositionFromIndex(tile2), PUZZLE_TILE_MOVE_TIME);
         _boardTileObjects[tile2.y, tile2.x].SetPos(CalcPositionFromIndex(tile1), PUZZLE_TILE_MOVE_TIME);
 
-        // ”z—ñ‚Ì“ü‚ê‘Ö‚¦
+        // é…åˆ—ã®å…¥ã‚Œæ›¿ãˆ
         (_boardTileObjects[tile1.y, tile1.x], _boardTileObjects[tile2.y, tile2.x]) = (_boardTileObjects[tile2.y, tile2.x], _boardTileObjects[tile1.y, tile1.x]);
     }
 
-    // ƒpƒYƒ‹”v‚Ìíœ(ƒ}ƒbƒ`”v)
+    // ãƒ‘ã‚ºãƒ«ç‰Œã®å‰Šé™¤(ãƒãƒƒãƒç‰Œ)
     public void DestroyPuzzleTile(Vector2Int matchIndex)
     {
         _boardTileObjects[matchIndex.y, matchIndex.x].SetKind(MahjongLogic.TILE_KIND.NONE);
     }
 
-    // ƒpƒYƒ‹”v‚Ì—‰º
+    // ãƒ‘ã‚ºãƒ«ç‰Œã®è½ä¸‹
     public void FallPuzzleTile()
     {
         MahjongLogic.TILE_KIND[,] boardTiles = _puzzleManager.boardTiles;
         List<Vector2Int[]> matchIndex = _puzzleManager.matchingTilesIndex;
 
-        // —‚¿‚éX—ñ‚ª‚Ç‚±‚©
+        // è½ã¡ã‚‹Xåˆ—ãŒã©ã“ã‹
         bool[] isFallX = Enumerable.Range(0, GameData.PUZZLE_BOARD_SIZE_X).Select(_ => false).ToArray();
         for (int i = 0; i < matchIndex.Count; i++) 
         {
@@ -144,50 +144,50 @@ public class ViewManager : MonoBehaviour
                 isFallX[matchIndex[i][j].x] = true;
         }
 
-        // —ñ‚²‚Æ‚Él‚¦‚é
+        // åˆ—ã”ã¨ã«è€ƒãˆã‚‹
         for (int x = 0; x < GameData.PUZZLE_BOARD_SIZE_X; x++)
         {
-            // —‰º‚µ‚È‚¯‚ê‚ÎŸ‚Ö
+            // è½ä¸‹ã—ãªã‘ã‚Œã°æ¬¡ã¸
             if (!isFallX[x])
                 continue;
 
-            // ‰º‚©‚çXV‚µ‚Ä‚¢‚­
-            int matchTileCount = 0; // ˆ—Ï‚İ”vƒJƒEƒ“ƒg(‚¸‚ê)
+            // ä¸‹ã‹ã‚‰æ›´æ–°ã—ã¦ã„ã
+            int matchTileCount = 0; // å‡¦ç†æ¸ˆã¿ç‰Œã‚«ã‚¦ãƒ³ãƒˆ(ãšã‚Œ)
             for (int y = GameData.PUZZLE_BOARD_SIZE_Y - 1; y >= 0; y--)
             {
                 if (_boardTileObjects[y, x] == null || _boardTileObjects[y, x].GetKind() == MahjongLogic.TILE_KIND.NONE)
                     matchTileCount++;
                 else
                 {
-                    // ‚Ü‚¾‚¸‚ê‚Ä‚¢‚È‚¯‚ê‚ÎƒXƒ‹[
+                    // ã¾ã ãšã‚Œã¦ã„ãªã‘ã‚Œã°ã‚¹ãƒ«ãƒ¼
                     if (matchTileCount == 0)
                         continue;
 
-                    // ‚¸‚ê‚½•ª‚¾‚¯‰º‚És‚­
+                    // ãšã‚ŒãŸåˆ†ã ã‘ä¸‹ã«è¡Œã
                     _boardTileObjects[y + matchTileCount, x] = _boardTileObjects[y, x];
-                    // ˆÚ“®æÀ•W‚Ìİ’è
+                    // ç§»å‹•å…ˆåº§æ¨™ã®è¨­å®š
                     _boardTileObjects[y, x].SetPos(CalcPositionFromIndex(new Vector2Int(x, y + matchTileCount)), PUZZLE_TILE_FALL_TIME * matchTileCount);
                 }
             }
 
-            // V‚µ‚¢”v‚Ì¶¬EÀ•Ww’èEˆÚ“®æÀ•W‚Ìİ’è
+            // æ–°ã—ã„ç‰Œã®ç”Ÿæˆãƒ»åº§æ¨™æŒ‡å®šãƒ»ç§»å‹•å…ˆåº§æ¨™ã®è¨­å®š
             for (int i = 1; i <= matchTileCount; i++)
             {
-                // ¶¬
+                // ç”Ÿæˆ
                 GameObject obj = Instantiate(_tilePrefab, _puzzleTilesParent);
                 MahjongTileView tile = obj.GetComponent<MahjongTileView>();
                 _boardTileObjects[(matchTileCount - i), x] = tile;
                 tile.SetPos(CalcPositionFromIndex(new Vector2Int(x, -i)));
                 tile.SetScale(GameData.puzzleTilesScale * (1.0f - GameData.PUZZLE_TILE_MARGIN_RATE));
-                // ”v—Ş‚ÌƒZƒbƒg
+                // ç‰Œé¡ã®ã‚»ãƒƒãƒˆ
                 tile.SetKind(boardTiles[(matchTileCount - i), x]);
-                // ˆÚ“®æÀ•W
+                // ç§»å‹•å…ˆåº§æ¨™
                 tile.SetPos(CalcPositionFromIndex(new Vector2Int(x, (matchTileCount - i))), PUZZLE_TILE_FALL_TIME * matchTileCount);
             }
         }
     }
 
-    // ƒpƒYƒ‹”v‚Ìíœ
+    // ãƒ‘ã‚ºãƒ«ç‰Œã®å‰Šé™¤
     public void ClearPazzleBoard()
     {
         for (int y = 0; y < _boardTileObjects.GetLength(0); y++)
@@ -199,13 +199,13 @@ public class ViewManager : MonoBehaviour
         }
     }
 
-    // ƒpƒYƒ‹”v‚Ì“Y‚¦š‚©‚çÀ•W‚ğŒvZ‚·‚é
+    // ãƒ‘ã‚ºãƒ«ç‰Œã®æ·»ãˆå­—ã‹ã‚‰åº§æ¨™ã‚’è¨ˆç®—ã™ã‚‹
     private Vector2 CalcPositionFromIndex(Vector2Int index)
     {
-        // ƒpƒYƒ‹”v‚Ì‘å‚«‚³
+        // ãƒ‘ã‚ºãƒ«ç‰Œã®å¤§ãã•
         Vector2 puzzleTileSize = GameData.TILE_SIZE * GameData.puzzleTilesScale;
 
-        // Šî–{ˆÊ’u(0,0)
+        // åŸºæœ¬ä½ç½®(0,0)
         if (!_basePuzzleTilePos.HasValue)
             _basePuzzleTilePos = new Vector2(
                 puzzleTileSize.x * GameData.PUZZLE_BOARD_SIZE_X * -0.5f + puzzleTileSize.x * 0.5f,
