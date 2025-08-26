@@ -132,7 +132,8 @@ public class GameController : MonoBehaviour
     {
         // 使用する牌
         List<MahjongLogic.TILE_KIND> useTileKinds = new List<MahjongLogic.TILE_KIND>();
-        // TODO 使用する牌の種類。使用,不使用はコメントで切り替える。
+        // TODO 使用する牌の種類指定処理
+        // 将来的には何かしらの方法で使用牌を指定するが、現時点では仕様を決めていないので、切り替えにはコメントアウトを使用する。
         useTileKinds.Add(MahjongLogic.TILE_KIND.MAN_1);
         useTileKinds.Add(MahjongLogic.TILE_KIND.MAN_2);
         useTileKinds.Add(MahjongLogic.TILE_KIND.MAN_3);
