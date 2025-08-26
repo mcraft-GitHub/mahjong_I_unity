@@ -197,17 +197,20 @@ public class PuzzleManager
         (boardTiles[tile1.y, tile1.x], boardTiles[tile2.y, tile2.x]) = (boardTiles[tile2.y, tile2.x], boardTiles[tile1.y, tile1.x]);
 
         // マッチしているか
-        bool isMatch = false;
+        bool isMatchTile1 = false;
+        bool isMatchTile2 = false;
+        bool isMatchTile1FourSides = false;
+        bool isMatchTile2FourSides = false;
 
         // 入れ替えた牌のマッチ判定
-        isMatch = MatchCheck(tile1.x, tile1.y) || isMatch;
-        isMatch = MatchCheck(tile2.x, tile2.y) || isMatch;
+        isMatchTile1 = MatchCheck(tile1.x, tile1.y);
+        isMatchTile2 = MatchCheck(tile2.x, tile2.y);
 
         // 入れ替えた牌の周りの牌のマッチ判定
-        isMatch = MatchCheckFourSides(tile1.x, tile1.y) || isMatch;
-        isMatch = MatchCheckFourSides(tile2.x, tile2.y) || isMatch;
+        isMatchTile1FourSides = MatchCheckFourSides(tile1.x, tile1.y);
+        isMatchTile2FourSides = MatchCheckFourSides(tile2.x, tile2.y);
 
-        if (isMatch)
+        if (isMatchTile1 || isMatchTile2 || isMatchTile1FourSides || isMatchTile2FourSides)
             MatchProcess();
     }
 
@@ -219,20 +222,23 @@ public class PuzzleManager
     /// <returns>マッチしているか</returns>
     private bool MatchCheckFourSides(int indexX, int indexY)
     {
-        bool isMatch = false;
+        bool isMatchUp = false;
+        bool isMatchDown = false;
+        bool isMatchLeft = false;
+        bool isMatchRight = false;
         // 上
         if (indexY > 0)
-            isMatch = MatchCheck(indexX, indexY - 1);
+            isMatchUp = MatchCheck(indexX, indexY - 1);
         // 下    
         if (indexY < GameData.PUZZLE_BOARD_SIZE_Y - 1)
-            isMatch = MatchCheck(indexX, indexY + 1) || isMatch;
+            isMatchDown = MatchCheck(indexX, indexY + 1);
         // 左
         if (indexX > 0)
-            isMatch = MatchCheck(indexX - 1, indexY) || isMatch;
+            isMatchLeft = MatchCheck(indexX - 1, indexY);
         // 右
         if (indexX < GameData.PUZZLE_BOARD_SIZE_X - 1)
-            isMatch = MatchCheck(indexX + 1, indexY) || isMatch;
-        return isMatch;
+            isMatchRight = MatchCheck(indexX + 1, indexY);
+        return isMatchUp || isMatchDown || isMatchLeft || isMatchRight;
     }
 
     /// <summary>
