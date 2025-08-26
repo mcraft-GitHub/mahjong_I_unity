@@ -204,17 +204,34 @@ public class PuzzleManager
         isMatch = MatchCheck(tile2) || isMatch;
 
         // 入れ替えた牌の周りの牌のマッチ判定
-        if (tile1.y > 0) isMatch = MatchCheck(new Vector2Int(tile1.x, tile1.y - 1)) || isMatch;
-        if (tile1.y < GameData.PUZZLE_BOARD_SIZE_Y - 1) isMatch = MatchCheck(new Vector2Int(tile1.x, tile1.y + 1)) || isMatch;
-        if (tile1.x > 0) isMatch = MatchCheck(new Vector2Int(tile1.x - 1, tile1.y)) || isMatch;
-        if (tile1.x < GameData.PUZZLE_BOARD_SIZE_X - 1) isMatch = MatchCheck(new Vector2Int(tile1.x + 1, tile1.y)) || isMatch;
-        if (tile2.y > 0) isMatch = MatchCheck(new Vector2Int(tile2.x, tile2.y - 1)) || isMatch;
-        if (tile2.y < GameData.PUZZLE_BOARD_SIZE_Y - 1) isMatch = MatchCheck(new Vector2Int(tile2.x, tile2.y + 1)) || isMatch;
-        if (tile2.x > 0) isMatch = MatchCheck(new Vector2Int(tile2.x - 1, tile2.y)) || isMatch;
-        if (tile2.x < GameData.PUZZLE_BOARD_SIZE_X - 1) isMatch = MatchCheck(new Vector2Int(tile2.x + 1, tile2.y)) || isMatch;
+        isMatch = MatchCheckFourSides(tile1) || isMatch;
+        isMatch = MatchCheckFourSides(tile2) || isMatch;
 
         if (isMatch)
             MatchProcess();
+    }
+
+    /// <summary>
+    /// 指定した盤面インデックスの周りの牌がマッチしているか
+    /// </summary>
+    /// <param name="index">盤面インデックス</param>
+    /// <returns>マッチしているか</returns>
+    private bool MatchCheckFourSides(Vector2Int index)
+    {
+        bool isMatch = false;
+        // 上
+        if (index.y > 0)
+            isMatch = MatchCheck(new Vector2Int(index.x, index.y - 1));
+        // 下
+        if (index.y < GameData.PUZZLE_BOARD_SIZE_Y - 1)
+            isMatch = MatchCheck(new Vector2Int(index.x, index.y + 1)) || isMatch;
+        // 左
+        if (index.x > 0)
+            isMatch = MatchCheck(new Vector2Int(index.x - 1, index.y)) || isMatch;
+        // 右
+        if (index.x < GameData.PUZZLE_BOARD_SIZE_X - 1)
+            isMatch = MatchCheck(new Vector2Int(index.x + 1, index.y)) || isMatch;
+        return isMatch;
     }
 
     /// <summary>
@@ -320,12 +337,32 @@ public class PuzzleManager
             // もう一度ランダム取得
             boardTiles[index.y, index.x] = _useTiles[UnityEngine.Random.Range(0, kindNum)];
 
-            if (MatchCheck(new Vector2Int(index.x, index.y), true)) { isMatch = true; continue; }
+            if (MatchCheck(new Vector2Int(index.x, index.y), true)) 
+            { 
+                isMatch = true; 
+                continue; 
+            }
             // 上下左右の確認
-            if (index.y > 0 && MatchCheck(new Vector2Int(index.x, index.y - 1), true)) { isMatch = true; continue; }
-            if (index.y < GameData.PUZZLE_BOARD_SIZE_Y - 1 && MatchCheck(new Vector2Int(index.x, index.y + 1), true)) { isMatch = true; continue; }
-            if (index.x > 0 && MatchCheck(new Vector2Int(index.x - 1, index.y), true)) { isMatch = true; continue; }
-            if (index.x < GameData.PUZZLE_BOARD_SIZE_X - 1 && MatchCheck(new Vector2Int(index.x + 1, index.y), true)) { isMatch = true; continue; }
+            if (index.y > 0 && MatchCheck(new Vector2Int(index.x, index.y - 1), true)) 
+            { 
+                isMatch = true; 
+                continue; 
+            }
+            if (index.y < GameData.PUZZLE_BOARD_SIZE_Y - 1 && MatchCheck(new Vector2Int(index.x, index.y + 1), true)) 
+            { 
+                isMatch = true; 
+                continue; 
+            }
+            if (index.x > 0 && MatchCheck(new Vector2Int(index.x - 1, index.y), true)) 
+            { 
+                isMatch = true; 
+                continue; 
+            }
+            if (index.x < GameData.PUZZLE_BOARD_SIZE_X - 1 && MatchCheck(new Vector2Int(index.x + 1, index.y), true)) 
+            { 
+                isMatch = true; 
+                continue; 
+            }
         }
     }
 }

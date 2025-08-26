@@ -132,6 +132,7 @@ public class GameController : MonoBehaviour
     {
         // 使用する牌
         List<MahjongLogic.TILE_KIND> useTileKinds = new List<MahjongLogic.TILE_KIND>();
+        // TODO 使用する牌の種類。使用,不使用はコメントで切り替える。
         useTileKinds.Add(MahjongLogic.TILE_KIND.MAN_1);
         useTileKinds.Add(MahjongLogic.TILE_KIND.MAN_2);
         useTileKinds.Add(MahjongLogic.TILE_KIND.MAN_3);
@@ -141,24 +142,24 @@ public class GameController : MonoBehaviour
         useTileKinds.Add(MahjongLogic.TILE_KIND.MAN_7);
         useTileKinds.Add(MahjongLogic.TILE_KIND.MAN_8);
         useTileKinds.Add(MahjongLogic.TILE_KIND.MAN_9);
-        //useTileKinds.Add(MahjongLogic.TILE_KIND.PIN_1);
-        //useTileKinds.Add(MahjongLogic.TILE_KIND.PIN_2);
-        //useTileKinds.Add(MahjongLogic.TILE_KIND.PIN_3);
-        //useTileKinds.Add(MahjongLogic.TILE_KIND.PIN_4);
-        //useTileKinds.Add(MahjongLogic.TILE_KIND.PIN_5);
-        //useTileKinds.Add(MahjongLogic.TILE_KIND.PIN_6);
-        //useTileKinds.Add(MahjongLogic.TILE_KIND.PIN_7);
-        //useTileKinds.Add(MahjongLogic.TILE_KIND.PIN_8);
-        //useTileKinds.Add(MahjongLogic.TILE_KIND.PIN_9);
-        //useTileKinds.Add(MahjongLogic.TILE_KIND.SOO_1);
-        //useTileKinds.Add(MahjongLogic.TILE_KIND.SOO_2);
-        //useTileKinds.Add(MahjongLogic.TILE_KIND.SOO_3);
-        //useTileKinds.Add(MahjongLogic.TILE_KIND.SOO_4);
-        //useTileKinds.Add(MahjongLogic.TILE_KIND.SOO_5);
-        //useTileKinds.Add(MahjongLogic.TILE_KIND.SOO_6);
-        //useTileKinds.Add(MahjongLogic.TILE_KIND.SOO_7);
-        //useTileKinds.Add(MahjongLogic.TILE_KIND.SOO_8);
-        //useTileKinds.Add(MahjongLogic.TILE_KIND.SOO_9);
+        useTileKinds.Add(MahjongLogic.TILE_KIND.PIN_1);
+        useTileKinds.Add(MahjongLogic.TILE_KIND.PIN_2);
+        useTileKinds.Add(MahjongLogic.TILE_KIND.PIN_3);
+        useTileKinds.Add(MahjongLogic.TILE_KIND.PIN_4);
+        useTileKinds.Add(MahjongLogic.TILE_KIND.PIN_5);
+        useTileKinds.Add(MahjongLogic.TILE_KIND.PIN_6);
+        useTileKinds.Add(MahjongLogic.TILE_KIND.PIN_7);
+        useTileKinds.Add(MahjongLogic.TILE_KIND.PIN_8);
+        useTileKinds.Add(MahjongLogic.TILE_KIND.PIN_9);
+        useTileKinds.Add(MahjongLogic.TILE_KIND.SOO_1);
+        useTileKinds.Add(MahjongLogic.TILE_KIND.SOO_2);
+        useTileKinds.Add(MahjongLogic.TILE_KIND.SOO_3);
+        useTileKinds.Add(MahjongLogic.TILE_KIND.SOO_4);
+        useTileKinds.Add(MahjongLogic.TILE_KIND.SOO_5);
+        useTileKinds.Add(MahjongLogic.TILE_KIND.SOO_6);
+        useTileKinds.Add(MahjongLogic.TILE_KIND.SOO_7);
+        useTileKinds.Add(MahjongLogic.TILE_KIND.SOO_8);
+        useTileKinds.Add(MahjongLogic.TILE_KIND.SOO_9);
         //useTileKinds.Add(MahjongLogic.TILE_KIND.TON);
         //useTileKinds.Add(MahjongLogic.TILE_KIND.NAN);
         //useTileKinds.Add(MahjongLogic.TILE_KIND.SYA);

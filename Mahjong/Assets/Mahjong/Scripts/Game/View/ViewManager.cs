@@ -147,7 +147,6 @@ public class ViewManager : MonoBehaviour
     /// <param name="index">削除牌インデックス</param>
     public void DestroyPuzzleTile(Vector2Int index)
     {
-        //_boardTileObjects[index.y, index.x].SetKind(MahjongLogic.TILE_KIND.NONE);
         Destroy(_boardTileObjects[index.y, index.x].gameObject);
     }
 
@@ -279,10 +278,18 @@ public class ViewManager : MonoBehaviour
     {
         // パズル牌の大きさ
         Vector2 handTileSize = GameData.TILE_SIZE * GameData.handTilesScale;
+        // 画面の左端
+        float screanLeftEnd = Screen.width * -0.5f;
+        // 左の空白の幅
+        float leftMargin = GameData.MINIMUM_BLANK + GameData.handTilesMargin;
+        // 手牌の半分サイズ
+        Vector2 halfHandTileSize = handTileSize * 0.5f;
+        // 添え字の数だけ右にずれる
+        float indexToRight = index * handTileSize.x;
 
         return new Vector2(
-            Screen.width * -0.5f + GameData.MINIMUM_BLANK + GameData.handTilesMargin + handTileSize.x * 0.5f + index * handTileSize.x,
-            GameData.BUTTOM_SAFE_BLANK + handTileSize.y * 0.5f
+            screanLeftEnd + leftMargin + halfHandTileSize.x + indexToRight,
+            GameData.BUTTOM_SAFE_BLANK + halfHandTileSize.y
         );
     }
 }

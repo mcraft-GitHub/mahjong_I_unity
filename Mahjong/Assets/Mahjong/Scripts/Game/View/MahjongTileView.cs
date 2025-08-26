@@ -31,7 +31,9 @@ public class MahjongTileView : MonoBehaviour
             _image.color = Color.gray;
         }
         else
+        {
             _image.sprite = _tileImages.tileImages[(int)_kind];
+        }
     }
 
     public MahjongLogic.TILE_KIND GetKind() => _kind;
