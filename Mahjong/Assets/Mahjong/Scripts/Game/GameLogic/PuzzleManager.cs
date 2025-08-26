@@ -338,31 +338,19 @@ public class PuzzleManager
             boardTiles[index.y, index.x] = _useTiles[UnityEngine.Random.Range(0, kindNum)];
 
             if (MatchCheck(new Vector2Int(index.x, index.y), true)) 
-            { 
+                isMatch = true;
+            // 上
+            else if (index.y > 0 && MatchCheck(new Vector2Int(index.x, index.y - 1), true)) 
                 isMatch = true; 
-                continue; 
-            }
-            // 上下左右の確認
-            if (index.y > 0 && MatchCheck(new Vector2Int(index.x, index.y - 1), true)) 
-            { 
+            // 下
+            else if (index.y < GameData.PUZZLE_BOARD_SIZE_Y - 1 && MatchCheck(new Vector2Int(index.x, index.y + 1), true)) 
+                isMatch = true;
+            // 左
+            else if (index.x > 0 && MatchCheck(new Vector2Int(index.x - 1, index.y), true)) 
+                isMatch = true;
+            // 右
+            else if (index.x < GameData.PUZZLE_BOARD_SIZE_X - 1 && MatchCheck(new Vector2Int(index.x + 1, index.y), true)) 
                 isMatch = true; 
-                continue; 
-            }
-            if (index.y < GameData.PUZZLE_BOARD_SIZE_Y - 1 && MatchCheck(new Vector2Int(index.x, index.y + 1), true)) 
-            { 
-                isMatch = true; 
-                continue; 
-            }
-            if (index.x > 0 && MatchCheck(new Vector2Int(index.x - 1, index.y), true)) 
-            { 
-                isMatch = true; 
-                continue; 
-            }
-            if (index.x < GameData.PUZZLE_BOARD_SIZE_X - 1 && MatchCheck(new Vector2Int(index.x + 1, index.y), true)) 
-            { 
-                isMatch = true; 
-                continue; 
-            }
         }
     }
 }
