@@ -141,7 +141,13 @@ public class MahjongLogic
         return 0;
     }
 
-    // 役判定
+    /// <summary>
+    /// 役判定
+    /// </summary>
+    /// <param name="hand">手牌の牌種リスト</param>
+    /// <param name="dora">ドラの牌種</param>
+    /// <param name="jikaze">自風の牌種</param>
+    /// <returns>役判定結果</returns>
     public static Role CalcHandTilesRole(List<TILE_KIND> hand, TILE_KIND dora, TILE_KIND jikaze)
     {
         // 戻り値初期化
@@ -860,7 +866,12 @@ public class MahjongLogic
         return role;
     }
 
-    // 萬,筒,索の数字の計算
+    /// <summary>
+    /// 萬,筒,索の数字の計算
+    /// </summary>
+    /// <param name="k">牌種</param>
+    /// <param name="mps">萬,筒,索が判明していれば(0:萬,1:筒,2:索)</param>
+    /// <returns>牌の数字</returns>
     private static int CalcNumber(TILE_KIND k, int mps = -1)
     {
         if (mps == -1)
