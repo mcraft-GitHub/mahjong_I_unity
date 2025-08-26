@@ -94,6 +94,7 @@ public class MahjongLogic
         public List<ROLE_KIND> roleKinds;
         public int han;
         public int dora;
+        public int fu;
     }
 
     // ハン数
@@ -155,6 +156,7 @@ public class MahjongLogic
         role.roleKinds = new List<ROLE_KIND>();
         role.han = 0;
         role.dora = 0;
+        role.fu = 0;
 
         //*** 手牌に不備があれば終了
         if (hand.Count != HAND_TILES_NUM)
@@ -203,6 +205,16 @@ public class MahjongLogic
                 // 役の判定
                 Role tmpRole = CalcRole(head[i], mentu[j], dora, jikaze);
 
+                // 比較
+                if (role.han < tmpRole.han)
+                {
+                    role = tmpRole;
+                }
+                else if(role.han == tmpRole.han && role.fu < tmpRole.fu)
+                {
+                    role = tmpRole;
+                }
+
                 // デバッグ
                 string headText = head[i] + ", " + head[i];
 
@@ -216,7 +228,7 @@ public class MahjongLogic
                 }
                 Debug.Log(headText + " / " + mentuText);
 
-                string roleText = " >>> " + tmpRole.han + "翻 / ";
+                string roleText = " >>> " + tmpRole.han + "翻 " + tmpRole.fu + "符 / ";
                 for (int d = 0; d < tmpRole.roleKinds.Count; d++)
                 {
                     roleText += tmpRole.roleKinds[d] + ",";
@@ -371,6 +383,7 @@ public class MahjongLogic
         role.roleKinds = new List<ROLE_KIND>();
         role.han = 0;
         role.dora = 0;
+        role.fu = 0;
 
         // 頭の萬,筒,索,字
         int headMPST = CalcMPST(head) - 1;
@@ -861,6 +874,39 @@ public class MahjongLogic
                 role.roleKinds.Add(ROLE_KIND.TINITU);
                 role.han += 6;
             }
+        }
+
+        // *** 符計算 ***
+        // 基本符 + あがり符
+        role.fu += 20 + 2;
+        // 刻子
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < syunkoMpst[1][i].Count; j++)
+            {
+                // 字牌なら判定不要
+                if (i != 3)
+                {
+                    int number = CalcNumber(syunkoMpst[1][i][j][0], i);
+                    if (number == 1 || number == 9)
+                        role.fu += 8;
+                    else
+                        role.fu += 4;
+                }
+                else
+                {
+                    role.fu += 8;
+                }
+            }
+        }
+        // 雀頭
+        if (head == jikaze || head == TILE_KIND.HAKU || head == TILE_KIND.HATU || head == TILE_KIND.TYUN)
+            role.fu += 2;
+        // 平和
+        for (int i = 0; i < role.roleKinds.Count; i++)
+        {
+            if (role.roleKinds[i] == ROLE_KIND.PINFU)
+                role.fu = 20;
         }
 
         return role;
