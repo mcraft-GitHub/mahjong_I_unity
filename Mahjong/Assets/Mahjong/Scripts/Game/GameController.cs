@@ -19,6 +19,9 @@ public class GameController : MonoBehaviour
     // 前フレームのステート
     private PuzzleManager.GameState _prevState = PuzzleManager.GameState.PAUSE;
 
+    // 手牌
+    private List<MahjongLogic.TILE_KIND> _handTilesKindList = new List<MahjongLogic.TILE_KIND>();
+
     // ***** READY
     // 移動開始位置
     private Vector2Int? _currentMoveIndex = null;
@@ -116,7 +119,7 @@ public class GameController : MonoBehaviour
     private void UpdateMatch()
     {
         // マッチ処理
-        if (!_isAnimation && _puzzleManager.matchingTilesIndex.Count > 0)
+        if (!_isAnimation && _puzzleManager.matchTilesIndex.Count > 0)
         {
             StartCoroutine(ScalePosCoroutine());
         }
@@ -138,13 +141,31 @@ public class GameController : MonoBehaviour
         useTileKinds.Add(MahjongLogic.TILE_KIND.MAN_7);
         useTileKinds.Add(MahjongLogic.TILE_KIND.MAN_8);
         useTileKinds.Add(MahjongLogic.TILE_KIND.MAN_9);
-        useTileKinds.Add(MahjongLogic.TILE_KIND.TON);
-        useTileKinds.Add(MahjongLogic.TILE_KIND.NAN);
-        useTileKinds.Add(MahjongLogic.TILE_KIND.SYA);
-        useTileKinds.Add(MahjongLogic.TILE_KIND.PEE);
-        useTileKinds.Add(MahjongLogic.TILE_KIND.HAKU);
-        useTileKinds.Add(MahjongLogic.TILE_KIND.HATU);
-        useTileKinds.Add(MahjongLogic.TILE_KIND.TYUN);
+        //useTileKinds.Add(MahjongLogic.TILE_KIND.PIN_1);
+        //useTileKinds.Add(MahjongLogic.TILE_KIND.PIN_2);
+        //useTileKinds.Add(MahjongLogic.TILE_KIND.PIN_3);
+        //useTileKinds.Add(MahjongLogic.TILE_KIND.PIN_4);
+        //useTileKinds.Add(MahjongLogic.TILE_KIND.PIN_5);
+        //useTileKinds.Add(MahjongLogic.TILE_KIND.PIN_6);
+        //useTileKinds.Add(MahjongLogic.TILE_KIND.PIN_7);
+        //useTileKinds.Add(MahjongLogic.TILE_KIND.PIN_8);
+        //useTileKinds.Add(MahjongLogic.TILE_KIND.PIN_9);
+        //useTileKinds.Add(MahjongLogic.TILE_KIND.SOO_1);
+        //useTileKinds.Add(MahjongLogic.TILE_KIND.SOO_2);
+        //useTileKinds.Add(MahjongLogic.TILE_KIND.SOO_3);
+        //useTileKinds.Add(MahjongLogic.TILE_KIND.SOO_4);
+        //useTileKinds.Add(MahjongLogic.TILE_KIND.SOO_5);
+        //useTileKinds.Add(MahjongLogic.TILE_KIND.SOO_6);
+        //useTileKinds.Add(MahjongLogic.TILE_KIND.SOO_7);
+        //useTileKinds.Add(MahjongLogic.TILE_KIND.SOO_8);
+        //useTileKinds.Add(MahjongLogic.TILE_KIND.SOO_9);
+        //useTileKinds.Add(MahjongLogic.TILE_KIND.TON);
+        //useTileKinds.Add(MahjongLogic.TILE_KIND.NAN);
+        //useTileKinds.Add(MahjongLogic.TILE_KIND.SYA);
+        //useTileKinds.Add(MahjongLogic.TILE_KIND.PEE);
+        //useTileKinds.Add(MahjongLogic.TILE_KIND.HAKU);
+        //useTileKinds.Add(MahjongLogic.TILE_KIND.HATU);
+        //useTileKinds.Add(MahjongLogic.TILE_KIND.TYUN);
         // パズルの初期化
         _puzzleManager.InitPuzzle(useTileKinds);
 
@@ -165,15 +186,40 @@ public class GameController : MonoBehaviour
         int[] fallY = Enumerable.Range(0, GameData.PUZZLE_BOARD_SIZE_X).Select(_ => 0).ToArray();
 
         // マッチ牌の削除
-        for (int i = 0; i < _puzzleManager.matchingTilesIndex.Count; i++)
+        for (int i = 0; i < _puzzleManager.matchTilesIndex.Count; i++)
         {
-            for (int j = 0; j < _puzzleManager.matchingTilesIndex[i].Length; j++)
+            for (int j = 0; j < _puzzleManager.matchTilesIndex[i].Length; j++)
             {
-                fallY[_puzzleManager.matchingTilesIndex[i][j].x]++;
-                _viewManager.DestroyPuzzleTile(_puzzleManager.matchingTilesIndex[i][j]);
+                fallY[_puzzleManager.matchTilesIndex[i][j].x]++;
+                _viewManager.DestroyPuzzleTile(_puzzleManager.matchTilesIndex[i][j]);
+
+                // 手牌に追加(必ず3個ずつ追加されると信じて個数チェックはしません！)
+                _handTilesKindList.Add(_puzzleManager.matchTilesKind[i][j]);
             }
-            // ちょっと止める(ここで手牌に加える演出&手牌が揃ったら攻撃とかも)
-            yield return new WaitForSeconds(0.5f);
+
+            // 手牌に加える演出
+            _viewManager.AddHandTiles(_handTilesKindList, _puzzleManager.matchTilesIndex[i]);
+
+            // 止める(手牌に加える演出時間)
+            yield return new WaitForSeconds(ViewManager.HAND_TILE_MOVE_TIME + 0.1f);
+
+            // 手牌がそろったか判定(手牌が12枚以外の事なんてないからマジックナンバーでもよい！！)
+            if (_handTilesKindList.Count >= 12)
+            {
+                // 役の判定
+                _handTilesKindList.Add(MahjongLogic.TILE_KIND.SOO_1);
+                _handTilesKindList.Add(MahjongLogic.TILE_KIND.SOO_1);
+                MahjongLogic.Role role = MahjongLogic.CalcHandTilesRole(_handTilesKindList, MahjongLogic.TILE_KIND.MAN_3, MahjongLogic.TILE_KIND.TON);
+
+                // 消す(一旦ね)
+                _viewManager.ClearHandTiles();
+
+                // 止める(手牌に加える演出時間 + 攻撃演出時間)
+                yield return new WaitForSeconds(0.5f);
+
+                // 手牌クリア
+                _handTilesKindList.Clear();
+            }
         }
 
         // 落とす
@@ -186,6 +232,6 @@ public class GameController : MonoBehaviour
         _isAnimation = false;
 
         // マッチ終了
-        _puzzleManager.FinishMatching();
+        _puzzleManager.FinishMatch();
     }
 }

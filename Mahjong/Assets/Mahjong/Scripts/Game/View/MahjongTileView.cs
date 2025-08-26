@@ -26,11 +26,12 @@ public class MahjongTileView : MonoBehaviour
 
         if (kind == MahjongLogic.TILE_KIND.NONE)
         {
-            Destroy(this.gameObject);
-            return;
+            // NONEの場合はグレースケール白
+            _image.sprite = _tileImages.tileImages[(int)MahjongLogic.TILE_KIND.HAKU];
+            _image.color = Color.gray;
         }
-
-        _image.sprite = _tileImages.tileImages[(int)_kind];
+        else
+            _image.sprite = _tileImages.tileImages[(int)_kind];
     }
 
     public MahjongLogic.TILE_KIND GetKind() => _kind;

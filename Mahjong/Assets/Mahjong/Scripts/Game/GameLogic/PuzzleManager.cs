@@ -22,11 +22,16 @@ public class PuzzleManager
     // ボードタイル配列
     public MahjongLogic.TILE_KIND[,] boardTiles { get; } = new MahjongLogic.TILE_KIND[GameData.PUZZLE_BOARD_SIZE_Y, GameData.PUZZLE_BOARD_SIZE_X];
 
+    // 雀頭牌種
+    public MahjongLogic.TILE_KIND headTilesKind { get; private set; } = MahjongLogic.TILE_KIND.NONE;
+
     // *** READY
 
     // *** MATCH
     // マッチ牌インデックス
-    public List<Vector2Int[]> matchingTilesIndex { get; } = new List<Vector2Int[]>();
+    public List<Vector2Int[]> matchTilesIndex { get; } = new List<Vector2Int[]>();
+    // マッチ牌種
+    public List<MahjongLogic.TILE_KIND[]> matchTilesKind { get; } = new List<MahjongLogic.TILE_KIND[]>();
 
     // ***** Private変数
     // 使用牌種リスト
@@ -55,7 +60,11 @@ public class PuzzleManager
 
         _beginMoveIndex = null;
         _moveIndexHistory.Clear();
-        matchingTilesIndex.Clear();
+        matchTilesIndex.Clear();
+        matchTilesKind.Clear();
+
+        // 雀頭牌の決定
+        headTilesKind = _useTiles[UnityEngine.Random.Range(0, _useTiles.Count)];
     }
 
     /// <summary>
@@ -71,7 +80,7 @@ public class PuzzleManager
             {
                 _moveIndexHistory.Add(index);
                 // マッチ判定
-                SwitchingTile(_nowMoveIndex, index);
+                SwitchTile(_nowMoveIndex, index);
             }
             _nowMoveIndex = index;
         }
@@ -108,12 +117,13 @@ public class PuzzleManager
     /// <summary>
     /// マッチング処理の終了
     /// </summary>
-    public void FinishMatching()
+    public void FinishMatch()
     {
         // いろいろクリア
         _beginMoveIndex = null;
         _moveIndexHistory.Clear();
-        matchingTilesIndex.Clear();
+        matchTilesIndex.Clear();
+        matchTilesKind.Clear();
 
         // 落ちコンの判定(コンボじゃないけど)
         // ほんとは落ちた列の周りの牌だけでいいけど、全部確認
@@ -121,14 +131,14 @@ public class PuzzleManager
         {
             for (int x = 0; x < GameData.PUZZLE_BOARD_SIZE_X; x++)
             {
-                MatchingCheck(new Vector2Int(x, y));
+                MatchCheck(new Vector2Int(x, y));
             }
         }
 
-        if (matchingTilesIndex.Count > 0)
+        if (matchTilesIndex.Count > 0)
         {
             // マッチしている
-            MatchingProcess();
+            MatchProcess();
         }
         else
         {
@@ -160,7 +170,7 @@ public class PuzzleManager
         {
             for (int x = 0; x < GameData.PUZZLE_BOARD_SIZE_X; x++)
             {
-                if (MatchingCheck(new Vector2Int(x, y), true))
+                if (MatchCheck(new Vector2Int(x, y), true))
                     SetBoardUnmatchRandomKind(new Vector2Int(x, y));
             }
         }
@@ -170,7 +180,7 @@ public class PuzzleManager
         {
             for (int x = 0; x < GameData.PUZZLE_BOARD_SIZE_X; x++)
             {
-                if (MatchingCheck(new Vector2Int(x, y), true))
+                if (MatchCheck(new Vector2Int(x, y), true))
                     Debug.Log("バグや！初手マッチ！：" + new Vector2Int(x, y));
             }
         }
@@ -181,7 +191,7 @@ public class PuzzleManager
     /// </summary>
     /// <param name="tile1">入れ替え牌の盤面インデックス1</param>
     /// <param name="tile2">入れ替え牌の盤面インデックス2</param>
-    private void SwitchingTile(Vector2Int tile1, Vector2Int tile2)
+    private void SwitchTile(Vector2Int tile1, Vector2Int tile2)
     {
         // 入れ替え処理
         (boardTiles[tile1.y, tile1.x], boardTiles[tile2.y, tile2.x]) = (boardTiles[tile2.y, tile2.x], boardTiles[tile1.y, tile1.x]);
@@ -190,21 +200,21 @@ public class PuzzleManager
         bool isMatch = false;
 
         // 入れ替えた牌のマッチ判定
-        isMatch = MatchingCheck(tile1) || isMatch;
-        isMatch = MatchingCheck(tile2) || isMatch;
+        isMatch = MatchCheck(tile1) || isMatch;
+        isMatch = MatchCheck(tile2) || isMatch;
 
         // 入れ替えた牌の周りの牌のマッチ判定
-        if (tile1.y > 0) isMatch = MatchingCheck(new Vector2Int(tile1.x, tile1.y - 1)) || isMatch;
-        if (tile1.y < GameData.PUZZLE_BOARD_SIZE_Y - 1) isMatch = MatchingCheck(new Vector2Int(tile1.x, tile1.y + 1)) || isMatch;
-        if (tile1.x > 0) isMatch = MatchingCheck(new Vector2Int(tile1.x - 1, tile1.y)) || isMatch;
-        if (tile1.x < GameData.PUZZLE_BOARD_SIZE_X - 1) isMatch = MatchingCheck(new Vector2Int(tile1.x + 1, tile1.y)) || isMatch;
-        if (tile2.y > 0) isMatch = MatchingCheck(new Vector2Int(tile2.x, tile2.y - 1)) || isMatch;
-        if (tile2.y < GameData.PUZZLE_BOARD_SIZE_Y - 1) isMatch = MatchingCheck(new Vector2Int(tile2.x, tile2.y + 1)) || isMatch;
-        if (tile2.x > 0) isMatch = MatchingCheck(new Vector2Int(tile2.x - 1, tile2.y)) || isMatch;
-        if (tile2.x < GameData.PUZZLE_BOARD_SIZE_X - 1) isMatch = MatchingCheck(new Vector2Int(tile2.x + 1, tile2.y)) || isMatch;
+        if (tile1.y > 0) isMatch = MatchCheck(new Vector2Int(tile1.x, tile1.y - 1)) || isMatch;
+        if (tile1.y < GameData.PUZZLE_BOARD_SIZE_Y - 1) isMatch = MatchCheck(new Vector2Int(tile1.x, tile1.y + 1)) || isMatch;
+        if (tile1.x > 0) isMatch = MatchCheck(new Vector2Int(tile1.x - 1, tile1.y)) || isMatch;
+        if (tile1.x < GameData.PUZZLE_BOARD_SIZE_X - 1) isMatch = MatchCheck(new Vector2Int(tile1.x + 1, tile1.y)) || isMatch;
+        if (tile2.y > 0) isMatch = MatchCheck(new Vector2Int(tile2.x, tile2.y - 1)) || isMatch;
+        if (tile2.y < GameData.PUZZLE_BOARD_SIZE_Y - 1) isMatch = MatchCheck(new Vector2Int(tile2.x, tile2.y + 1)) || isMatch;
+        if (tile2.x > 0) isMatch = MatchCheck(new Vector2Int(tile2.x - 1, tile2.y)) || isMatch;
+        if (tile2.x < GameData.PUZZLE_BOARD_SIZE_X - 1) isMatch = MatchCheck(new Vector2Int(tile2.x + 1, tile2.y)) || isMatch;
 
         if (isMatch)
-            MatchingProcess();
+            MatchProcess();
     }
 
     /// <summary>
@@ -213,7 +223,7 @@ public class PuzzleManager
     /// <param name="index">チェック牌の盤面インデックス</param>
     /// <param name="prev">事前チェックか(マッチ時の処理をしないか)</param>
     /// <returns>マッチしたか</returns>
-    private bool MatchingCheck(Vector2Int index, bool prev = false)
+    private bool MatchCheck(Vector2Int index, bool prev = false)
     {
         // 上下左右の牌種
         MahjongLogic.TILE_KIND[] adjacentTile = {
@@ -224,16 +234,18 @@ public class PuzzleManager
             adjacentTile[2] = boardTiles[index.y, index.x - 1];
         if (index.x < GameData.PUZZLE_BOARD_SIZE_X - 1)
             adjacentTile[3] = boardTiles[index.y, index.x + 1];
-        if (MahjongLogic.CheckMentu(boardTiles[index.y, index.x], adjacentTile[2], adjacentTile[3]))
+        if (MahjongLogic.CheckMentu(boardTiles[index.y, index.x], adjacentTile[2], adjacentTile[3]) > 0)
         {
             if (!prev)
             {
+                // 追加
+                matchTilesIndex.Add(new Vector2Int[3] { index, new Vector2Int(index.x - 1, index.y), new Vector2Int(index.x + 1, index.y) });
+                matchTilesKind.Add(new MahjongLogic.TILE_KIND[] { boardTiles[index.y, index.x], boardTiles[index.y, index.x - 1], boardTiles[index.y, index.x + 1] });
+
                 // マッチした牌をなくす
                 boardTiles[index.y, index.x] = MahjongLogic.TILE_KIND.NONE;
                 boardTiles[index.y, index.x - 1] = MahjongLogic.TILE_KIND.NONE;
                 boardTiles[index.y, index.x + 1] = MahjongLogic.TILE_KIND.NONE;
-                // 追加
-                matchingTilesIndex.Add(new Vector2Int[3] { index, new Vector2Int(index.x - 1, index.y), new Vector2Int(index.x + 1, index.y) });
             }
                 
             return true;
@@ -244,16 +256,18 @@ public class PuzzleManager
             adjacentTile[0] = boardTiles[index.y - 1, index.x];
         if (index.y < GameData.PUZZLE_BOARD_SIZE_Y - 1)
             adjacentTile[1] = boardTiles[index.y + 1, index.x];
-        if (MahjongLogic.CheckMentu(boardTiles[index.y, index.x], adjacentTile[0], adjacentTile[1]))
+        if (MahjongLogic.CheckMentu(boardTiles[index.y, index.x], adjacentTile[0], adjacentTile[1]) > 0)
         {
             if (!prev)
             {
+                // 追加
+                matchTilesIndex.Add(new Vector2Int[3] { new Vector2Int(index.x, index.y - 1), index, new Vector2Int(index.x, index.y + 1) });
+                matchTilesKind.Add(new MahjongLogic.TILE_KIND[] { boardTiles[index.y, index.x], boardTiles[index.y - 1, index.x], boardTiles[index.y + 1, index.x] });
+
                 // マッチした牌をなくす
                 boardTiles[index.y, index.x] = MahjongLogic.TILE_KIND.NONE;
                 boardTiles[index.y - 1, index.x] = MahjongLogic.TILE_KIND.NONE;
                 boardTiles[index.y + 1, index.x] = MahjongLogic.TILE_KIND.NONE;
-                // 追加
-                matchingTilesIndex.Add(new Vector2Int[3] { new Vector2Int(index.x, index.y - 1), index, new Vector2Int(index.x, index.y + 1) });
             }
 
             return true;
@@ -265,18 +279,18 @@ public class PuzzleManager
     /// <summary>
     /// マッチしていた場合の処理
     /// </summary>
-    private void MatchingProcess()
+    private void MatchProcess()
     {
         Debug.Log("ステート変更：" + state + " > " + GameState.MATCH);
         state = GameState.MATCH;
 
         // 牌を落とす
         int kindNum = _useTiles.Count;
-        for (int i = 0; i < matchingTilesIndex.Count; i++)
+        for (int i = 0; i < matchTilesIndex.Count; i++)
         {
             for (int j = 0; j < 3; j++)
             {
-                Vector2Int idx = matchingTilesIndex[i][j];
+                Vector2Int idx = matchTilesIndex[i][j];
 
                 // 下ににずらす
                 for (int y = idx.y; y > 0; y--)
@@ -306,12 +320,12 @@ public class PuzzleManager
             // もう一度ランダム取得
             boardTiles[index.y, index.x] = _useTiles[UnityEngine.Random.Range(0, kindNum)];
 
-            if (MatchingCheck(new Vector2Int(index.x, index.y), true)) { isMatch = true; continue; }
+            if (MatchCheck(new Vector2Int(index.x, index.y), true)) { isMatch = true; continue; }
             // 上下左右の確認
-            if (index.y > 0 && MatchingCheck(new Vector2Int(index.x, index.y - 1), true)) { isMatch = true; continue; }
-            if (index.y < GameData.PUZZLE_BOARD_SIZE_Y - 1 && MatchingCheck(new Vector2Int(index.x, index.y + 1), true)) { isMatch = true; continue; }
-            if (index.x > 0 && MatchingCheck(new Vector2Int(index.x - 1, index.y), true)) { isMatch = true; continue; }
-            if (index.x < GameData.PUZZLE_BOARD_SIZE_X - 1 && MatchingCheck(new Vector2Int(index.x + 1, index.y), true)) { isMatch = true; continue; }
+            if (index.y > 0 && MatchCheck(new Vector2Int(index.x, index.y - 1), true)) { isMatch = true; continue; }
+            if (index.y < GameData.PUZZLE_BOARD_SIZE_Y - 1 && MatchCheck(new Vector2Int(index.x, index.y + 1), true)) { isMatch = true; continue; }
+            if (index.x > 0 && MatchCheck(new Vector2Int(index.x - 1, index.y), true)) { isMatch = true; continue; }
+            if (index.x < GameData.PUZZLE_BOARD_SIZE_X - 1 && MatchCheck(new Vector2Int(index.x + 1, index.y), true)) { isMatch = true; continue; }
         }
     }
 }
