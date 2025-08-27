@@ -84,23 +84,6 @@ public class GameController : MonoBehaviour
                     break;
             }
             _prevState = prevState;
-
-            // プレイヤーの攻撃で既に敵が倒れている可能性があるのでもう一度チェック
-            if (_gameState == 0)
-            {
-                // 敵の攻撃チェック
-                float result = _battleManager.EnemyAttackCheck(Time.deltaTime);
-
-                // 攻撃ゲージの更新
-                _battleViewManager.SetEnemyAttack(_battleManager.GetEnemyAttackDelayRate());
-
-                // プレイヤーの体力の更新
-                if (result != -1.0f)
-                    _battleViewManager.SetPlayerHp(result);
-
-                // ゲームオーバーチェック
-                _gameState = _battleManager.IsGameOver();
-            }
         }
     }
 
@@ -150,6 +133,24 @@ public class GameController : MonoBehaviour
                 _currentMoveIndex = newIndex;
                 _puzzleManager.MoveNow(_currentMoveIndex.Value);
             }
+        }
+
+        // プレイヤーの攻撃で既に敵が倒れている可能性があるのでもう一度チェック
+        if (_gameState == 0)
+        {
+            // 敵の攻撃チェック
+            float result = _battleManager.EnemyAttackCheck(Time.deltaTime);
+
+            // 攻撃ゲージの更新
+            _battleViewManager.SetEnemyAttack(_battleManager.GetEnemyAttackDelayRate());
+
+            // プレイヤーの体力の更新
+            if (result != -1.0f)
+                _battleViewManager.SetPlayerHp(result);
+
+            // ゲームオーバーチェック
+            _gameState = _battleManager.IsGameOver();
+            _gameState = _battleManager.IsGameOver();
         }
     }
 
