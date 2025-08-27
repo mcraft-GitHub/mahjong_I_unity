@@ -92,7 +92,7 @@ public class GameController : MonoBehaviour
                 float result = _battleManager.EnemyAttackCheck(Time.deltaTime);
 
                 // 攻撃ゲージの更新
-                _battleViewManager.SetEnemyAttack(_battleManager.GetEnemyAttackDelayRato());
+                _battleViewManager.SetEnemyAttack(_battleManager.GetEnemyAttackDelayRate());
 
                 // プレイヤーの体力の更新
                 if (result != -1.0f)
@@ -269,10 +269,10 @@ public class GameController : MonoBehaviour
                 yield return new WaitForSeconds(0.5f);
 
                 // プレイヤーの攻撃
-                float enemyHpRato = _battleManager.PlayerAttackCheck(damage);
+                float enemyHpRate = _battleManager.PlayerAttackCheck(damage);
 
                 // 敵HPゲージの更新
-                _battleViewManager.SetEnemyHp(enemyHpRato);
+                _battleViewManager.SetEnemyHp(enemyHpRate);
 
                 // ゲームオーバーチェック
                 _gameState = _battleManager.IsGameOver();

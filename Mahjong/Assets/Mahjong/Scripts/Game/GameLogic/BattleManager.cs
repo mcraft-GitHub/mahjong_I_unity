@@ -107,7 +107,7 @@ public class BattleManager
     /// 敵の攻撃カウント割合
     /// </summary>
     /// <returns>(1f～0f)</returns>
-    public float GetEnemyAttackDelayRato()
+    public float GetEnemyAttackDelayRate()
     {
         return _attackDelayCnt / _enemyData.attackDelay;
     }
