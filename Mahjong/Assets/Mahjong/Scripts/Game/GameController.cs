@@ -12,6 +12,7 @@ public class GameController : MonoBehaviour
 {
     [SerializeField] private TouchInputHandler _input;
     [SerializeField] private PuzzleViewManager _puzzleViewManager;
+    [SerializeField] private BattleViewManager _battleViewManager;
     [SerializeField] private EnemyData _enemyData;
 
     // パズルマネージャー
@@ -89,6 +90,13 @@ public class GameController : MonoBehaviour
             {
                 // 敵の攻撃チェック
                 float result = _battleManager.EnemyAttackCheck(Time.deltaTime);
+
+                // 攻撃ゲージの更新
+                _battleViewManager.SetEnemyAttack(_battleManager.GetEnemyAttackDelayRato());
+
+                // プレイヤーの体力の更新
+                if (result != -1.0f)
+                    _battleViewManager.SetPlayerHp(result);
 
                 // ゲームオーバーチェック
                 _gameState = _battleManager.IsGameOver();
@@ -262,6 +270,9 @@ public class GameController : MonoBehaviour
 
                 // プレイヤーの攻撃
                 float enemyHpRato = _battleManager.PlayerAttackCheck(damage);
+
+                // 敵HPゲージの更新
+                _battleViewManager.SetEnemyHp(enemyHpRato);
 
                 // ゲームオーバーチェック
                 _gameState = _battleManager.IsGameOver();
