@@ -193,7 +193,6 @@ public class MahjongLogic
         //*** 面子候補を決める・役判定
         for (int i = 0; i < head.Count; i++)
         {
-            //Debug.Log(">>> " + head[i]);
             // 面子の探索
             List<TILE_KIND[][]> mentu = CalcMentu(head[i], hand);
 

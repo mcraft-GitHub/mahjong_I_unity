@@ -23,10 +23,17 @@ public class PuzzleViewManager : MonoBehaviour
     [SerializeField] private Transform _handTilesParent;
     // パズル牌の親オブジェクトTransform
     [SerializeField] private Transform _puzzleTilesParent;
+    // 空の手牌の親オブジェクトTransform
+    [SerializeField] private Transform _emptyHandTilesParent;
 
+    // ドラ
     [SerializeField] private MahjongTileView _doraTile;
+    // 雀頭
     [SerializeField] private MahjongTileView _headTile1;
     [SerializeField] private MahjongTileView _headTile2;
+
+    // パズル枠兼背景
+    [SerializeField] private RectTransform _puzzleFrameRect;
 
     // ゲームコントローラー
     private GameController _gameController;
@@ -34,7 +41,7 @@ public class PuzzleViewManager : MonoBehaviour
     private PuzzleManager _puzzleManager;
 
     // パズル牌の基本位置(0,0)
-    private Vector2? _basePuzzleTilePos = null;
+    private Vector2 _basePuzzleTilePos;
 
     // パズル牌オブジェクト
     private MahjongTileView[,] _boardTileObjects = new MahjongTileView[GameData.PUZZLE_BOARD_SIZE_Y, GameData.PUZZLE_BOARD_SIZE_X];
@@ -64,6 +71,32 @@ public class PuzzleViewManager : MonoBehaviour
         _headTile2.SetScale(GameData.handTilesScale);
         _doraTile.SetPos(new Vector2(screanLeftEnd + leftRightMargin + halfHandTileSize.x, uiTilesHeight));
         _doraTile.SetScale(GameData.handTilesScale);
+
+        //*** パズル枠兼背景の配置・拡縮(座標はパズル盤面の中心, 拡縮はパズル牌の縦基準でパズル盤面の大きさにする)
+        // パズル牌の大きさ
+        Vector2 puzzleTileSize = GameData.TILE_SIZE * GameData.puzzleTilesScale;
+        // パズル牌の基本位置(0,0)
+        _basePuzzleTilePos = new Vector2(
+            puzzleTileSize.x * GameData.PUZZLE_BOARD_SIZE_X * -0.5f + puzzleTileSize.x * 0.5f,
+            GameData.uiHeight - GameData.HEIGHT_BLANK - GameData.PUZZLE_BLANK - puzzleTileSize.y * 0.5f
+        );
+        // パズル枠の大きさ
+        float puzzleFrameScale = GameData.PUZZLE_BOARD_SIZE_Y * GameData.puzzleTilesScale + (GameData.PUZZLE_BLANK * 2.0f / puzzleTileSize.y);
+        // 設定
+        _puzzleFrameRect.anchoredPosition = new Vector2(0.0f, _basePuzzleTilePos.y + puzzleTileSize.y * 0.5f - puzzleTileSize.y * (GameData.PUZZLE_BOARD_SIZE_Y / 2));
+        _puzzleFrameRect.localScale = new Vector3(puzzleFrameScale, puzzleFrameScale, puzzleFrameScale);
+
+        //*** 空の手牌の生成
+        for (int i = 0; i < 12; i++)
+        {
+            // 生成
+            GameObject obj = Instantiate(_tilePrefab, _emptyHandTilesParent);
+            MahjongTileView tile = obj.GetComponent<MahjongTileView>();
+            tile.SetPos(CalcHandTilePosFromIndex(i));
+            tile.SetScale(GameData.handTilesScale);
+            // 牌類のセット
+            tile.SetKind(MahjongLogic.TILE_KIND.NONE);
+        }
     }
 
     void Update()
@@ -295,14 +328,7 @@ public class PuzzleViewManager : MonoBehaviour
         // パズル牌の大きさ
         Vector2 puzzleTileSize = GameData.TILE_SIZE * GameData.puzzleTilesScale;
 
-        // 基本位置(0,0)
-        if (!_basePuzzleTilePos.HasValue)
-            _basePuzzleTilePos = new Vector2(
-                puzzleTileSize.x * GameData.PUZZLE_BOARD_SIZE_X * -0.5f + puzzleTileSize.x * 0.5f,
-                GameData.uiHeight - GameData.HEIGHT_BLANK - GameData.PUZZLE_BLANK - puzzleTileSize.y * 0.5f
-            );
-
-        return new Vector2(_basePuzzleTilePos.Value.x + index.x * puzzleTileSize.x, _basePuzzleTilePos.Value.y - index.y * puzzleTileSize.y);
+        return new Vector2(_basePuzzleTilePos.x + index.x * puzzleTileSize.x, _basePuzzleTilePos.y - index.y * puzzleTileSize.y);
     }
 
     /// <summary>

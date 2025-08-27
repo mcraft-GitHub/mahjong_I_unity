@@ -11,6 +11,9 @@ public class GameData
     // 画面の縦サイズにおける、パズル + 取得牌表示の最大割合
     static public readonly float MAX_HEIGHT_UI_RATE = 0.65f;
 
+    // 画面上の空白のサイズ
+    static public readonly float UP_SAFE_BLANK = 64.0f;
+
     // 画面下の空白のサイズ
     static public readonly float BUTTOM_SAFE_BLANK = 36.0f;
 
@@ -20,8 +23,14 @@ public class GameData
     // パズル盤面の枠の幅のサイズ
     static public readonly float PUZZLE_BLANK = 32.0f;
 
-    // HPゲージの縦のサイズ
-    static public readonly float HP_GAUGE_HEIGHT = 36.0f;
+    // プレイヤーHPゲージの縦のサイズ
+    static public readonly float PLAYER_HP_GAUGE_HEIGHT = 24.0f;
+
+    // 敵HPゲージの縦のサイズ
+    static public readonly float ENEMY_HP_GAUGE_HEIGHT = 42.0f;
+
+    // 敵攻撃ゲージの縦のサイズ
+    static public readonly float ENEMY_ATTACK_GAUGE_HEIGHT = 24.0f;
 
     // タイルの横の最低限の空白
     static public readonly float MINIMUM_BLANK = 24.0f;
@@ -40,12 +49,12 @@ public class GameData
     static public float handTilesMargin = 0.0f;
     static public float puzzleTilesMargin = 0.0f;
 
-    // UI部分の高さ
+    // パズルUI部分の高さ
     static public float uiHeight = 0.0f;
 
     // ***** Private変数
     // UI部分の合計固定サイズ(UI部分の高さ - 麻雀牌)(パズル枠 + (パズル牌) + パズル枠 + 縦空白 + HPゲージ + 縦空白 + (ドラ・雀頭) + 縦空白 + (手牌) + 画面下空白)
-    static private readonly float TOTAL_FIXED_UI_HEIGHT = PUZZLE_BLANK + PUZZLE_BLANK + HEIGHT_BLANK + HP_GAUGE_HEIGHT + HEIGHT_BLANK + HEIGHT_BLANK + BUTTOM_SAFE_BLANK;
+    static private readonly float TOTAL_FIXED_UI_HEIGHT = PUZZLE_BLANK + PUZZLE_BLANK + HEIGHT_BLANK + PLAYER_HP_GAUGE_HEIGHT + HEIGHT_BLANK + HEIGHT_BLANK + BUTTOM_SAFE_BLANK;
 
     // ***** Public関数
     /// <summary>
