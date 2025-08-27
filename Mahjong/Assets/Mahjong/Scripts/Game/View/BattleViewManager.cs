@@ -25,16 +25,28 @@ public class BattleViewManager : MonoBehaviour
         
     }
 
+    /// <summary>
+    /// 敵HPのセット
+    /// </summary>
+    /// <param name="value">敵HP(1f～0f)</param>
     public void SetEnemyHp(float value)
     {
         _enemyHpGauge.value = value;
     }
 
+    /// <summary>
+    /// プレイヤーのセット
+    /// </summary>
+    /// <param name="value">プレイヤーHP(1f～0f)</param>
     public void SetPlayerHp(float value)
     {
         _playerHpGauge.value = value;
     }
 
+    /// <summary>
+    /// 攻撃カウントのセット
+    /// </summary>
+    /// <param name="value">攻撃カウント(1f～0f)</param>
     public void SetEnemyAttack(float value)
     {
         _enemyAttackGauge.value = value;

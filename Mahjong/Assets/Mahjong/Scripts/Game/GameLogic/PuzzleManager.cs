@@ -142,6 +142,10 @@ public class PuzzleManager
         }
     }
 
+    /// <summary>
+    /// ランダム牌種の取得
+    /// </summary>
+    /// <returns>ランダムな牌種</returns>
     public MahjongLogic.TILE_KIND GetRandomTileKind()
     {
         if (_useTiles == null)
