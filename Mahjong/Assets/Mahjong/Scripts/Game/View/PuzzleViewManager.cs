@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using Unity.VisualScripting;
@@ -23,6 +24,10 @@ public class PuzzleViewManager : MonoBehaviour
     // パズル牌の親オブジェクトTransform
     [SerializeField] private Transform _puzzleTilesParent;
 
+    [SerializeField] private MahjongTileView _doraTile;
+    [SerializeField] private MahjongTileView _headTile1;
+    [SerializeField] private MahjongTileView _headTile2;
+
     // ゲームコントローラー
     private GameController _gameController;
     // パズルマネージャー
@@ -39,7 +44,26 @@ public class PuzzleViewManager : MonoBehaviour
 
     void Start()
     {
-        
+        //*** 雀頭牌とドラ牌の配置・拡縮
+        // パズル牌の大きさ
+        Vector2 handTileSize = GameData.TILE_SIZE * GameData.handTilesScale;
+        // 画面の左端
+        float screanLeftEnd = Screen.width * -0.5f;
+        // 画面の右端
+        float screanRightEnd = Screen.width * 0.5f;
+        // 左右の空白の幅
+        float leftRightMargin = GameData.MINIMUM_BLANK + GameData.handTilesMargin;
+        // 手牌の半分サイズ
+        Vector2 halfHandTileSize = handTileSize * 0.5f;
+        // 雀頭牌とドラ牌の高さ
+        float uiTilesHeight = GameData.BUTTOM_SAFE_BLANK + GameData.HEIGHT_BLANK + handTileSize.y + halfHandTileSize.y;
+        // 設定
+        _headTile1.SetPos(new Vector2(screanRightEnd - leftRightMargin - halfHandTileSize.x, uiTilesHeight));
+        _headTile1.SetScale(GameData.handTilesScale);
+        _headTile2.SetPos(new Vector2(screanRightEnd - leftRightMargin - halfHandTileSize.x - handTileSize.x, uiTilesHeight));
+        _headTile2.SetScale(GameData.handTilesScale);
+        _doraTile.SetPos(new Vector2(screanLeftEnd + leftRightMargin + halfHandTileSize.x, uiTilesHeight));
+        _doraTile.SetScale(GameData.handTilesScale);
     }
 
     void Update()
@@ -247,6 +271,18 @@ public class PuzzleViewManager : MonoBehaviour
             Destroy(_handTileObjects[i].gameObject);
         }
         _handTileObjects.Clear();
+    }
+
+    /// <summary>
+    /// ドラと雀頭の牌種の設定
+    /// </summary>
+    /// <param name="dora">ドラの牌種</param>
+    /// <param name="head">雀頭の牌種</param>
+    public void SetDoraHeadKind(MahjongLogic.TILE_KIND dora, MahjongLogic.TILE_KIND head)
+    {
+        _doraTile.SetKind(dora);
+        _headTile1.SetKind(head);
+        _headTile2.SetKind(head);
     }
 
     /// <summary>

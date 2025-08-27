@@ -11,7 +11,8 @@ using static UnityEditor.PlayerSettings;
 public class GameController : MonoBehaviour
 {
     [SerializeField] private TouchInputHandler _input;
-    [SerializeField] private ViewManager _viewManager;
+    [SerializeField] private PuzzleViewManager _viewManager;
+    [SerializeField] private EnemyData _enemyData;
 
     // パズルマネージャー
     private PuzzleManager _puzzleManager;
@@ -22,6 +23,12 @@ public class GameController : MonoBehaviour
     // 手牌
     private List<MahjongLogic.TILE_KIND> _handTilesKindList = new List<MahjongLogic.TILE_KIND>();
 
+    // 雀頭牌
+    private MahjongLogic.TILE_KIND _headTilesKind = MahjongLogic.TILE_KIND.NONE;
+
+    // ドラ牌
+    private MahjongLogic.TILE_KIND _doraTilesKind = MahjongLogic.TILE_KIND.NONE;
+
     // ***** READY
     // 移動開始位置
     private Vector2Int? _currentMoveIndex = null;
@@ -30,11 +37,14 @@ public class GameController : MonoBehaviour
     // アニメーション中か
     private bool _isAnimation = false;
 
-    void Start()
+    void Awake()
     {
         // 麻雀牌のスケールと隙間の計算
         GameData.CalcTileScaleAndMargin();
+    }
 
+    void Start()
+    {
         // パズルマネージャーの生成
         _puzzleManager = new PuzzleManager();
 
@@ -130,7 +140,6 @@ public class GameController : MonoBehaviour
     /// </summary>
     private void InitGame()
     {
-        // 使用する牌
         List<MahjongLogic.TILE_KIND> useTileKinds = new List<MahjongLogic.TILE_KIND>();
         // TODO 使用する牌の種類指定処理
         // 将来的には何かしらの方法で使用牌を指定するが、現時点では仕様を決めていないので、切り替えにはコメントアウトを使用する。
@@ -173,6 +182,13 @@ public class GameController : MonoBehaviour
 
         // 牌の配置
         _viewManager.CreatePuzzleBoard();
+
+        // ドラの決定
+        _doraTilesKind = _puzzleManager.GetRandomTileKind();
+        // 雀頭の決定
+        _headTilesKind = _puzzleManager.GetRandomTileKind();
+        // ドラと雀頭の設定
+        _viewManager.SetDoraHeadKind(_doraTilesKind, _headTilesKind);
     }
 
     /// <summary>
@@ -203,15 +219,15 @@ public class GameController : MonoBehaviour
             _viewManager.AddHandTiles(_handTilesKindList, _puzzleManager.matchTilesIndex[i]);
 
             // 止める(手牌に加える演出時間)
-            yield return new WaitForSeconds(ViewManager.HAND_TILE_MOVE_TIME + 0.1f);
+            yield return new WaitForSeconds(PuzzleViewManager.HAND_TILE_MOVE_TIME + 0.1f);
 
             // 手牌がそろったか判定(手牌が12枚以外の事なんてないからマジックナンバーでもよい！！)
             if (_handTilesKindList.Count >= 12)
             {
                 // 役の判定
-                _handTilesKindList.Add(MahjongLogic.TILE_KIND.SOO_1);
-                _handTilesKindList.Add(MahjongLogic.TILE_KIND.SOO_1);
-                MahjongLogic.Role role = MahjongLogic.CalcHandTilesRole(_handTilesKindList, MahjongLogic.TILE_KIND.MAN_3, MahjongLogic.TILE_KIND.TON);
+                _handTilesKindList.Add(_headTilesKind);
+                _handTilesKindList.Add(_headTilesKind);
+                MahjongLogic.Role role = MahjongLogic.CalcHandTilesRole(_handTilesKindList, _doraTilesKind, MahjongLogic.TILE_KIND.TON);
 
                 // 消す(一旦ね)
                 _viewManager.ClearHandTiles();
@@ -221,6 +237,13 @@ public class GameController : MonoBehaviour
 
                 // 手牌クリア
                 _handTilesKindList.Clear();
+
+                // ドラの決定
+                _doraTilesKind = _puzzleManager.GetRandomTileKind();
+                // 雀頭の決定
+                _headTilesKind = _puzzleManager.GetRandomTileKind();
+                // ドラと雀頭の設定
+                _viewManager.SetDoraHeadKind(_doraTilesKind, _headTilesKind);
             }
         }
 
@@ -228,7 +251,7 @@ public class GameController : MonoBehaviour
         _viewManager.FallPuzzleTile();
 
         // 落下時間
-        yield return new WaitForSeconds(fallY.Max() * ViewManager.PUZZLE_TILE_FALL_TIME);
+        yield return new WaitForSeconds(fallY.Max() * PuzzleViewManager.PUZZLE_TILE_FALL_TIME);
 
         // アニメーション終了
         _isAnimation = false;

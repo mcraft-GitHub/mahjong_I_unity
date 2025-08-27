@@ -22,9 +22,6 @@ public class PuzzleManager
     // ボードタイル配列
     public MahjongLogic.TILE_KIND[,] boardTiles { get; } = new MahjongLogic.TILE_KIND[GameData.PUZZLE_BOARD_SIZE_Y, GameData.PUZZLE_BOARD_SIZE_X];
 
-    // 雀頭牌種
-    public MahjongLogic.TILE_KIND headTilesKind { get; private set; } = MahjongLogic.TILE_KIND.NONE;
-
     // *** READY
 
     // *** MATCH
@@ -62,9 +59,6 @@ public class PuzzleManager
         _moveIndexHistory.Clear();
         matchTilesIndex.Clear();
         matchTilesKind.Clear();
-
-        // 雀頭牌の決定
-        headTilesKind = _useTiles[UnityEngine.Random.Range(0, _useTiles.Count)];
     }
 
     /// <summary>
@@ -148,20 +142,26 @@ public class PuzzleManager
         }
     }
 
+    public MahjongLogic.TILE_KIND GetRandomTileKind()
+    {
+        if (_useTiles == null)
+            return (MahjongLogic.TILE_KIND)UnityEngine.Random.Range(0, (int)MahjongLogic.TILE_KIND.MAX);
+
+        return _useTiles[UnityEngine.Random.Range(0, _useTiles.Count)];
+    }
+
     // ***** Private関数
     /// <summary>
     /// ボードタイルの初期化
     /// </summary>
     private void InitBoardTiles()
     {
-        int kindNum = _useTiles.Count;
-
         // ランダムに生成
         for (int y = 0; y < GameData.PUZZLE_BOARD_SIZE_Y; y++)
         {
             for (int x = 0; x < GameData.PUZZLE_BOARD_SIZE_X; x++)
             {
-                boardTiles[y, x] = _useTiles[UnityEngine.Random.Range(0, kindNum)];
+                boardTiles[y, x] = GetRandomTileKind();
             }
         }
 
@@ -310,7 +310,6 @@ public class PuzzleManager
         state = GameState.MATCH;
 
         // 牌を落とす
-        int kindNum = _useTiles.Count;
         for (int i = 0; i < matchTilesIndex.Count; i++)
         {
             for (int j = 0; j < 3; j++)
@@ -322,7 +321,7 @@ public class PuzzleManager
                     boardTiles[y, idx.x] = boardTiles[y - 1, idx.x];
 
                 // 一番上にはランダムの牌種を入れる
-                boardTiles[0, idx.x] = _useTiles[UnityEngine.Random.Range(0, kindNum)];
+                boardTiles[0, idx.x] = GetRandomTileKind();
             }
         }
     }
@@ -335,7 +334,6 @@ public class PuzzleManager
     private void SetBoardUnmatchRandomKind(int indexX, int indexY)
     {
         bool isMatch = true;
-        int kindNum = _useTiles.Count;
         // ランダムで生成し続けて「マッチしてなかったらラッキー」っていうコードだからあんまりよくないココ
         while (isMatch)
         {
@@ -344,7 +342,7 @@ public class PuzzleManager
             isMatch = false;
 
             // もう一度ランダム取得
-            boardTiles[indexY, indexX] = _useTiles[UnityEngine.Random.Range(0, kindNum)];
+            boardTiles[indexY, indexX] = GetRandomTileKind();
 
             if (MatchCheck(indexX, indexY, true)) 
                 isMatch = true;
