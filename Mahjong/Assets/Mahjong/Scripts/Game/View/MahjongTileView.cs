@@ -13,7 +13,8 @@ public class MahjongTileView : MonoBehaviour
     
     void Start()
     {
-        _image.sprite = _tileImages.tileImages[(int)_kind];
+        if (_kind != MahjongLogic.TILE_KIND.NONE)
+            _image.sprite = _tileImages.tileImages[(int)_kind];
     }
 
     /// <summary>

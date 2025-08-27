@@ -28,6 +28,8 @@ public class PuzzleViewManager : MonoBehaviour
 
     // ドラ
     [SerializeField] private MahjongTileView _doraTile;
+    // 自風
+    [SerializeField] private MahjongTileView _jikazeTile;
     // 雀頭
     [SerializeField] private MahjongTileView _headTile1;
     [SerializeField] private MahjongTileView _headTile2;
@@ -51,7 +53,7 @@ public class PuzzleViewManager : MonoBehaviour
 
     void Start()
     {
-        //*** 雀頭牌とドラ牌の配置・拡縮
+        //*** 雀頭牌とドラ牌と自風牌の配置・拡縮
         // 手牌の大きさ
         Vector2 handTileSize = GameData.TILE_SIZE * GameData.handTilesScale;
         // 画面の左端
@@ -69,8 +71,10 @@ public class PuzzleViewManager : MonoBehaviour
         _headTile1.SetScale(GameData.handTilesScale);
         _headTile2.SetPos(new Vector2(screanRightEnd - leftRightMargin - halfHandTileSize.x - handTileSize.x, uiTilesHeight));
         _headTile2.SetScale(GameData.handTilesScale);
-        _doraTile.SetPos(new Vector2(screanLeftEnd + leftRightMargin + halfHandTileSize.x, uiTilesHeight));
+        _doraTile.SetPos(new Vector2(screanLeftEnd + leftRightMargin + handTileSize.x * 2.0f, uiTilesHeight));
         _doraTile.SetScale(GameData.handTilesScale);
+        _jikazeTile.SetPos(new Vector2(screanLeftEnd + leftRightMargin + halfHandTileSize.x, uiTilesHeight));
+        _jikazeTile.SetScale(GameData.handTilesScale);
 
         //*** パズル枠兼背景の配置・拡縮(座標はパズル盤面の中心, 拡縮はパズル牌の縦基準でパズル盤面の大きさにする)
         // パズル牌の大きさ
@@ -307,15 +311,17 @@ public class PuzzleViewManager : MonoBehaviour
     }
 
     /// <summary>
-    /// ドラと雀頭の牌種の設定
+    /// ドラと雀頭と自風の牌種の設定
     /// </summary>
     /// <param name="dora">ドラの牌種</param>
     /// <param name="head">雀頭の牌種</param>
-    public void SetDoraHeadKind(MahjongLogic.TILE_KIND dora, MahjongLogic.TILE_KIND head)
+    /// <param name="jikazeCnt">自風のカウント</param>
+    public void SetDoraHeadJikazeKind(MahjongLogic.TILE_KIND dora, MahjongLogic.TILE_KIND head, int jikazeCnt)
     {
         _doraTile.SetKind(dora);
         _headTile1.SetKind(head);
         _headTile2.SetKind(head);
+        _jikazeTile.SetKind((MahjongLogic.TILE_KIND)((int)MahjongLogic.TILE_KIND.TON + jikazeCnt));
     }
 
     /// <summary>

@@ -29,9 +29,10 @@ public class GameController : MonoBehaviour
 
     // 雀頭牌
     private MahjongLogic.TILE_KIND _headTilesKind = MahjongLogic.TILE_KIND.NONE;
-
     // ドラ牌
     private MahjongLogic.TILE_KIND _doraTilesKind = MahjongLogic.TILE_KIND.NONE;
+    // 自風カウント(0～3)
+    private int _jikazeCnt = 0;
 
     // ゲームステート(ゲーム中:0, 勝利:1, 敗北:2)
     int _gameState = 0;
@@ -218,8 +219,10 @@ public class GameController : MonoBehaviour
         _doraTilesKind = _puzzleManager.GetRandomTileKind();
         // 雀頭の決定
         _headTilesKind = _puzzleManager.GetRandomTileKind();
+        // 自風の初期化(東スタートだけどランダムでもいいかも)
+        _jikazeCnt = 0;
         // ドラと雀頭の設定
-        _puzzleViewManager.SetDoraHeadKind(_doraTilesKind, _headTilesKind);
+        _puzzleViewManager.SetDoraHeadJikazeKind(_doraTilesKind, _headTilesKind, _jikazeCnt);
 
         // バトルの初期化(プレイヤーの体力は暫定＆テキトー)
         _battleManager.InitBattle(_enemyData, 2000);
@@ -261,7 +264,8 @@ public class GameController : MonoBehaviour
                 // 役の判定
                 _handTilesKindList.Add(_headTilesKind);
                 _handTilesKindList.Add(_headTilesKind);
-                MahjongLogic.Role role = MahjongLogic.CalcHandTilesRole(_handTilesKindList, _doraTilesKind, MahjongLogic.TILE_KIND.TON);
+                MahjongLogic.Role role = 
+                    MahjongLogic.CalcHandTilesRole(_handTilesKindList, _doraTilesKind, (MahjongLogic.TILE_KIND)((int)MahjongLogic.TILE_KIND.TON + _jikazeCnt));
 
                 // ダメージの計算
                 int damage = _battleManager.CalcDamage(role);
@@ -286,8 +290,10 @@ public class GameController : MonoBehaviour
                 _doraTilesKind = _puzzleManager.GetRandomTileKind();
                 // 雀頭の決定
                 _headTilesKind = _puzzleManager.GetRandomTileKind();
+                // 自風のカウント
+                _jikazeCnt = (_jikazeCnt + 1) % 4;
                 // ドラと雀頭の設定
-                _puzzleViewManager.SetDoraHeadKind(_doraTilesKind, _headTilesKind);
+                _puzzleViewManager.SetDoraHeadJikazeKind(_doraTilesKind, _headTilesKind, _jikazeCnt);
             }
         }
 
