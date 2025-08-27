@@ -4,7 +4,7 @@ using NUnit.Framework;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class ViewManager : MonoBehaviour
+public class PuzzleViewManager : MonoBehaviour
 {
     // パズル牌の移動時間
     public static readonly float PUZZLE_TILE_MOVE_TIME = 0.15f;
