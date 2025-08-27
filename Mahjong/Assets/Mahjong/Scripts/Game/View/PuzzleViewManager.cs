@@ -45,7 +45,7 @@ public class PuzzleViewManager : MonoBehaviour
     void Start()
     {
         //*** 雀頭牌とドラ牌の配置・拡縮
-        // パズル牌の大きさ
+        // 手牌の大きさ
         Vector2 handTileSize = GameData.TILE_SIZE * GameData.handTilesScale;
         // 画面の左端
         float screanLeftEnd = Screen.width * -0.5f;
@@ -312,7 +312,7 @@ public class PuzzleViewManager : MonoBehaviour
     /// <returns>画面上の座標</returns>
     private Vector2 CalcHandTilePosFromIndex(int index)
     {
-        // パズル牌の大きさ
+        // 手牌の大きさ
         Vector2 handTileSize = GameData.TILE_SIZE * GameData.handTilesScale;
         // 画面の左端
         float screanLeftEnd = Screen.width * -0.5f;
