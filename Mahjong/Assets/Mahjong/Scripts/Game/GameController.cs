@@ -11,11 +11,14 @@ using static UnityEditor.PlayerSettings;
 public class GameController : MonoBehaviour
 {
     [SerializeField] private TouchInputHandler _input;
-    [SerializeField] private PuzzleViewManager _viewManager;
+    [SerializeField] private PuzzleViewManager _puzzleViewManager;
     [SerializeField] private EnemyData _enemyData;
 
     // パズルマネージャー
     private PuzzleManager _puzzleManager;
+
+    // バトルマネージャー
+    private BattleManager _battleManager;
 
     // 前フレームのステート
     private PuzzleManager.GameState _prevState = PuzzleManager.GameState.PAUSE;
@@ -28,6 +31,9 @@ public class GameController : MonoBehaviour
 
     // ドラ牌
     private MahjongLogic.TILE_KIND _doraTilesKind = MahjongLogic.TILE_KIND.NONE;
+
+    // ゲームステート(ゲーム中:0, 勝利:1, 敗北:2)
+    int _gameState = 0;
 
     // ***** READY
     // 移動開始位置
@@ -49,7 +55,10 @@ public class GameController : MonoBehaviour
         _puzzleManager = new PuzzleManager();
 
         // パズルマネージャーのセット
-        _viewManager.SetClass(this, _puzzleManager);
+        _puzzleViewManager.SetClass(this, _puzzleManager);
+
+        // バトルマネージャーの生成
+        _battleManager = new BattleManager();
 
         // ゲームの初期化
         InitGame();
@@ -57,21 +66,34 @@ public class GameController : MonoBehaviour
 
     void Update()
     {
-        PuzzleManager.GameState prevState = _puzzleManager.state;
-        switch (_puzzleManager.state)
+        if (_gameState == 0)
         {
-            case PuzzleManager.GameState.READY:
-                UpdateReady();
-                break;
-            case PuzzleManager.GameState.MATCH:
-                UpdateMatch();
-                break;
-            case PuzzleManager.GameState.PREV_MOVE:
-                break;
-            case PuzzleManager.GameState.PAUSE:
-                break;
+            PuzzleManager.GameState prevState = _puzzleManager.state;
+            switch (_puzzleManager.state)
+            {
+                case PuzzleManager.GameState.READY:
+                    UpdateReady();
+                    break;
+                case PuzzleManager.GameState.MATCH:
+                    UpdateMatch();
+                    break;
+                case PuzzleManager.GameState.PREV_MOVE:
+                    break;
+                case PuzzleManager.GameState.PAUSE:
+                    break;
+            }
+            _prevState = prevState;
+
+            // プレイヤーの攻撃で既に敵が倒れている可能性があるのでもう一度チェック
+            if (_gameState == 0)
+            {
+                // 敵の攻撃チェック
+                float result = _battleManager.EnemyAttackCheck(Time.deltaTime);
+
+                // ゲームオーバーチェック
+                _gameState = _battleManager.IsGameOver();
+            }
         }
-        _prevState = prevState;
     }
 
     /// <summary>
@@ -88,7 +110,7 @@ public class GameController : MonoBehaviour
             // 移動開始疑惑
             if (_input.GetTouchState() == TouchInputHandler.TouchState.TouchStarted)
             {
-                _currentMoveIndex = _viewManager.CalcTouchPuzzleTileIndex(_input.GetCurrentDragPosition());
+                _currentMoveIndex = _puzzleViewManager.CalcTouchPuzzleTileIndex(_input.GetCurrentDragPosition());
                 if (_currentMoveIndex.HasValue)
                     _puzzleManager.MoveNow(_currentMoveIndex.Value);
             }
@@ -104,7 +126,7 @@ public class GameController : MonoBehaviour
             }
 
             // 選択パズル牌の計算
-            Vector2Int? newIndex = _viewManager.CalcTouchPuzzleTileIndex(_input.GetCurrentDragPosition());
+            Vector2Int? newIndex = _puzzleViewManager.CalcTouchPuzzleTileIndex(_input.GetCurrentDragPosition());
             // 移動終了
             if (!newIndex.HasValue)
             {
@@ -116,7 +138,7 @@ public class GameController : MonoBehaviour
             // 移動
             if (newIndex.Value.x != _currentMoveIndex.Value.x || newIndex.Value.y != _currentMoveIndex.Value.y)
             {
-                _viewManager.SwitchingPuzzleTile(_currentMoveIndex.Value, newIndex.Value);
+                _puzzleViewManager.SwitchingPuzzleTile(_currentMoveIndex.Value, newIndex.Value);
                 _currentMoveIndex = newIndex;
                 _puzzleManager.MoveNow(_currentMoveIndex.Value);
             }
@@ -181,14 +203,17 @@ public class GameController : MonoBehaviour
         _puzzleManager.InitPuzzle(useTileKinds);
 
         // 牌の配置
-        _viewManager.CreatePuzzleBoard();
+        _puzzleViewManager.CreatePuzzleBoard();
 
         // ドラの決定
         _doraTilesKind = _puzzleManager.GetRandomTileKind();
         // 雀頭の決定
         _headTilesKind = _puzzleManager.GetRandomTileKind();
         // ドラと雀頭の設定
-        _viewManager.SetDoraHeadKind(_doraTilesKind, _headTilesKind);
+        _puzzleViewManager.SetDoraHeadKind(_doraTilesKind, _headTilesKind);
+
+        // バトルの初期化(プレイヤーの体力は暫定＆テキトー)
+        _battleManager.InitBattle(_enemyData, 2000);
     }
 
     /// <summary>
@@ -209,14 +234,14 @@ public class GameController : MonoBehaviour
             for (int j = 0; j < _puzzleManager.matchTilesIndex[i].Length; j++)
             {
                 fallY[_puzzleManager.matchTilesIndex[i][j].x]++;
-                _viewManager.DestroyPuzzleTile(_puzzleManager.matchTilesIndex[i][j]);
+                _puzzleViewManager.DestroyPuzzleTile(_puzzleManager.matchTilesIndex[i][j]);
 
                 // 手牌に追加(必ず3個ずつ追加されると信じて個数チェックはしません！)
                 _handTilesKindList.Add(_puzzleManager.matchTilesKind[i][j]);
             }
 
             // 手牌に加える演出
-            _viewManager.AddHandTiles(_handTilesKindList, _puzzleManager.matchTilesIndex[i]);
+            _puzzleViewManager.AddHandTiles(_handTilesKindList, _puzzleManager.matchTilesIndex[i]);
 
             // 止める(手牌に加える演出時間)
             yield return new WaitForSeconds(PuzzleViewManager.HAND_TILE_MOVE_TIME + 0.1f);
@@ -229,13 +254,20 @@ public class GameController : MonoBehaviour
                 _handTilesKindList.Add(_headTilesKind);
                 MahjongLogic.Role role = MahjongLogic.CalcHandTilesRole(_handTilesKindList, _doraTilesKind, MahjongLogic.TILE_KIND.TON);
 
-                // 消す(一旦ね)
-                _viewManager.ClearHandTiles();
+                // ダメージの計算
+                int damage = _battleManager.CalcDamage(role);
 
                 // 止める(手牌に加える演出時間 + 攻撃演出時間)
                 yield return new WaitForSeconds(0.5f);
 
+                // プレイヤーの攻撃
+                float enemyHpRato = _battleManager.PlayerAttackCheck(damage);
+
+                // ゲームオーバーチェック
+                _gameState = _battleManager.IsGameOver();
+
                 // 手牌クリア
+                _puzzleViewManager.ClearHandTiles();
                 _handTilesKindList.Clear();
 
                 // ドラの決定
@@ -243,12 +275,12 @@ public class GameController : MonoBehaviour
                 // 雀頭の決定
                 _headTilesKind = _puzzleManager.GetRandomTileKind();
                 // ドラと雀頭の設定
-                _viewManager.SetDoraHeadKind(_doraTilesKind, _headTilesKind);
+                _puzzleViewManager.SetDoraHeadKind(_doraTilesKind, _headTilesKind);
             }
         }
 
         // 落とす
-        _viewManager.FallPuzzleTile();
+        _puzzleViewManager.FallPuzzleTile();
 
         // 落下時間
         yield return new WaitForSeconds(fallY.Max() * PuzzleViewManager.PUZZLE_TILE_FALL_TIME);
