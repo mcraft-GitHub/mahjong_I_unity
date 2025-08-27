@@ -226,6 +226,9 @@ public class GameController : MonoBehaviour
 
         // バトルの初期化(プレイヤーの体力は暫定＆テキトー)
         _battleManager.InitBattle(_enemyData, 2000);
+
+        // 敵の画像のセット
+        _battleViewManager.SetEnemyImage(_enemyData.enemyImage);
     }
 
     /// <summary>

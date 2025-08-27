@@ -8,7 +8,7 @@ public class BattleViewManager : MonoBehaviour
     [SerializeField] private Slider _playerHpGauge;
     [SerializeField] private Slider _enemyAttackGauge;
 
-    [SerializeField] private RectTransform _enemyImageRect;
+    [SerializeField] private Image _enemyImage;
 
     void Start()
     {
@@ -23,6 +23,7 @@ public class BattleViewManager : MonoBehaviour
         playerHpRect.sizeDelta = new Vector2(Screen.width - GameData.MINIMUM_BLANK * 2.0f, GameData.PLAYER_HP_GAUGE_HEIGHT);
 
         //*** 敵画像の配置・拡縮
+        RectTransform enemyImageRect = _enemyImage.GetComponent<RectTransform>();
         // 画面の上の幅
         float screenUpHeight = GameData.UP_SAFE_BLANK + GameData.ENEMY_HP_GAUGE_HEIGHT + GameData.ENEMY_ATTACK_GAUGE_HEIGHT;
         // 敵画像の縦の大きさ
@@ -31,8 +32,8 @@ public class BattleViewManager : MonoBehaviour
         if (enemyImageHeight > Screen.width)
             enemyImageHeight = Screen.width;
         // 設定
-        _enemyImageRect.sizeDelta = new Vector2(enemyImageHeight, enemyImageHeight);
-        _enemyImageRect.anchoredPosition = new Vector2(0.0f, -screenUpHeight - enemyImageHeight * 0.5f);
+        enemyImageRect.sizeDelta = new Vector2(enemyImageHeight, enemyImageHeight);
+        enemyImageRect.anchoredPosition = new Vector2(0.0f, -screenUpHeight - enemyImageHeight * 0.5f);
 
         //*** 敵UIの配置・拡縮
         RectTransform enemyHpRect = _enemyHpGauge.GetComponent<RectTransform>();
@@ -73,5 +74,14 @@ public class BattleViewManager : MonoBehaviour
     public void SetEnemyAttack(float value)
     {
         _enemyAttackGauge.value = value;
+    }
+
+    /// <summary>
+    /// 敵の画像のセット
+    /// </summary>
+    /// <param name="image">敵の画像</param>
+    public void SetEnemyImage(Sprite image)
+    {
+        _enemyImage.sprite = image;
     }
 }
