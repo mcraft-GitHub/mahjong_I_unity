@@ -657,7 +657,9 @@ public class MahjongLogic
         }
 
         //*** 断么九
-        if (mpst[3].Count == 0)
+        // 字牌の数が0かつ、雀頭が字牌or1,9じゃない
+        int headNumber = CalcNumber(head);
+        if (mpst[3].Count == 0 && headMPST != 3 && headNumber != 1 && headNumber != 9)
         {
             bool isTanyao = true;
 
