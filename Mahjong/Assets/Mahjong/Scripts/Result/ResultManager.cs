@@ -8,7 +8,6 @@ using TMPro;
 public class ResultManager : MonoBehaviour
 {
     private const float FADE_TIME = 1.0f;
-
     private const string WIN_TEXT = "勝利";
     private const string LOSE_TEXT = "敗北";
 
