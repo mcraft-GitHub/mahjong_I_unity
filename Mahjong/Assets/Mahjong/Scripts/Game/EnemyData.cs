@@ -4,14 +4,14 @@
 public class EnemyData : ScriptableObject
 {
     // 画像
-    public Sprite enemyImage = null;
+    public Sprite _enemyImage = null;
 
     // 攻撃間隔
-    public float attackDelay = 10.0f;
+    public float _attackDelay = 10.0f;
 
     // 攻撃ダメージ
-    public int attackDamage = 1200;
+    public int _attackDamage = 1200;
 
     // 体力
-    public int hitPoint = 10000;
+    public int _hitPoint = 10000;
 }

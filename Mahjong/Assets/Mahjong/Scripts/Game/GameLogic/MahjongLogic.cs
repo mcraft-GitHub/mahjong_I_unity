@@ -88,6 +88,40 @@ public class MahjongLogic
         TINROTO,
     }
 
+    // 役名
+    public static readonly string[] ROLE_NAME = { 
+        // 1ハン
+        "門前自摸",
+        "平和",
+        "自風牌",
+        "白",
+        "發",
+        "中",
+        "一盃口",
+        // 2ハン
+        "三色同順",
+        "一気通貫",
+        "混全帯幺九",
+        "三暗刻",
+        "小三元",
+        "三色同刻",
+        // 3ハン
+        "混一色",
+        "二盃口",
+        "純全帯幺九",
+        // 6ハン
+        "清一色",
+        // 役満
+        "四暗刻",
+        "大三元",
+        "小四喜",
+        "大四喜",
+        "九蓮宝燈",
+        "緑一色",
+        "字一色",
+        "清老頭",
+    };
+
     // 役結果
     public struct Role
     {
@@ -193,7 +227,6 @@ public class MahjongLogic
         //*** 面子候補を決める・役判定
         for (int i = 0; i < head.Count; i++)
         {
-            //Debug.Log(">>> " + head[i]);
             // 面子の探索
             List<TILE_KIND[][]> mentu = CalcMentu(head[i], hand);
 

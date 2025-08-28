@@ -4,16 +4,32 @@ using System.Linq;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 using static UnityEditor.PlayerSettings;
+using DG.Tweening;
 
 // マッチ → 一時停止 → 手牌に追加 → 手牌完成なら攻撃 → まだマッチがあるなら[手牌に追加]へ → 停止解除 → 落ちる → マッチ判定 → 最初へ
 
 public class GameController : MonoBehaviour
 {
+    // 勝敗
+    static public bool _isWin = false;
+
+    // 風牌の種類
+    private const int KAZEHAI_KIND_NUM = 4;
+
+    // フェードの時間
+    private const float FADE_TIME = 1.0f;
+    // ゲーム終了～フェードの時間
+    private const float GAME_OVER_TO_FADE_TIME = 3.0f;
+
     [SerializeField] private TouchInputHandler _input;
     [SerializeField] private PuzzleViewManager _puzzleViewManager;
     [SerializeField] private BattleViewManager _battleViewManager;
     [SerializeField] private EnemyData _enemyData;
+
+    // フェード
+    [SerializeField] private Image _fadeImage;
 
     // パズルマネージャー
     private PuzzleManager _puzzleManager;
@@ -29,12 +45,16 @@ public class GameController : MonoBehaviour
 
     // 雀頭牌
     private MahjongLogic.TILE_KIND _headTilesKind = MahjongLogic.TILE_KIND.NONE;
-
     // ドラ牌
     private MahjongLogic.TILE_KIND _doraTilesKind = MahjongLogic.TILE_KIND.NONE;
+    // 自風カウント(0～3)
+    private int _jikazeCnt = 0;
 
-    // ゲームステート(ゲーム中:0, 勝利:1, 敗北:2)
-    int _gameState = 0;
+    // ゲームステート(ゲーム開始前:-1, ゲーム中:0, 勝利:1, 敗北:2)
+    int _gameState = -1;
+
+    // ゲーム開始カウントダウン
+    float _beginCnt = 5.0f;
 
     // ***** READY
     // 移動開始位置
@@ -63,27 +83,56 @@ public class GameController : MonoBehaviour
 
         // ゲームの初期化
         InitGame();
+
+        // フェードイン
+        _fadeImage.color = new Color(0.0f, 0.0f, 0.0f, 1.0f);
+        _fadeImage.DOColor(new Color(0.0f, 0.0f, 0.0f, 0.0f), FADE_TIME);
     }
 
     void Update()
     {
-        if (_gameState == 0)
+        // switch文 in switch文...
+        // ゲームステート(開始前orゲーム中or終了)
+        switch (_gameState)
         {
-            PuzzleManager.GameState prevState = _puzzleManager.state;
-            switch (_puzzleManager.state)
-            {
-                case PuzzleManager.GameState.READY:
-                    UpdateReady();
-                    break;
-                case PuzzleManager.GameState.MATCH:
-                    UpdateMatch();
-                    break;
-                case PuzzleManager.GameState.PREV_MOVE:
-                    break;
-                case PuzzleManager.GameState.PAUSE:
-                    break;
-            }
-            _prevState = prevState;
+            case -1:
+                // ゲーム開始前
+                _beginCnt -= Time.deltaTime;
+                // 開始
+                if (_beginCnt <= 0)
+                {
+                    _gameState = 0;
+                    _battleViewManager.SetBeginGameCount(-1);
+                }
+                else
+                {
+                    _battleViewManager.SetBeginGameCount((int)_beginCnt);
+                }
+                break;
+            case 0:
+                // パズルステート(牌移動中orマッチ処理中or未実装)
+                PuzzleManager.GameState prevState = _puzzleManager._state;
+                switch (_puzzleManager._state)
+                {
+                    case PuzzleManager.GameState.READY:
+                        UpdateReady();
+                        break;
+                    case PuzzleManager.GameState.MATCH:
+                        UpdateMatch();
+                        break;
+                    case PuzzleManager.GameState.PREV_MOVE:
+                        break;
+                    case PuzzleManager.GameState.PAUSE:
+                        break;
+                }
+                _prevState = prevState;
+                break;
+            case 1:
+            case 2:
+                // ゲーム終了後
+
+                // ほんとはこのシーン内で勝敗リザルト出したいけど時間がないので一旦そのまま遷移
+                break;
         }
     }
 
@@ -150,7 +199,11 @@ public class GameController : MonoBehaviour
 
             // ゲームオーバーチェック
             _gameState = _battleManager.IsGameOver();
-            _gameState = _battleManager.IsGameOver();
+            if (_gameState == 1 || _gameState == 2)
+            {
+                // ゲーム終了処理
+                StartCoroutine(GameOverProcessCoroutine());
+            }
         }
     }
 
@@ -160,7 +213,7 @@ public class GameController : MonoBehaviour
     private void UpdateMatch()
     {
         // マッチ処理
-        if (!_isAnimation && _puzzleManager.matchTilesIndex.Count > 0)
+        if (!_isAnimation && _puzzleManager._matchTilesIndex.Count > 0)
         {
             StartCoroutine(ScalePosCoroutine());
         }
@@ -218,11 +271,16 @@ public class GameController : MonoBehaviour
         _doraTilesKind = _puzzleManager.GetRandomTileKind();
         // 雀頭の決定
         _headTilesKind = _puzzleManager.GetRandomTileKind();
+        // 自風の初期化(東スタートだけどランダムでもいいかも)
+        _jikazeCnt = 0;
         // ドラと雀頭の設定
-        _puzzleViewManager.SetDoraHeadKind(_doraTilesKind, _headTilesKind);
+        _puzzleViewManager.SetDoraHeadJikazeKind(_doraTilesKind, _headTilesKind, _jikazeCnt);
 
         // バトルの初期化(プレイヤーの体力は暫定＆テキトー)
         _battleManager.InitBattle(_enemyData, 2000);
+
+        // 敵の画像のセット
+        _battleViewManager.SetEnemyImage(_enemyData._enemyImage);
     }
 
     /// <summary>
@@ -238,19 +296,19 @@ public class GameController : MonoBehaviour
         int[] fallY = Enumerable.Range(0, GameData.PUZZLE_BOARD_SIZE_X).Select(_ => 0).ToArray();
 
         // マッチ牌の削除
-        for (int i = 0; i < _puzzleManager.matchTilesIndex.Count; i++)
+        for (int i = 0; i < _puzzleManager._matchTilesIndex.Count; i++)
         {
-            for (int j = 0; j < _puzzleManager.matchTilesIndex[i].Length; j++)
+            for (int j = 0; j < _puzzleManager._matchTilesIndex[i].Length; j++)
             {
-                fallY[_puzzleManager.matchTilesIndex[i][j].x]++;
-                _puzzleViewManager.DestroyPuzzleTile(_puzzleManager.matchTilesIndex[i][j]);
+                fallY[_puzzleManager._matchTilesIndex[i][j].x]++;
+                _puzzleViewManager.DestroyPuzzleTile(_puzzleManager._matchTilesIndex[i][j]);
 
                 // 手牌に追加(必ず3個ずつ追加されると信じて個数チェックはしません！)
-                _handTilesKindList.Add(_puzzleManager.matchTilesKind[i][j]);
+                _handTilesKindList.Add(_puzzleManager._matchTilesKind[i][j]);
             }
 
             // 手牌に加える演出
-            _puzzleViewManager.AddHandTiles(_handTilesKindList, _puzzleManager.matchTilesIndex[i]);
+            _puzzleViewManager.AddHandTiles(_handTilesKindList, _puzzleManager._matchTilesIndex[i]);
 
             // 止める(手牌に加える演出時間)
             yield return new WaitForSeconds(PuzzleViewManager.HAND_TILE_MOVE_TIME + 0.1f);
@@ -261,13 +319,17 @@ public class GameController : MonoBehaviour
                 // 役の判定
                 _handTilesKindList.Add(_headTilesKind);
                 _handTilesKindList.Add(_headTilesKind);
-                MahjongLogic.Role role = MahjongLogic.CalcHandTilesRole(_handTilesKindList, _doraTilesKind, MahjongLogic.TILE_KIND.TON);
+                MahjongLogic.Role role = 
+                    MahjongLogic.CalcHandTilesRole(_handTilesKindList, _doraTilesKind, (MahjongLogic.TILE_KIND)((int)MahjongLogic.TILE_KIND.TON + _jikazeCnt));
 
                 // ダメージの計算
                 int damage = _battleManager.CalcDamage(role);
 
-                // 止める(手牌に加える演出時間 + 攻撃演出時間)
-                yield return new WaitForSeconds(0.5f);
+                // 役演出開始
+                float resultTime = _battleViewManager.BeginRoleResult(role, damage);
+
+                // 止める
+                yield return new WaitForSeconds(resultTime);
 
                 // プレイヤーの攻撃
                 float enemyHpRate = _battleManager.PlayerAttackCheck(damage);
@@ -278,6 +340,13 @@ public class GameController : MonoBehaviour
                 // ゲームオーバーチェック
                 _gameState = _battleManager.IsGameOver();
 
+                // ほんとはこのシーン内で勝敗リザルト出したいけど時間がないので一旦そのまま遷移
+                if (_gameState == 1 || _gameState == 2)
+                {
+                    StartCoroutine(GameOverProcessCoroutine());
+                    yield break;
+                }
+
                 // 手牌クリア
                 _puzzleViewManager.ClearHandTiles();
                 _handTilesKindList.Clear();
@@ -286,8 +355,10 @@ public class GameController : MonoBehaviour
                 _doraTilesKind = _puzzleManager.GetRandomTileKind();
                 // 雀頭の決定
                 _headTilesKind = _puzzleManager.GetRandomTileKind();
+                // 自風のカウント
+                _jikazeCnt = (_jikazeCnt + 1) % KAZEHAI_KIND_NUM;
                 // ドラと雀頭の設定
-                _puzzleViewManager.SetDoraHeadKind(_doraTilesKind, _headTilesKind);
+                _puzzleViewManager.SetDoraHeadJikazeKind(_doraTilesKind, _headTilesKind, _jikazeCnt);
             }
         }
 
@@ -302,5 +373,23 @@ public class GameController : MonoBehaviour
 
         // マッチ終了
         _puzzleManager.FinishMatch();
+    }
+
+    /// <summary>
+    /// ゲーム終了時の処理
+    /// </summary>
+    /// /// <returns>IEnumerator</returns>
+    IEnumerator GameOverProcessCoroutine()
+    {
+        _isWin = _gameState == 1;
+
+        // 一定時間待機させてからフェードアウト
+        yield return new WaitForSeconds(GAME_OVER_TO_FADE_TIME);
+
+        // フェードしてから遷移
+        yield return _fadeImage.DOColor(new Color(0.0f, 0.0f, 0.0f, 1.0f), FADE_TIME).WaitForCompletion();
+
+        // シーン遷移
+        Debug.Log("シーン遷移");
     }
 }

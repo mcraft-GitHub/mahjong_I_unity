@@ -23,10 +23,19 @@ public class PuzzleViewManager : MonoBehaviour
     [SerializeField] private Transform _handTilesParent;
     // パズル牌の親オブジェクトTransform
     [SerializeField] private Transform _puzzleTilesParent;
+    // 空の手牌の親オブジェクトTransform
+    [SerializeField] private Transform _emptyHandTilesParent;
 
+    // ドラ
     [SerializeField] private MahjongTileView _doraTile;
+    // 自風
+    [SerializeField] private MahjongTileView _jikazeTile;
+    // 雀頭
     [SerializeField] private MahjongTileView _headTile1;
     [SerializeField] private MahjongTileView _headTile2;
+
+    // パズル枠兼背景
+    [SerializeField] private RectTransform _puzzleFrameRect;
 
     // ゲームコントローラー
     private GameController _gameController;
@@ -34,7 +43,7 @@ public class PuzzleViewManager : MonoBehaviour
     private PuzzleManager _puzzleManager;
 
     // パズル牌の基本位置(0,0)
-    private Vector2? _basePuzzleTilePos = null;
+    private Vector2 _basePuzzleTilePos;
 
     // パズル牌オブジェクト
     private MahjongTileView[,] _boardTileObjects = new MahjongTileView[GameData.PUZZLE_BOARD_SIZE_Y, GameData.PUZZLE_BOARD_SIZE_X];
@@ -44,26 +53,54 @@ public class PuzzleViewManager : MonoBehaviour
 
     void Start()
     {
-        //*** 雀頭牌とドラ牌の配置・拡縮
+        //*** 雀頭牌とドラ牌と自風牌の配置・拡縮
         // 手牌の大きさ
-        Vector2 handTileSize = GameData.TILE_SIZE * GameData.handTilesScale;
+        Vector2 handTileSize = GameData.TILE_SIZE * GameData._handTilesScale;
         // 画面の左端
         float screanLeftEnd = Screen.width * -0.5f;
         // 画面の右端
         float screanRightEnd = Screen.width * 0.5f;
         // 左右の空白の幅
-        float leftRightMargin = GameData.MINIMUM_BLANK + GameData.handTilesMargin;
+        float leftRightMargin = GameData.MINIMUM_BLANK + GameData._handTilesMargin;
         // 手牌の半分サイズ
         Vector2 halfHandTileSize = handTileSize * 0.5f;
         // 雀頭牌とドラ牌の高さ
         float uiTilesHeight = GameData.BUTTOM_SAFE_BLANK + GameData.HEIGHT_BLANK + handTileSize.y + halfHandTileSize.y;
         // 設定
         _headTile1.SetPos(new Vector2(screanRightEnd - leftRightMargin - halfHandTileSize.x, uiTilesHeight));
-        _headTile1.SetScale(GameData.handTilesScale);
+        _headTile1.SetScale(GameData._handTilesScale);
         _headTile2.SetPos(new Vector2(screanRightEnd - leftRightMargin - halfHandTileSize.x - handTileSize.x, uiTilesHeight));
-        _headTile2.SetScale(GameData.handTilesScale);
-        _doraTile.SetPos(new Vector2(screanLeftEnd + leftRightMargin + halfHandTileSize.x, uiTilesHeight));
-        _doraTile.SetScale(GameData.handTilesScale);
+        _headTile2.SetScale(GameData._handTilesScale);
+        _doraTile.SetPos(new Vector2(screanLeftEnd + leftRightMargin + handTileSize.x * 2.0f, uiTilesHeight));
+        _doraTile.SetScale(GameData._handTilesScale);
+        _jikazeTile.SetPos(new Vector2(screanLeftEnd + leftRightMargin + halfHandTileSize.x, uiTilesHeight));
+        _jikazeTile.SetScale(GameData._handTilesScale);
+
+        //*** パズル枠兼背景の配置・拡縮(座標はパズル盤面の中心, 拡縮はパズル牌の縦基準でパズル盤面の大きさにする)
+        // パズル牌の大きさ
+        Vector2 puzzleTileSize = GameData.TILE_SIZE * GameData._puzzleTilesScale;
+        // パズル牌の基本位置(0,0)
+        _basePuzzleTilePos = new Vector2(
+            puzzleTileSize.x * GameData.PUZZLE_BOARD_SIZE_X * -0.5f + puzzleTileSize.x * 0.5f,
+            GameData._uiHeight - GameData.HEIGHT_BLANK - GameData.PUZZLE_BLANK - puzzleTileSize.y * 0.5f
+        );
+        // パズル枠の大きさ
+        float puzzleFrameScale = GameData.PUZZLE_BOARD_SIZE_Y * GameData._puzzleTilesScale + (GameData.PUZZLE_BLANK * 2.0f / puzzleTileSize.y);
+        // 設定
+        _puzzleFrameRect.anchoredPosition = new Vector2(0.0f, _basePuzzleTilePos.y + puzzleTileSize.y * 0.5f - puzzleTileSize.y * (GameData.PUZZLE_BOARD_SIZE_Y / 2));
+        _puzzleFrameRect.localScale = new Vector3(puzzleFrameScale, puzzleFrameScale, puzzleFrameScale);
+
+        //*** 空の手牌の生成
+        for (int i = 0; i < 12; i++)
+        {
+            // 生成
+            GameObject obj = Instantiate(_tilePrefab, _emptyHandTilesParent);
+            MahjongTileView tile = obj.GetComponent<MahjongTileView>();
+            tile.SetPos(CalcHandTilePosFromIndex(i));
+            tile.SetScale(GameData._handTilesScale);
+            // 牌類のセット
+            tile.SetKind(MahjongLogic.TILE_KIND.NONE);
+        }
     }
 
     void Update()
@@ -87,7 +124,7 @@ public class PuzzleViewManager : MonoBehaviour
     /// </summary>
     public void CreatePuzzleBoard()
     { 
-        MahjongLogic.TILE_KIND[,] boardTiles = _puzzleManager.boardTiles;
+        MahjongLogic.TILE_KIND[,] boardTiles = _puzzleManager._boardTiles;
 
         // ループで生成
         for (int y = 0; y < boardTiles.GetLength(0); y++)
@@ -98,7 +135,7 @@ public class PuzzleViewManager : MonoBehaviour
                 MahjongTileView tile = obj.GetComponent<MahjongTileView>();
                 _boardTileObjects[y, x] = tile;
                 tile.SetPos(CalcPuzzleTilePosFromIndex(new Vector2Int(x, y)));
-                tile.SetScale(GameData.puzzleTilesScale * (1.0f - GameData.PUZZLE_TILE_MARGIN_RATE));
+                tile.SetScale(GameData._puzzleTilesScale * (1.0f - GameData.PUZZLE_TILE_MARGIN_RATE));
                 // 牌類のセット
                 tile.SetKind(boardTiles[y, x]);
             }
@@ -116,8 +153,8 @@ public class PuzzleViewManager : MonoBehaviour
         touchPos.x -= Screen.width * 0.5f;
 
         // パズル盤面の四隅位置の計算
-        Vector2 puzzleTileSize = GameData.TILE_SIZE * GameData.puzzleTilesScale;
-        Vector2 leftUp = new Vector2(puzzleTileSize.x * GameData.PUZZLE_BOARD_SIZE_X * -0.5f,　GameData.uiHeight - GameData.HEIGHT_BLANK - GameData.PUZZLE_BLANK);
+        Vector2 puzzleTileSize = GameData.TILE_SIZE * GameData._puzzleTilesScale;
+        Vector2 leftUp = new Vector2(puzzleTileSize.x * GameData.PUZZLE_BOARD_SIZE_X * -0.5f,　GameData._uiHeight - GameData.HEIGHT_BLANK - GameData.PUZZLE_BLANK);
         Vector2 rightButtom = new Vector2(-leftUp.x, leftUp.y - puzzleTileSize.y * GameData.PUZZLE_BOARD_SIZE_Y);
 
         if (leftUp.x > touchPos.x || touchPos.x > rightButtom.x || rightButtom.y > touchPos.y || touchPos.y > leftUp.y)
@@ -179,8 +216,8 @@ public class PuzzleViewManager : MonoBehaviour
     /// </summary>
     public void FallPuzzleTile()
     {
-        MahjongLogic.TILE_KIND[,] boardTiles = _puzzleManager.boardTiles;
-        List<Vector2Int[]> matchIndex = _puzzleManager.matchTilesIndex;
+        MahjongLogic.TILE_KIND[,] boardTiles = _puzzleManager._boardTiles;
+        List<Vector2Int[]> matchIndex = _puzzleManager._matchTilesIndex;
 
         // 落ちるX列がどこか
         bool[] isFallX = Enumerable.Range(0, GameData.PUZZLE_BOARD_SIZE_X).Select(_ => false).ToArray();
@@ -224,7 +261,7 @@ public class PuzzleViewManager : MonoBehaviour
                 MahjongTileView tile = obj.GetComponent<MahjongTileView>();
                 _boardTileObjects[(matchTileCount - i), x] = tile;
                 tile.SetPos(CalcPuzzleTilePosFromIndex(new Vector2Int(x, -i)));
-                tile.SetScale(GameData.puzzleTilesScale * (1.0f - GameData.PUZZLE_TILE_MARGIN_RATE));
+                tile.SetScale(GameData._puzzleTilesScale * (1.0f - GameData.PUZZLE_TILE_MARGIN_RATE));
                 // 牌類のセット
                 tile.SetKind(boardTiles[(matchTileCount - i), x]);
                 // 移動先座標
@@ -251,13 +288,13 @@ public class PuzzleViewManager : MonoBehaviour
             _handTileObjects.Add(tile);
             // 元の場所に生成
             tile.SetPos(CalcPuzzleTilePosFromIndex(tilesIndex[index[i]]));
-            tile.SetScale(GameData.puzzleTilesScale * (1.0f - GameData.PUZZLE_TILE_MARGIN_RATE));
+            tile.SetScale(GameData._puzzleTilesScale * (1.0f - GameData.PUZZLE_TILE_MARGIN_RATE));
             // 牌類のセット
             tile.SetKind(handTilesKindList[handTilesKindList.Count - (3 - index[i])]);
 
             // 手牌に移動・縮小
             tile.SetPos(CalcHandTilePosFromIndex(handTilesKindList.Count - (3 - index[i])), HAND_TILE_MOVE_TIME);
-            tile.SetScale(GameData.handTilesScale, HAND_TILE_MOVE_TIME);
+            tile.SetScale(GameData._handTilesScale, HAND_TILE_MOVE_TIME);
         }
     }
 
@@ -274,15 +311,17 @@ public class PuzzleViewManager : MonoBehaviour
     }
 
     /// <summary>
-    /// ドラと雀頭の牌種の設定
+    /// ドラと雀頭と自風の牌種の設定
     /// </summary>
     /// <param name="dora">ドラの牌種</param>
     /// <param name="head">雀頭の牌種</param>
-    public void SetDoraHeadKind(MahjongLogic.TILE_KIND dora, MahjongLogic.TILE_KIND head)
+    /// <param name="jikazeCnt">自風のカウント</param>
+    public void SetDoraHeadJikazeKind(MahjongLogic.TILE_KIND dora, MahjongLogic.TILE_KIND head, int jikazeCnt)
     {
         _doraTile.SetKind(dora);
         _headTile1.SetKind(head);
         _headTile2.SetKind(head);
+        _jikazeTile.SetKind((MahjongLogic.TILE_KIND)((int)MahjongLogic.TILE_KIND.TON + jikazeCnt));
     }
 
     /// <summary>
@@ -293,16 +332,9 @@ public class PuzzleViewManager : MonoBehaviour
     private Vector2 CalcPuzzleTilePosFromIndex(Vector2Int index)
     {
         // パズル牌の大きさ
-        Vector2 puzzleTileSize = GameData.TILE_SIZE * GameData.puzzleTilesScale;
+        Vector2 puzzleTileSize = GameData.TILE_SIZE * GameData._puzzleTilesScale;
 
-        // 基本位置(0,0)
-        if (!_basePuzzleTilePos.HasValue)
-            _basePuzzleTilePos = new Vector2(
-                puzzleTileSize.x * GameData.PUZZLE_BOARD_SIZE_X * -0.5f + puzzleTileSize.x * 0.5f,
-                GameData.uiHeight - GameData.HEIGHT_BLANK - GameData.PUZZLE_BLANK - puzzleTileSize.y * 0.5f
-            );
-
-        return new Vector2(_basePuzzleTilePos.Value.x + index.x * puzzleTileSize.x, _basePuzzleTilePos.Value.y - index.y * puzzleTileSize.y);
+        return new Vector2(_basePuzzleTilePos.x + index.x * puzzleTileSize.x, _basePuzzleTilePos.y - index.y * puzzleTileSize.y);
     }
 
     /// <summary>
@@ -313,11 +345,11 @@ public class PuzzleViewManager : MonoBehaviour
     private Vector2 CalcHandTilePosFromIndex(int index)
     {
         // 手牌の大きさ
-        Vector2 handTileSize = GameData.TILE_SIZE * GameData.handTilesScale;
+        Vector2 handTileSize = GameData.TILE_SIZE * GameData._handTilesScale;
         // 画面の左端
         float screanLeftEnd = Screen.width * -0.5f;
         // 左の空白の幅
-        float leftMargin = GameData.MINIMUM_BLANK + GameData.handTilesMargin;
+        float leftMargin = GameData.MINIMUM_BLANK + GameData._handTilesMargin;
         // 手牌の半分サイズ
         Vector2 halfHandTileSize = handTileSize * 0.5f;
         // 添え字の数だけ右にずれる

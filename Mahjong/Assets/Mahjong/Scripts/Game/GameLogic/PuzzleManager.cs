@@ -17,18 +17,18 @@ public class PuzzleManager
 
     // ***** Public変数
     // ゲームステート
-    public GameState state { get; private set; } = GameState.READY;
+    public GameState _state { get; private set; } = GameState.READY;
 
     // ボードタイル配列
-    public MahjongLogic.TILE_KIND[,] boardTiles { get; } = new MahjongLogic.TILE_KIND[GameData.PUZZLE_BOARD_SIZE_Y, GameData.PUZZLE_BOARD_SIZE_X];
+    public MahjongLogic.TILE_KIND[,] _boardTiles { get; } = new MahjongLogic.TILE_KIND[GameData.PUZZLE_BOARD_SIZE_Y, GameData.PUZZLE_BOARD_SIZE_X];
 
     // *** READY
 
     // *** MATCH
     // マッチ牌インデックス
-    public List<Vector2Int[]> matchTilesIndex { get; } = new List<Vector2Int[]>();
+    public List<Vector2Int[]> _matchTilesIndex { get; } = new List<Vector2Int[]>();
     // マッチ牌種
-    public List<MahjongLogic.TILE_KIND[]> matchTilesKind { get; } = new List<MahjongLogic.TILE_KIND[]>();
+    public List<MahjongLogic.TILE_KIND[]> _matchTilesKind { get; } = new List<MahjongLogic.TILE_KIND[]>();
 
     // ***** Private変数
     // 使用牌種リスト
@@ -57,8 +57,8 @@ public class PuzzleManager
 
         _beginMoveIndex = null;
         _moveIndexHistory.Clear();
-        matchTilesIndex.Clear();
-        matchTilesKind.Clear();
+        _matchTilesIndex.Clear();
+        _matchTilesKind.Clear();
     }
 
     /// <summary>
@@ -116,8 +116,8 @@ public class PuzzleManager
         // いろいろクリア
         _beginMoveIndex = null;
         _moveIndexHistory.Clear();
-        matchTilesIndex.Clear();
-        matchTilesKind.Clear();
+        _matchTilesIndex.Clear();
+        _matchTilesKind.Clear();
 
         // 落ちコンの判定(コンボじゃないけど)
         // ほんとは落ちた列の周りの牌だけでいいけど、全部確認
@@ -129,7 +129,7 @@ public class PuzzleManager
             }
         }
 
-        if (matchTilesIndex.Count > 0)
+        if (_matchTilesIndex.Count > 0)
         {
             // マッチしている
             MatchProcess();
@@ -137,8 +137,8 @@ public class PuzzleManager
         else
         {
             // マッチしていない
-            Debug.Log("ステート変更：" + state + " > " + GameState.READY);
-            state = GameState.READY;
+            Debug.Log("ステート変更：" + _state + " > " + GameState.READY);
+            _state = GameState.READY;
         }
     }
 
@@ -165,7 +165,7 @@ public class PuzzleManager
         {
             for (int x = 0; x < GameData.PUZZLE_BOARD_SIZE_X; x++)
             {
-                boardTiles[y, x] = GetRandomTileKind();
+                _boardTiles[y, x] = GetRandomTileKind();
             }
         }
 
@@ -198,7 +198,7 @@ public class PuzzleManager
     private void SwitchTile(Vector2Int tile1, Vector2Int tile2)
     {
         // 入れ替え処理
-        (boardTiles[tile1.y, tile1.x], boardTiles[tile2.y, tile2.x]) = (boardTiles[tile2.y, tile2.x], boardTiles[tile1.y, tile1.x]);
+        (_boardTiles[tile1.y, tile1.x], _boardTiles[tile2.y, tile2.x]) = (_boardTiles[tile2.y, tile2.x], _boardTiles[tile1.y, tile1.x]);
 
         // マッチしているか
         bool isMatchTile1 = false;
@@ -260,21 +260,21 @@ public class PuzzleManager
 
         // 左右
         if (indexX > 0)
-            adjacentTile[2] = boardTiles[indexY, indexX - 1];
+            adjacentTile[2] = _boardTiles[indexY, indexX - 1];
         if (indexX < GameData.PUZZLE_BOARD_SIZE_X - 1)
-            adjacentTile[3] = boardTiles[indexY, indexX + 1];
-        if (MahjongLogic.CheckMentu(boardTiles[indexY, indexX], adjacentTile[2], adjacentTile[3]) > 0)
+            adjacentTile[3] = _boardTiles[indexY, indexX + 1];
+        if (MahjongLogic.CheckMentu(_boardTiles[indexY, indexX], adjacentTile[2], adjacentTile[3]) > 0)
         {
             if (!prev)
             {
                 // 追加
-                matchTilesIndex.Add(new Vector2Int[3] { new Vector2Int(indexX, indexY), new Vector2Int(indexX - 1, indexY), new Vector2Int(indexX + 1, indexY) });
-                matchTilesKind.Add(new MahjongLogic.TILE_KIND[] { boardTiles[indexY, indexX], boardTiles[indexY, indexX - 1], boardTiles[indexY, indexX + 1] });
+                _matchTilesIndex.Add(new Vector2Int[3] { new Vector2Int(indexX, indexY), new Vector2Int(indexX - 1, indexY), new Vector2Int(indexX + 1, indexY) });
+                _matchTilesKind.Add(new MahjongLogic.TILE_KIND[] { _boardTiles[indexY, indexX], _boardTiles[indexY, indexX - 1], _boardTiles[indexY, indexX + 1] });
 
                 // マッチした牌をなくす
-                boardTiles[indexY, indexX] = MahjongLogic.TILE_KIND.NONE;
-                boardTiles[indexY, indexX - 1] = MahjongLogic.TILE_KIND.NONE;
-                boardTiles[indexY, indexX + 1] = MahjongLogic.TILE_KIND.NONE;
+                _boardTiles[indexY, indexX] = MahjongLogic.TILE_KIND.NONE;
+                _boardTiles[indexY, indexX - 1] = MahjongLogic.TILE_KIND.NONE;
+                _boardTiles[indexY, indexX + 1] = MahjongLogic.TILE_KIND.NONE;
             }
                 
             return true;
@@ -282,21 +282,21 @@ public class PuzzleManager
 
         // 上下
         if (indexY > 0)
-            adjacentTile[0] = boardTiles[indexY - 1, indexX];
+            adjacentTile[0] = _boardTiles[indexY - 1, indexX];
         if (indexY < GameData.PUZZLE_BOARD_SIZE_Y - 1)
-            adjacentTile[1] = boardTiles[indexY + 1, indexX];
-        if (MahjongLogic.CheckMentu(boardTiles[indexY, indexX], adjacentTile[0], adjacentTile[1]) > 0)
+            adjacentTile[1] = _boardTiles[indexY + 1, indexX];
+        if (MahjongLogic.CheckMentu(_boardTiles[indexY, indexX], adjacentTile[0], adjacentTile[1]) > 0)
         {
             if (!prev)
             {
                 // 追加
-                matchTilesIndex.Add(new Vector2Int[3] { new Vector2Int(indexX, indexY - 1), new Vector2Int(indexX, indexY), new Vector2Int(indexX, indexY + 1) });
-                matchTilesKind.Add(new MahjongLogic.TILE_KIND[] { boardTiles[indexY, indexX], boardTiles[indexY - 1, indexX], boardTiles[indexY + 1, indexX] });
+                _matchTilesIndex.Add(new Vector2Int[3] { new Vector2Int(indexX, indexY - 1), new Vector2Int(indexX, indexY), new Vector2Int(indexX, indexY + 1) });
+                _matchTilesKind.Add(new MahjongLogic.TILE_KIND[] { _boardTiles[indexY, indexX], _boardTiles[indexY - 1, indexX], _boardTiles[indexY + 1, indexX] });
 
                 // マッチした牌をなくす
-                boardTiles[indexY, indexX] = MahjongLogic.TILE_KIND.NONE;
-                boardTiles[indexY - 1, indexX] = MahjongLogic.TILE_KIND.NONE;
-                boardTiles[indexY + 1, indexX] = MahjongLogic.TILE_KIND.NONE;
+                _boardTiles[indexY, indexX] = MahjongLogic.TILE_KIND.NONE;
+                _boardTiles[indexY - 1, indexX] = MahjongLogic.TILE_KIND.NONE;
+                _boardTiles[indexY + 1, indexX] = MahjongLogic.TILE_KIND.NONE;
             }
 
             return true;
@@ -310,22 +310,22 @@ public class PuzzleManager
     /// </summary>
     private void MatchProcess()
     {
-        Debug.Log("ステート変更：" + state + " > " + GameState.MATCH);
-        state = GameState.MATCH;
+        Debug.Log("ステート変更：" + _state + " > " + GameState.MATCH);
+        _state = GameState.MATCH;
 
         // 牌を落とす
-        for (int i = 0; i < matchTilesIndex.Count; i++)
+        for (int i = 0; i < _matchTilesIndex.Count; i++)
         {
             for (int j = 0; j < 3; j++)
             {
-                Vector2Int idx = matchTilesIndex[i][j];
+                Vector2Int idx = _matchTilesIndex[i][j];
 
                 // 下ににずらす
                 for (int y = idx.y; y > 0; y--)
-                    boardTiles[y, idx.x] = boardTiles[y - 1, idx.x];
+                    _boardTiles[y, idx.x] = _boardTiles[y - 1, idx.x];
 
                 // 一番上にはランダムの牌種を入れる
-                boardTiles[0, idx.x] = GetRandomTileKind();
+                _boardTiles[0, idx.x] = GetRandomTileKind();
             }
         }
     }
@@ -346,7 +346,7 @@ public class PuzzleManager
             isMatch = false;
 
             // もう一度ランダム取得
-            boardTiles[indexY, indexX] = GetRandomTileKind();
+            _boardTiles[indexY, indexX] = GetRandomTileKind();
 
             if (MatchCheck(indexX, indexY, true)) 
                 isMatch = true;
