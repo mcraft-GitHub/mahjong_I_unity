@@ -17,6 +17,10 @@ public class BattleManager
     private const int HANEMAN_POINT = 12000;
     private const int MANGAN_POINT = 8000;
 
+    // 4翻,3翻の時に満貫になる符数
+    private const int FOUR_HAN_MANGAN_FU = 40;
+    private const int THREE_HAN_MANGAN_FU = 70;
+
     // ダメージ倍数(将来的にステージによって変わる可能性も考えて、変更可)
     private float _damageMultiple = 0.1f;
 
@@ -65,8 +69,8 @@ public class BattleManager
         if (role.han >= BAIMAN_HAN) return (int)(BAIMAN_POINT * _damageMultiple);
         if (role.han >= HANEMAN_HAN) return (int)(HANEMAN_POINT * _damageMultiple);
         if (role.han >= (MANGAN_HAN + 1)) return (int)(MANGAN_POINT * _damageMultiple);
-        if (role.han >= MANGAN_HAN && role.fu >= 40) return (int)(MANGAN_POINT * _damageMultiple);
-        if (role.han >= (MANGAN_HAN - 1) && role.fu >= 70) return (int)(MANGAN_POINT * _damageMultiple);
+        if (role.han >= MANGAN_HAN && role.fu >= FOUR_HAN_MANGAN_FU) return (int)(MANGAN_POINT * _damageMultiple);
+        if (role.han >= (MANGAN_HAN - 1) && role.fu >= THREE_HAN_MANGAN_FU) return (int)(MANGAN_POINT * _damageMultiple);
 
         // 点数計算
         double damage = role.fu * 4 * Math.Pow(2, role.han + 2);
