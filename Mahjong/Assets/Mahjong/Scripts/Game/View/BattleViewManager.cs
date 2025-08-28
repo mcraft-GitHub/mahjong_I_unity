@@ -94,11 +94,6 @@ public class BattleViewManager : MonoBehaviour
 
     }
 
-    void Update()
-    {
-        
-    }
-
     /// <summary>
     /// ゲーム開始カウントダウンのセット
     /// </summary>
