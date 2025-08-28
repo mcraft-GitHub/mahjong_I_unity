@@ -12,7 +12,9 @@ public class TitleManager : MonoBehaviour
 
     void Start()
     {
-        
+        // フェードイン
+        _fadeImage.color = new Color(0.0f, 0.0f, 0.0f, 1.0f);
+        _fadeImage.DOColor(new Color(0.0f, 0.0f, 0.0f, 0.0f), FADE_TIME);
     }
 
     void Update()
@@ -28,6 +30,7 @@ public class TitleManager : MonoBehaviour
 
     IEnumerator LoadScene(int buildIndex)
     {
+        // フェードアウト
         yield return _fadeImage.DOColor(new Color(0.0f, 0.0f, 0.0f, 1.0f), FADE_TIME).WaitForCompletion();
         SceneManager.LoadScene(buildIndex);
     }
