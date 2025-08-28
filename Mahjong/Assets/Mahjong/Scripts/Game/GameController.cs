@@ -15,6 +15,9 @@ public class GameController : MonoBehaviour
     // 勝敗
     static public bool _isWin = false;
 
+    // 風牌の種類
+    private const int KAZEHAI_KIND_NUM = 4;
+
     [SerializeField] private TouchInputHandler _input;
     [SerializeField] private PuzzleViewManager _puzzleViewManager;
     [SerializeField] private BattleViewManager _battleViewManager;
@@ -317,7 +320,7 @@ public class GameController : MonoBehaviour
                 float resultTime = _battleViewManager.BeginRoleResult(role, damage);
 
                 // 止める
-                yield return new WaitForSeconds(resultTime + 0.3f);
+                yield return new WaitForSeconds(resultTime);
 
                 // プレイヤーの攻撃
                 float enemyHpRate = _battleManager.PlayerAttackCheck(damage);
@@ -355,7 +358,7 @@ public class GameController : MonoBehaviour
                 // 雀頭の決定
                 _headTilesKind = _puzzleManager.GetRandomTileKind();
                 // 自風のカウント
-                _jikazeCnt = (_jikazeCnt + 1) % 4;
+                _jikazeCnt = (_jikazeCnt + 1) % KAZEHAI_KIND_NUM;
                 // ドラと雀頭の設定
                 _puzzleViewManager.SetDoraHeadJikazeKind(_doraTilesKind, _headTilesKind, _jikazeCnt);
             }

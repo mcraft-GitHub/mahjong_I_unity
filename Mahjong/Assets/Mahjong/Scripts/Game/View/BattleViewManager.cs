@@ -7,10 +7,30 @@ using System.Collections;
 
 public class BattleViewManager : MonoBehaviour
 {
+    // 点数テキストの高さ
     private const float ROLE_POINT_TEXT_HEIGHT = 240.0f;
+    // 役テキストと点数テキストの隙間の高さ
     private const float ROLE_POINT_TO_RESULT_BLANK = 20.0f;
 
+    // 役テキスト・点数テキストの横の空白の割合
+    private const float ROLE_RESULT_BLANK_RATE = 0.1f;
+
+    // パズルリザルトの背景のアルファ値
     private const float ROLE_RESULT_BACKGROUND_ALPHA = 0.9f;
+
+    // 半分
+    private const float HALF = 0.5f;
+    // 二倍
+    private const float DOUBLE = 2.0f;
+
+    // フェード時間
+    private const float FADE_TIME = 0.5f;
+    // フェード後役を表示し始めるまでの時間
+    private const float BEGIN_DRAW_ROLE_DELAY = 0.1f;
+    // 役表示間隔時間
+    private const float DRAW_ROLE_DELAY = 0.5f;
+    // 表示後消し始めるまでの時間
+    private const float CLEAR_ROLE_RESULT_TIME = 2.0f;
 
     // 敵のHpゲージ・プレイヤーのHpゲージ・敵の攻撃ゲージ
     [SerializeField] private Slider _enemyHpGauge;
@@ -35,10 +55,10 @@ public class BattleViewManager : MonoBehaviour
         // 手牌の大きさ
         Vector2 handTileSize = GameData.TILE_SIZE * GameData._handTilesScale;
         // HPゲージの高さの半分
-        float halfHpGaugeHeight = GameData.PLAYER_HP_GAUGE_HEIGHT * 0.5f;
+        float halfHpGaugeHeight = GameData.PLAYER_HP_GAUGE_HEIGHT * HALF;
         // 設定
-        playerHpRect.anchoredPosition = new Vector2(0.0f, GameData.BUTTOM_SAFE_BLANK + handTileSize.y * 2.0f + GameData.HEIGHT_BLANK * 2.0f + halfHpGaugeHeight);
-        playerHpRect.sizeDelta = new Vector2(Screen.width - GameData.MINIMUM_BLANK * 2.0f, GameData.PLAYER_HP_GAUGE_HEIGHT);
+        playerHpRect.anchoredPosition = new Vector2(0.0f, GameData.BUTTOM_SAFE_BLANK + handTileSize.y * DOUBLE + GameData.HEIGHT_BLANK * DOUBLE + halfHpGaugeHeight);
+        playerHpRect.sizeDelta = new Vector2(Screen.width - GameData.MINIMUM_BLANK * DOUBLE, GameData.PLAYER_HP_GAUGE_HEIGHT);
 
         //*** 敵画像の配置・拡縮
         RectTransform enemyImageRect = _enemyImage.GetComponent<RectTransform>();
@@ -51,21 +71,21 @@ public class BattleViewManager : MonoBehaviour
             enemyImageHeight = Screen.width;
         // 設定
         enemyImageRect.sizeDelta = new Vector2(enemyImageHeight, enemyImageHeight);
-        enemyImageRect.anchoredPosition = new Vector2(0.0f, -screenUpHeight - enemyImageHeight * 0.5f);
+        enemyImageRect.anchoredPosition = new Vector2(0.0f, -screenUpHeight - enemyImageHeight * HALF);
 
         //*** 敵UIの配置・拡縮
         RectTransform enemyHpRect = _enemyHpGauge.GetComponent<RectTransform>();
         RectTransform enemyAttackRect = _enemyAttackGauge.GetComponent<RectTransform>();
-        enemyHpRect.sizeDelta = new Vector2(Screen.width - GameData.MINIMUM_BLANK * 2.0f, GameData.ENEMY_HP_GAUGE_HEIGHT);
-        enemyAttackRect.sizeDelta = new Vector2(Screen.width - GameData.MINIMUM_BLANK * 2.0f, GameData.ENEMY_ATTACK_GAUGE_HEIGHT);
-        enemyHpRect.anchoredPosition = new Vector2(0.0f, -GameData.TOP_SAFE_BLANK - GameData.ENEMY_HP_GAUGE_HEIGHT * 0.5f);
-        enemyAttackRect.anchoredPosition = new Vector2(0.0f, -GameData.TOP_SAFE_BLANK - GameData.ENEMY_HP_GAUGE_HEIGHT - GameData.ENEMY_ATTACK_GAUGE_HEIGHT * 0.5f);
+        enemyHpRect.sizeDelta = new Vector2(Screen.width - GameData.MINIMUM_BLANK * DOUBLE, GameData.ENEMY_HP_GAUGE_HEIGHT);
+        enemyAttackRect.sizeDelta = new Vector2(Screen.width - GameData.MINIMUM_BLANK * DOUBLE, GameData.ENEMY_ATTACK_GAUGE_HEIGHT);
+        enemyHpRect.anchoredPosition = new Vector2(0.0f, -GameData.TOP_SAFE_BLANK - GameData.ENEMY_HP_GAUGE_HEIGHT * HALF);
+        enemyAttackRect.anchoredPosition = new Vector2(0.0f, -GameData.TOP_SAFE_BLANK - GameData.ENEMY_HP_GAUGE_HEIGHT - GameData.ENEMY_ATTACK_GAUGE_HEIGHT * HALF);
 
         //*** パズルリザルトテキストの配置・拡縮
         RectTransform roleResultRect = _roleResultText.GetComponent<RectTransform>();
         RectTransform rolePointRect = _rolePointText.GetComponent<RectTransform>();
         // 表示しない横幅
-        float roleUnDrawWidth = Screen.width * 0.1f;
+        float roleUnDrawWidth = Screen.width * ROLE_RESULT_BLANK_RATE;
         // 設定
         roleResultRect.offsetMax = new Vector2(-roleUnDrawWidth, -GameData.TOP_SAFE_BLANK);
         rolePointRect.offsetMin = new Vector2(roleUnDrawWidth, playerHpRect.anchoredPosition.y);
@@ -104,7 +124,7 @@ public class BattleViewManager : MonoBehaviour
         StartCoroutine(ShowRoleResultCoroutine(role, damage));
 
         // フェード時間 + 役表示 + ダメージ表示時間
-        return 1.1f + (role.roleKinds.Count + role.dora > 0 ? 1 : 0) * 0.5f + 2.0f;
+        return FADE_TIME + FADE_TIME + BEGIN_DRAW_ROLE_DELAY + (role.roleKinds.Count + role.dora > 0 ? 1 : 0) * DRAW_ROLE_DELAY + CLEAR_ROLE_RESULT_TIME;
     }
 
     /// <summary>
@@ -151,31 +171,31 @@ public class BattleViewManager : MonoBehaviour
     private IEnumerator ShowRoleResultCoroutine(MahjongLogic.Role role, int damage)
     {
         // フェード
-        _puzzleResultBackground.DOColor(new Color(0.0f, 0.0f, 0.0f, ROLE_RESULT_BACKGROUND_ALPHA), 0.5f);
-        yield return new WaitForSeconds(0.6f);
+        _puzzleResultBackground.DOColor(new Color(0.0f, 0.0f, 0.0f, ROLE_RESULT_BACKGROUND_ALPHA), FADE_TIME);
+        yield return new WaitForSeconds(FADE_TIME + BEGIN_DRAW_ROLE_DELAY);
 
         // 役を1つずつ表示
         for (int i = 0; i < role.roleKinds.Count; i++)
         {
             _roleResultText.text += MahjongLogic.ROLE_NAME[(int)role.roleKinds[i]] + '\n';
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(DRAW_ROLE_DELAY);
         }
         if (role.dora > 0)
         {
             _roleResultText.text += "ドラ" + role.dora + '\n';
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(DRAW_ROLE_DELAY);
         }
 
         // ダメージ表示
         _rolePointText.text = damage + "ダメージ";
-        yield return new WaitForSeconds(2.0f);
+        yield return new WaitForSeconds(CLEAR_ROLE_RESULT_TIME);
 
         // 表示消去
         _roleResultText.text = "";
         _rolePointText.text = "";
 
         // フェード
-        _puzzleResultBackground.DOColor(new Color(0.0f, 0.0f, 0.0f, 0.0f), 0.5f);
-        yield return new WaitForSeconds(0.5f);
+        _puzzleResultBackground.DOColor(new Color(0.0f, 0.0f, 0.0f, 0.0f), FADE_TIME);
+        yield return new WaitForSeconds(FADE_TIME);
     }
 }
