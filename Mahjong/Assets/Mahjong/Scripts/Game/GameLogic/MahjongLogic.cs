@@ -59,6 +59,7 @@ public class MahjongLogic
         // 1ハン
         TUMO = 0,
         PINFU,
+        TANYAO,
         KAZE,
         HAKU,
         HATU,
@@ -93,6 +94,7 @@ public class MahjongLogic
         // 1ハン
         "門前自摸",
         "平和",
+        "断幺九",
         "自風牌",
         "白",
         "發",
@@ -650,6 +652,50 @@ public class MahjongLogic
             if (head != jikaze && head != TILE_KIND.HAKU && head != TILE_KIND.HATU && head != TILE_KIND.TYUN)
             {
                 role.roleKinds.Add(ROLE_KIND.PINFU);
+                role.han += 1;
+            }
+        }
+
+        //*** 断么九
+        // 字牌の数が0かつ、雀頭が字牌or1,9じゃない
+        int headNumber = CalcNumber(head);
+        if (mpst[3].Count == 0 && headMPST != 3 && headNumber != 1 && headNumber != 9)
+        {
+            bool isTanyao = true;
+
+            // 萬,筒,索のみループ
+            for (int i = 0; i < 3 && isTanyao; i++)
+            {
+                // 順子
+                for (int j = 0; j < syunkoMpst[0][i].Count; j++)
+                {
+                    int number = CalcNumber(syunkoMpst[0][i][j][0]);
+
+                    // 最初の牌が1か7なら終了
+                    if (number == 1 || number == 7)
+                    {
+                        isTanyao = false;
+                        break;
+                    }
+                }
+                // 刻子
+                for (int j = 0; j < syunkoMpst[1][i].Count && isTanyao; j++)
+                {
+                    int number = CalcNumber(syunkoMpst[1][i][j][0]);
+
+                    // 最初の牌が1か9なら終了
+                    if (number == 1 || number == 9)
+                    {
+                        isTanyao = false;
+                        break;
+                    }
+                }
+            }
+
+            // タンヤオか
+            if (isTanyao)
+            {
+                role.roleKinds.Add(ROLE_KIND.TANYAO);
                 role.han += 1;
             }
         }
