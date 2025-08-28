@@ -13,7 +13,7 @@ using DG.Tweening;
 public class GameController : MonoBehaviour
 {
     // 勝敗
-    static public bool isWin = false;
+    static public bool _isWin = false;
 
     [SerializeField] private TouchInputHandler _input;
     [SerializeField] private PuzzleViewManager _puzzleViewManager;
@@ -103,8 +103,8 @@ public class GameController : MonoBehaviour
                 break;
             case 0:
                 // パズルステート(牌移動中orマッチ処理中or未実装)
-                PuzzleManager.GameState prevState = _puzzleManager.state;
-                switch (_puzzleManager.state)
+                PuzzleManager.GameState prevState = _puzzleManager._state;
+                switch (_puzzleManager._state)
                 {
                     case PuzzleManager.GameState.READY:
                         UpdateReady();
@@ -201,7 +201,7 @@ public class GameController : MonoBehaviour
     private void UpdateMatch()
     {
         // マッチ処理
-        if (!_isAnimation && _puzzleManager.matchTilesIndex.Count > 0)
+        if (!_isAnimation && _puzzleManager._matchTilesIndex.Count > 0)
         {
             StartCoroutine(ScalePosCoroutine());
         }
@@ -268,7 +268,7 @@ public class GameController : MonoBehaviour
         _battleManager.InitBattle(_enemyData, 2000);
 
         // 敵の画像のセット
-        _battleViewManager.SetEnemyImage(_enemyData.enemyImage);
+        _battleViewManager.SetEnemyImage(_enemyData._enemyImage);
     }
 
     /// <summary>
@@ -284,19 +284,19 @@ public class GameController : MonoBehaviour
         int[] fallY = Enumerable.Range(0, GameData.PUZZLE_BOARD_SIZE_X).Select(_ => 0).ToArray();
 
         // マッチ牌の削除
-        for (int i = 0; i < _puzzleManager.matchTilesIndex.Count; i++)
+        for (int i = 0; i < _puzzleManager._matchTilesIndex.Count; i++)
         {
-            for (int j = 0; j < _puzzleManager.matchTilesIndex[i].Length; j++)
+            for (int j = 0; j < _puzzleManager._matchTilesIndex[i].Length; j++)
             {
-                fallY[_puzzleManager.matchTilesIndex[i][j].x]++;
-                _puzzleViewManager.DestroyPuzzleTile(_puzzleManager.matchTilesIndex[i][j]);
+                fallY[_puzzleManager._matchTilesIndex[i][j].x]++;
+                _puzzleViewManager.DestroyPuzzleTile(_puzzleManager._matchTilesIndex[i][j]);
 
                 // 手牌に追加(必ず3個ずつ追加されると信じて個数チェックはしません！)
-                _handTilesKindList.Add(_puzzleManager.matchTilesKind[i][j]);
+                _handTilesKindList.Add(_puzzleManager._matchTilesKind[i][j]);
             }
 
             // 手牌に加える演出
-            _puzzleViewManager.AddHandTiles(_handTilesKindList, _puzzleManager.matchTilesIndex[i]);
+            _puzzleViewManager.AddHandTiles(_handTilesKindList, _puzzleManager._matchTilesIndex[i]);
 
             // 止める(手牌に加える演出時間)
             yield return new WaitForSeconds(PuzzleViewManager.HAND_TILE_MOVE_TIME + 0.1f);
@@ -331,7 +331,7 @@ public class GameController : MonoBehaviour
                 // ほんとはこのシーン内で勝敗リザルト出したいけど時間がないので一旦そのまま遷移
                 if (_gameState == 1 || _gameState == 2)
                 {
-                    isWin = _gameState == 1;
+                    _isWin = _gameState == 1;
 
                     // 一定時間待機させてからフェードアウト
                     yield return new WaitForSeconds(3.0f);

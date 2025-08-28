@@ -30,7 +30,7 @@ public class BattleManager
     {
         // 各変数の代入
         _enemyData = enemyData;
-        _enemyHp = enemyData.hitPoint;
+        _enemyHp = enemyData._hitPoint;
         _playerMaxHp = playerHp;
         _playerHp = playerHp;
     }
@@ -71,14 +71,14 @@ public class BattleManager
     public float EnemyAttackCheck(float deltaTime)
     {
         _attackDelayCnt += deltaTime;
-        if (_attackDelayCnt >= _enemyData.attackDelay)
+        if (_attackDelayCnt >= _enemyData._attackDelay)
         {
             // 敵の攻撃
-            _playerHp -= _enemyData.attackDamage;
+            _playerHp -= _enemyData._attackDamage;
             if (_playerHp < 0)
                 _playerHp = 0;
 
-            Debug.Log("敵の攻撃 > " + _enemyData.attackDamage + "ダメージ / 残り体力" + (int)((float)_playerHp / _playerMaxHp * 100.0f) + "%");
+            Debug.Log("敵の攻撃 > " + _enemyData._attackDamage + "ダメージ / 残り体力" + (int)((float)_playerHp / _playerMaxHp * 100.0f) + "%");
 
             _attackDelayCnt = 0;
             return (float)_playerHp / _playerMaxHp;
@@ -98,9 +98,9 @@ public class BattleManager
         if (_enemyHp < 0)
             _enemyHp = 0;
 
-        Debug.Log("プレイヤーの攻撃 > " + attackDamage + "ダメージ / 残り体力" + (int)((float)_enemyHp / _enemyData.hitPoint * 100.0f) + "%");
+        Debug.Log("プレイヤーの攻撃 > " + attackDamage + "ダメージ / 残り体力" + (int)((float)_enemyHp / _enemyData._hitPoint * 100.0f) + "%");
 
-        return (float)_enemyHp / _enemyData.hitPoint;
+        return (float)_enemyHp / _enemyData._hitPoint;
     }
 
     /// <summary>
@@ -109,7 +109,7 @@ public class BattleManager
     /// <returns>(1f～0f)</returns>
     public float GetEnemyAttackDelayRate()
     {
-        return _attackDelayCnt / _enemyData.attackDelay;
+        return _attackDelayCnt / _enemyData._attackDelay;
     }
 
     /// <summary>

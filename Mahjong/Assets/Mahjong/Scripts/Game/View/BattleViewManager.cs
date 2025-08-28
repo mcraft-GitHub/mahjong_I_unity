@@ -33,7 +33,7 @@ public class BattleViewManager : MonoBehaviour
         //*** プレイヤーのHPゲージの配置・拡縮
         RectTransform playerHpRect = _playerHpGauge.GetComponent<RectTransform>();
         // 手牌の大きさ
-        Vector2 handTileSize = GameData.TILE_SIZE * GameData.handTilesScale;
+        Vector2 handTileSize = GameData.TILE_SIZE * GameData._handTilesScale;
         // HPゲージの高さの半分
         float halfHpGaugeHeight = GameData.PLAYER_HP_GAUGE_HEIGHT * 0.5f;
         // 設定
@@ -45,7 +45,7 @@ public class BattleViewManager : MonoBehaviour
         // 画面の上の幅
         float screenUpHeight = GameData.TOP_SAFE_BLANK + GameData.ENEMY_HP_GAUGE_HEIGHT + GameData.ENEMY_ATTACK_GAUGE_HEIGHT;
         // 敵画像の縦の大きさ
-        float enemyImageHeight = Screen.height - GameData.uiHeight - screenUpHeight;
+        float enemyImageHeight = Screen.height - GameData._uiHeight - screenUpHeight;
         // 横幅より大きければ、横幅に合わせる
         if (enemyImageHeight > Screen.width)
             enemyImageHeight = Screen.width;
