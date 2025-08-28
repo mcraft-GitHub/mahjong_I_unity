@@ -195,7 +195,6 @@ public class BattleViewManager : MonoBehaviour
         _rolePointText.text = "";
 
         // フェード
-        _puzzleResultBackground.DOColor(new Color(0.0f, 0.0f, 0.0f, 0.0f), FADE_TIME);
-        yield return new WaitForSeconds(FADE_TIME);
+        yield return _puzzleResultBackground.DOColor(new Color(0.0f, 0.0f, 0.0f, 0.0f), FADE_TIME).WaitForCompletion();
     }
 }
