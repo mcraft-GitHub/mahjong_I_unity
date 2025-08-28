@@ -84,6 +84,7 @@ public class GameController : MonoBehaviour
     void Update()
     {
         // switch文 in switch文...
+        // ゲームステート(開始前orゲーム中or終了)
         switch (_gameState)
         {
             case -1:
@@ -101,7 +102,7 @@ public class GameController : MonoBehaviour
                 }
                 break;
             case 0:
-                // ゲーム中
+                // パズルステート(牌移動中orマッチ処理中or未実装)
                 PuzzleManager.GameState prevState = _puzzleManager.state;
                 switch (_puzzleManager.state)
                 {
