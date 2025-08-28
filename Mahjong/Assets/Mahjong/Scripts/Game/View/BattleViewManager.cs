@@ -25,6 +25,9 @@ public class BattleViewManager : MonoBehaviour
     [SerializeField] private TMP_Text _roleResultText;
     [SerializeField] private TMP_Text _rolePointText;
 
+    // ゲーム開始カウント
+    [SerializeField] private TMP_Text _beginCntText;
+
     void Start()
     {
         //*** プレイヤーのHPゲージの配置・拡縮
@@ -74,6 +77,20 @@ public class BattleViewManager : MonoBehaviour
     void Update()
     {
         
+    }
+
+    /// <summary>
+    /// ゲーム開始カウントダウンのセット
+    /// </summary>
+    /// <param name="cnt">カウント, -1なら表示消去</param>
+    public void SetBeginGameCount(int cnt)
+    {
+        if (cnt == -1)
+            _beginCntText.text = "";
+        else if (cnt != int.Parse(_beginCntText.text))
+        {
+            _beginCntText.text = cnt.ToString();
+        }
     }
 
     /// <summary>

@@ -4,16 +4,24 @@ using System.Linq;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 using static UnityEditor.PlayerSettings;
+using DG.Tweening;
 
 // マッチ → 一時停止 → 手牌に追加 → 手牌完成なら攻撃 → まだマッチがあるなら[手牌に追加]へ → 停止解除 → 落ちる → マッチ判定 → 最初へ
 
 public class GameController : MonoBehaviour
 {
+    // 勝敗
+    static public bool isWin = false;
+
     [SerializeField] private TouchInputHandler _input;
     [SerializeField] private PuzzleViewManager _puzzleViewManager;
     [SerializeField] private BattleViewManager _battleViewManager;
     [SerializeField] private EnemyData _enemyData;
+
+    // フェード
+    [SerializeField] private Image _fadeImage;
 
     // パズルマネージャー
     private PuzzleManager _puzzleManager;
@@ -34,8 +42,11 @@ public class GameController : MonoBehaviour
     // 自風カウント(0～3)
     private int _jikazeCnt = 0;
 
-    // ゲームステート(ゲーム中:0, 勝利:1, 敗北:2)
-    int _gameState = 0;
+    // ゲームステート(ゲーム開始前:-1, ゲーム中:0, 勝利:1, 敗北:2)
+    int _gameState = -1;
+
+    // ゲーム開始カウントダウン
+    float _beginCnt = 5.0f;
 
     // ***** READY
     // 移動開始位置
@@ -64,27 +75,55 @@ public class GameController : MonoBehaviour
 
         // ゲームの初期化
         InitGame();
+
+        // フェードイン
+        _fadeImage.color = new Color(0.0f, 0.0f, 0.0f, 1.0f);
+        _fadeImage.DOColor(new Color(0.0f, 0.0f, 0.0f, 0.0f), 1.0f);
     }
 
     void Update()
     {
-        if (_gameState == 0)
+        // switch文 in switch文...
+        switch (_gameState)
         {
-            PuzzleManager.GameState prevState = _puzzleManager.state;
-            switch (_puzzleManager.state)
-            {
-                case PuzzleManager.GameState.READY:
-                    UpdateReady();
-                    break;
-                case PuzzleManager.GameState.MATCH:
-                    UpdateMatch();
-                    break;
-                case PuzzleManager.GameState.PREV_MOVE:
-                    break;
-                case PuzzleManager.GameState.PAUSE:
-                    break;
-            }
-            _prevState = prevState;
+            case -1:
+                // ゲーム開始前
+                _beginCnt -= Time.deltaTime;
+                // 開始
+                if (_beginCnt <= 0)
+                {
+                    _gameState = 0;
+                    _battleViewManager.SetBeginGameCount(-1);
+                }
+                else
+                {
+                    _battleViewManager.SetBeginGameCount((int)_beginCnt);
+                }
+                break;
+            case 0:
+                // ゲーム中
+                PuzzleManager.GameState prevState = _puzzleManager.state;
+                switch (_puzzleManager.state)
+                {
+                    case PuzzleManager.GameState.READY:
+                        UpdateReady();
+                        break;
+                    case PuzzleManager.GameState.MATCH:
+                        UpdateMatch();
+                        break;
+                    case PuzzleManager.GameState.PREV_MOVE:
+                        break;
+                    case PuzzleManager.GameState.PAUSE:
+                        break;
+                }
+                _prevState = prevState;
+                break;
+            case 1:
+            case 2:
+                // ゲーム終了後
+
+                // ほんとはこのシーン内で勝敗リザルト出したいけど時間がないので一旦そのまま遷移
+                break;
         }
     }
 
@@ -287,6 +326,24 @@ public class GameController : MonoBehaviour
 
                 // ゲームオーバーチェック
                 _gameState = _battleManager.IsGameOver();
+
+                // ほんとはこのシーン内で勝敗リザルト出したいけど時間がないので一旦そのまま遷移
+                if (_gameState == 1 || _gameState == 2)
+                {
+                    isWin = _gameState == 1;
+
+                    // 一定時間待機させてからフェードアウト
+                    yield return new WaitForSeconds(3.0f);
+
+                    _fadeImage.DOColor(new Color(0.0f, 0.0f, 0.0f, 1.0f), 1.0f);
+
+                    // フェードしてから遷移
+                    yield return new WaitForSeconds(1.0f);
+
+                    // シーン遷移
+                    Debug.Log("シーン遷移");
+                    yield break;
+                }
 
                 // 手牌クリア
                 _puzzleViewManager.ClearHandTiles();
