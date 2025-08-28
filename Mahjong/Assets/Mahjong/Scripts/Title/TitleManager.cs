@@ -17,11 +17,6 @@ public class TitleManager : MonoBehaviour
         _fadeImage.DOColor(new Color(0.0f, 0.0f, 0.0f, 0.0f), FADE_TIME);
     }
 
-    void Update()
-    {
-        
-    }
-
     public void ToGameScene()
     {
         // ゲームシーンへ遷移
