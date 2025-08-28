@@ -25,13 +25,13 @@ public class TitleManager : MonoBehaviour
     public void ToGameScene()
     {
         // ゲームシーンへ遷移
-        StartCoroutine(LoadScene(1));   
+        StartCoroutine(LoadScene("GameScene"));   
     }
 
-    IEnumerator LoadScene(int buildIndex)
+    IEnumerator LoadScene(string sceneName)
     {
         // フェードアウト
         yield return _fadeImage.DOColor(new Color(0.0f, 0.0f, 0.0f, 1.0f), FADE_TIME).WaitForCompletion();
-        SceneManager.LoadScene(buildIndex);
+        SceneManager.LoadScene(sceneName);
     }
 }
