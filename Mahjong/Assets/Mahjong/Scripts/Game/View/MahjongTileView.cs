@@ -13,7 +13,8 @@ public class MahjongTileView : MonoBehaviour
     
     void Start()
     {
-        _image.sprite = _tileImages.tileImages[(int)_kind];
+        if (_kind != MahjongLogic.TILE_KIND.NONE)
+            _image.sprite = _tileImages._tileImages[(int)_kind];
     }
 
     /// <summary>
@@ -27,12 +28,12 @@ public class MahjongTileView : MonoBehaviour
         if (kind == MahjongLogic.TILE_KIND.NONE)
         {
             // NONEの場合はグレースケール白
-            _image.sprite = _tileImages.tileImages[(int)MahjongLogic.TILE_KIND.HAKU];
+            _image.sprite = _tileImages._tileImages[(int)MahjongLogic.TILE_KIND.HAKU];
             _image.color = Color.gray;
         }
         else
         {
-            _image.sprite = _tileImages.tileImages[(int)_kind];
+            _image.sprite = _tileImages._tileImages[(int)_kind];
         }
     }
 

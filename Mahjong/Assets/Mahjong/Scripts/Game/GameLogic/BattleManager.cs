@@ -3,6 +3,24 @@ using UnityEngine;
 
 public class BattleManager
 {
+    // 役満,三倍満.倍満,跳満,満貫の翻数
+    private const int YAKUMAN_HAN = 13;
+    private const int SANBAIMAN_HAN = 11;
+    private const int BAIMAN_HAN = 8;
+    private const int HANEMAN_HAN = 6;
+    private const int MANGAN_HAN = 4;
+
+    // 役満,三倍満.倍満,跳満,満貫の点数
+    private const int YAKUMAN_POINT = 32000;
+    private const int SANBAIMAN_POINT = 24000;
+    private const int BAIMAN_POINT = 16000;
+    private const int HANEMAN_POINT = 12000;
+    private const int MANGAN_POINT = 8000;
+
+    // 4翻,3翻の時に満貫になる符数
+    private const int FOUR_HAN_MANGAN_FU = 40;
+    private const int THREE_HAN_MANGAN_FU = 70;
+
     // ダメージ倍数(将来的にステージによって変わる可能性も考えて、変更可)
     private float _damageMultiple = 0.1f;
 
@@ -30,7 +48,7 @@ public class BattleManager
     {
         // 各変数の代入
         _enemyData = enemyData;
-        _enemyHp = enemyData.hitPoint;
+        _enemyHp = enemyData._hitPoint;
         _playerMaxHp = playerHp;
         _playerHp = playerHp;
     }
@@ -46,13 +64,13 @@ public class BattleManager
         role.fu = (int)(Math.Ceiling(role.fu / (double)10) * 10);
 
         // 満貫以上は翻数で確定
-        if (role.han >= 13) return (int)(32000 * _damageMultiple);
-        if (role.han >= 11) return (int)(24000 * _damageMultiple);
-        if (role.han >= 8) return (int)(16000 * _damageMultiple);
-        if (role.han >= 6) return (int)(12000 * _damageMultiple);
-        if (role.han >= 5) return (int)(8000 * _damageMultiple);
-        if (role.han >= 4 && role.fu >= 40) return (int)(8000 * _damageMultiple);
-        if (role.han >= 3 && role.fu >= 70) return (int)(8000 * _damageMultiple);
+        if (role.han >= YAKUMAN_HAN) return (int)(YAKUMAN_POINT * (role.han / YAKUMAN_HAN) * _damageMultiple);
+        if (role.han >= SANBAIMAN_HAN) return (int)(SANBAIMAN_POINT * _damageMultiple);
+        if (role.han >= BAIMAN_HAN) return (int)(BAIMAN_POINT * _damageMultiple);
+        if (role.han >= HANEMAN_HAN) return (int)(HANEMAN_POINT * _damageMultiple);
+        if (role.han >= (MANGAN_HAN + 1)) return (int)(MANGAN_POINT * _damageMultiple);
+        if (role.han >= MANGAN_HAN && role.fu >= FOUR_HAN_MANGAN_FU) return (int)(MANGAN_POINT * _damageMultiple);
+        if (role.han >= (MANGAN_HAN - 1) && role.fu >= THREE_HAN_MANGAN_FU) return (int)(MANGAN_POINT * _damageMultiple);
 
         // 点数計算
         double damage = role.fu * 4 * Math.Pow(2, role.han + 2);
@@ -71,14 +89,14 @@ public class BattleManager
     public float EnemyAttackCheck(float deltaTime)
     {
         _attackDelayCnt += deltaTime;
-        if (_attackDelayCnt >= _enemyData.attackDelay)
+        if (_attackDelayCnt >= _enemyData._attackDelay)
         {
             // 敵の攻撃
-            _playerHp -= _enemyData.attackDamage;
+            _playerHp -= _enemyData._attackDamage;
             if (_playerHp < 0)
                 _playerHp = 0;
 
-            Debug.Log("敵の攻撃 > " + _enemyData.attackDamage + "ダメージ / 残り体力" + (int)((float)_playerHp / _playerMaxHp * 100.0f) + "%");
+            Debug.Log("敵の攻撃 > " + _enemyData._attackDamage + "ダメージ / 残り体力" + (int)((float)_playerHp / _playerMaxHp * 100.0f) + "%");
 
             _attackDelayCnt = 0;
             return (float)_playerHp / _playerMaxHp;
@@ -98,9 +116,9 @@ public class BattleManager
         if (_enemyHp < 0)
             _enemyHp = 0;
 
-        Debug.Log("プレイヤーの攻撃 > " + attackDamage + "ダメージ / 残り体力" + (int)((float)_enemyHp / _enemyData.hitPoint * 100.0f) + "%");
+        Debug.Log("プレイヤーの攻撃 > " + attackDamage + "ダメージ / 残り体力" + (int)((float)_enemyHp / _enemyData._hitPoint * 100.0f) + "%");
 
-        return (float)_enemyHp / _enemyData.hitPoint;
+        return (float)_enemyHp / _enemyData._hitPoint;
     }
 
     /// <summary>
@@ -109,7 +127,7 @@ public class BattleManager
     /// <returns>(1f～0f)</returns>
     public float GetEnemyAttackDelayRate()
     {
-        return _attackDelayCnt / _enemyData.attackDelay;
+        return _attackDelayCnt / _enemyData._attackDelay;
     }
 
     /// <summary>
