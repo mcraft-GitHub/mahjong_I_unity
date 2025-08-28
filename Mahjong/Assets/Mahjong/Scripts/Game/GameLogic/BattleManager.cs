@@ -46,7 +46,7 @@ public class BattleManager
         role.fu = (int)(Math.Ceiling(role.fu / (double)10) * 10);
 
         // 満貫以上は翻数で確定
-        if (role.han >= 13) return (int)(32000 * _damageMultiple);
+        if (role.han >= 13) return (int)(32000 * (role.han / 13) * _damageMultiple);
         if (role.han >= 11) return (int)(24000 * _damageMultiple);
         if (role.han >= 8) return (int)(16000 * _damageMultiple);
         if (role.han >= 6) return (int)(12000 * _damageMultiple);

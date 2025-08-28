@@ -1,14 +1,29 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 using DG.Tweening;
+using System.Xml;
+using System.Collections;
 
 public class BattleViewManager : MonoBehaviour
 {
+    private const float ROLE_POINT_TEXT_HEIGHT = 240.0f;
+    private const float ROLE_POINT_TO_RESULT_BLANK = 20.0f;
+
+    private const float ROLE_RESULT_BACKGROUND_ALPHA = 0.9f;
+
+    // 敵のHpゲージ・プレイヤーのHpゲージ・敵の攻撃ゲージ
     [SerializeField] private Slider _enemyHpGauge;
     [SerializeField] private Slider _playerHpGauge;
     [SerializeField] private Slider _enemyAttackGauge;
 
+    // 敵画像
     [SerializeField] private Image _enemyImage;
+
+    // パズル(役)リザルトの背景・役テキスト・点数テキスト
+    [SerializeField] private Image _puzzleResultBackground;
+    [SerializeField] private TMP_Text _roleResultText;
+    [SerializeField] private TMP_Text _rolePointText;
 
     void Start()
     {
@@ -25,7 +40,7 @@ public class BattleViewManager : MonoBehaviour
         //*** 敵画像の配置・拡縮
         RectTransform enemyImageRect = _enemyImage.GetComponent<RectTransform>();
         // 画面の上の幅
-        float screenUpHeight = GameData.UP_SAFE_BLANK + GameData.ENEMY_HP_GAUGE_HEIGHT + GameData.ENEMY_ATTACK_GAUGE_HEIGHT;
+        float screenUpHeight = GameData.TOP_SAFE_BLANK + GameData.ENEMY_HP_GAUGE_HEIGHT + GameData.ENEMY_ATTACK_GAUGE_HEIGHT;
         // 敵画像の縦の大きさ
         float enemyImageHeight = Screen.height - GameData.uiHeight - screenUpHeight;
         // 横幅より大きければ、横幅に合わせる
@@ -40,13 +55,39 @@ public class BattleViewManager : MonoBehaviour
         RectTransform enemyAttackRect = _enemyAttackGauge.GetComponent<RectTransform>();
         enemyHpRect.sizeDelta = new Vector2(Screen.width - GameData.MINIMUM_BLANK * 2.0f, GameData.ENEMY_HP_GAUGE_HEIGHT);
         enemyAttackRect.sizeDelta = new Vector2(Screen.width - GameData.MINIMUM_BLANK * 2.0f, GameData.ENEMY_ATTACK_GAUGE_HEIGHT);
-        enemyHpRect.anchoredPosition = new Vector2(0.0f, -GameData.UP_SAFE_BLANK - GameData.ENEMY_HP_GAUGE_HEIGHT * 0.5f);
-        enemyAttackRect.anchoredPosition = new Vector2(0.0f, -GameData.UP_SAFE_BLANK - GameData.ENEMY_HP_GAUGE_HEIGHT - GameData.ENEMY_ATTACK_GAUGE_HEIGHT * 0.5f);
+        enemyHpRect.anchoredPosition = new Vector2(0.0f, -GameData.TOP_SAFE_BLANK - GameData.ENEMY_HP_GAUGE_HEIGHT * 0.5f);
+        enemyAttackRect.anchoredPosition = new Vector2(0.0f, -GameData.TOP_SAFE_BLANK - GameData.ENEMY_HP_GAUGE_HEIGHT - GameData.ENEMY_ATTACK_GAUGE_HEIGHT * 0.5f);
+
+        //*** パズルリザルトテキストの配置・拡縮
+        RectTransform roleResultRect = _roleResultText.GetComponent<RectTransform>();
+        RectTransform rolePointRect = _rolePointText.GetComponent<RectTransform>();
+        // 表示しない横幅
+        float roleUnDrawWidth = Screen.width * 0.1f;
+        // 設定
+        roleResultRect.offsetMax = new Vector2(-roleUnDrawWidth, -GameData.TOP_SAFE_BLANK);
+        rolePointRect.offsetMin = new Vector2(roleUnDrawWidth, playerHpRect.anchoredPosition.y);
+        rolePointRect.offsetMax = new Vector2(-roleUnDrawWidth, -(Screen.height - playerHpRect.anchoredPosition.y - ROLE_POINT_TEXT_HEIGHT));
+        roleResultRect.offsetMin = new Vector2(roleUnDrawWidth, playerHpRect.anchoredPosition.y + ROLE_POINT_TEXT_HEIGHT + ROLE_POINT_TO_RESULT_BLANK);
+
     }
 
     void Update()
     {
         
+    }
+
+    /// <summary>
+    /// 役攻撃演出
+    /// </summary>
+    /// <param name="role">役情報</param>
+    /// <param name="damage">ダメージ</param>
+    /// <returns>演出時間</returns>
+    public float BeginRoleResult(MahjongLogic.Role role, int damage)
+    {
+        StartCoroutine(ShowRoleResultCoroutine(role, damage));
+
+        // フェード時間 + 役表示 + ダメージ表示時間
+        return 1.1f + (role.roleKinds.Count + role.dora > 0 ? 1 : 0) * 0.5f + 2.0f;
     }
 
     /// <summary>
@@ -83,5 +124,41 @@ public class BattleViewManager : MonoBehaviour
     public void SetEnemyImage(Sprite image)
     {
         _enemyImage.sprite = image;
+    }
+
+    /// <summary>
+    /// 役攻撃演出コルーチン
+    /// </summary>
+    /// <param name="role">役情報</param>
+    /// <param name="damage">ダメージ</param>
+    private IEnumerator ShowRoleResultCoroutine(MahjongLogic.Role role, int damage)
+    {
+        // フェード
+        _puzzleResultBackground.DOColor(new Color(0.0f, 0.0f, 0.0f, ROLE_RESULT_BACKGROUND_ALPHA), 0.5f);
+        yield return new WaitForSeconds(0.6f);
+
+        // 役を1つずつ表示
+        for (int i = 0; i < role.roleKinds.Count; i++)
+        {
+            _roleResultText.text += MahjongLogic.ROLE_NAME[(int)role.roleKinds[i]] + '\n';
+            yield return new WaitForSeconds(0.5f);
+        }
+        if (role.dora > 0)
+        {
+            _roleResultText.text += "ドラ" + role.dora + '\n';
+            yield return new WaitForSeconds(0.5f);
+        }
+
+        // ダメージ表示
+        _rolePointText.text = damage + "ダメージ";
+        yield return new WaitForSeconds(2.0f);
+
+        // 表示消去
+        _roleResultText.text = "";
+        _rolePointText.text = "";
+
+        // フェード
+        _puzzleResultBackground.DOColor(new Color(0.0f, 0.0f, 0.0f, 0.0f), 0.5f);
+        yield return new WaitForSeconds(0.5f);
     }
 }

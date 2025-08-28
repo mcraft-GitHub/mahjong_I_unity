@@ -12,7 +12,7 @@ public class GameData
     static public readonly float MAX_HEIGHT_UI_RATE = 0.65f;
 
     // 画面上の空白のサイズ
-    static public readonly float UP_SAFE_BLANK = 64.0f;
+    static public readonly float TOP_SAFE_BLANK = 64.0f;
 
     // 画面下の空白のサイズ
     static public readonly float BUTTOM_SAFE_BLANK = 36.0f;

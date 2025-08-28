@@ -273,8 +273,11 @@ public class GameController : MonoBehaviour
                 // ダメージの計算
                 int damage = _battleManager.CalcDamage(role);
 
-                // 止める(手牌に加える演出時間 + 攻撃演出時間)
-                yield return new WaitForSeconds(0.5f);
+                // 役演出開始
+                float resultTime = _battleViewManager.BeginRoleResult(role, damage);
+
+                // 止める
+                yield return new WaitForSeconds(resultTime + 0.3f);
 
                 // プレイヤーの攻撃
                 float enemyHpRate = _battleManager.PlayerAttackCheck(damage);
