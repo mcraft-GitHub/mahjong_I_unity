@@ -18,6 +18,11 @@ public class GameController : MonoBehaviour
     // 風牌の種類
     private const int KAZEHAI_KIND_NUM = 4;
 
+    // フェードの時間
+    private const float FADE_TIME = 1.0f;
+    // ゲーム終了～フェードの時間
+    private const float GAME_OVER_TO_FADE_TIME = 3.0f;
+
     [SerializeField] private TouchInputHandler _input;
     [SerializeField] private PuzzleViewManager _puzzleViewManager;
     [SerializeField] private BattleViewManager _battleViewManager;
@@ -81,7 +86,7 @@ public class GameController : MonoBehaviour
 
         // フェードイン
         _fadeImage.color = new Color(0.0f, 0.0f, 0.0f, 1.0f);
-        _fadeImage.DOColor(new Color(0.0f, 0.0f, 0.0f, 0.0f), 1.0f);
+        _fadeImage.DOColor(new Color(0.0f, 0.0f, 0.0f, 0.0f), FADE_TIME);
     }
 
     void Update()
@@ -194,7 +199,11 @@ public class GameController : MonoBehaviour
 
             // ゲームオーバーチェック
             _gameState = _battleManager.IsGameOver();
-            _gameState = _battleManager.IsGameOver();
+            if (_gameState == 1 || _gameState == 2)
+            {
+                // ゲーム終了処理
+                StartCoroutine(GameOverProcessCoroutine());
+            }
         }
     }
 
@@ -334,18 +343,7 @@ public class GameController : MonoBehaviour
                 // ほんとはこのシーン内で勝敗リザルト出したいけど時間がないので一旦そのまま遷移
                 if (_gameState == 1 || _gameState == 2)
                 {
-                    _isWin = _gameState == 1;
-
-                    // 一定時間待機させてからフェードアウト
-                    yield return new WaitForSeconds(3.0f);
-
-                    _fadeImage.DOColor(new Color(0.0f, 0.0f, 0.0f, 1.0f), 1.0f);
-
-                    // フェードしてから遷移
-                    yield return new WaitForSeconds(1.0f);
-
-                    // シーン遷移
-                    Debug.Log("シーン遷移");
+                    StartCoroutine(GameOverProcessCoroutine());
                     yield break;
                 }
 
@@ -375,5 +373,23 @@ public class GameController : MonoBehaviour
 
         // マッチ終了
         _puzzleManager.FinishMatch();
+    }
+
+    /// <summary>
+    /// ゲーム終了時の処理
+    /// </summary>
+    /// /// <returns>IEnumerator</returns>
+    IEnumerator GameOverProcessCoroutine()
+    {
+        _isWin = _gameState == 1;
+
+        // 一定時間待機させてからフェードアウト
+        yield return new WaitForSeconds(GAME_OVER_TO_FADE_TIME);
+
+        // フェードしてから遷移
+        yield return _fadeImage.DOColor(new Color(0.0f, 0.0f, 0.0f, 1.0f), FADE_TIME).WaitForCompletion();
+
+        // シーン遷移
+        Debug.Log("シーン遷移");
     }
 }
