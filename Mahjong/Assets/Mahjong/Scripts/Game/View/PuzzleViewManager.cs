@@ -103,6 +103,11 @@ public class PuzzleViewManager : MonoBehaviour
         }
     }
 
+    void Update()
+    {
+        
+    }
+
     /// <summary>
     /// 必要クラスのセット
     /// </summary>
