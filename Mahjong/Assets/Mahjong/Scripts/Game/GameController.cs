@@ -7,6 +7,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using static UnityEditor.PlayerSettings;
 using DG.Tweening;
+using UnityEngine.SceneManagement;
 
 // マッチ → 一時停止 → 手牌に追加 → 手牌完成なら攻撃 → まだマッチがあるなら[手牌に追加]へ → 停止解除 → 落ちる → マッチ判定 → 最初へ
 
@@ -390,6 +391,6 @@ public class GameController : MonoBehaviour
         yield return _fadeImage.DOColor(new Color(0.0f, 0.0f, 0.0f, 1.0f), FADE_TIME).WaitForCompletion();
 
         // シーン遷移
-        Debug.Log("シーン遷移");
+        SceneManager.LoadScene("resultScene");
     }
 }
