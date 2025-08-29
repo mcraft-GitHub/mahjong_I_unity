@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.NetworkInformation;
-using NUnit.Framework;
 using UnityEngine;
-using static UnityEngine.InputManagerEntry;
 
 public class MahjongLogic
 {
