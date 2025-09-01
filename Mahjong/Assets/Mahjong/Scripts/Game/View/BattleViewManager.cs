@@ -2,7 +2,6 @@
 using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
-using System.Xml;
 using System.Collections;
 
 public class BattleViewManager : MonoBehaviour

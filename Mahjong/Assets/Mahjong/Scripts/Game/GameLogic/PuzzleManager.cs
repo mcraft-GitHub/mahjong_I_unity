@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.Rendering.VolumeComponent;
 
 public class PuzzleManager
 {
