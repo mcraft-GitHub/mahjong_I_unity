@@ -19,5 +19,5 @@ public class StageData : ScriptableObject
     // 使用牌
     public List<MahjongLogic.TILE_KIND> _useTilesKind;
 
-    // 報酬(未定)
+    // TODO: 報酬(未定)
 }
