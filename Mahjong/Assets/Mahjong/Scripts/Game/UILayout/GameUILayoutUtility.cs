@@ -140,9 +140,12 @@ public static class GameUILayoutUtility
 
         // 並べられたパズル牌の4隅座標を計算
         _puzzleBoardRect = new Rect(
-            _puzzleTilesFinalSize.x * -GameData.PUZZLE_BOARD_SIZE_X * HALF_SCALE,
-            _calcPuzzleBlank + _calcHeightBlank + _calcPlayerHpGaugeHeight + _calcHeightBlank + _calcHeightBlank + _calcButtomSafeBlank + _handTilesFinalSize.y * VERTICAL_HAND_TILES_NUM,
-            _puzzleTilesFinalSize.x * GameData.PUZZLE_BOARD_SIZE_X, _puzzleTilesFinalSize.y * GameData.PUZZLE_BOARD_SIZE_Y);
+            _puzzleTilesFinalSize.x * -GameData.PUZZLE_BOARD_SIZE_X * HALF_SCALE, 
+            //   パズル枠            空白                 HPゲージ                 空白             頭・ドラ・自風　　　　　　空白                 手牌                 画面下空白
+            _calcPuzzleBlank + _calcHeightBlank + _calcPlayerHpGaugeHeight + _calcHeightBlank + _handTilesFinalSize.y + _calcHeightBlank + _handTilesFinalSize.y + _calcButtomSafeBlank,
+            _puzzleTilesFinalSize.x * GameData.PUZZLE_BOARD_SIZE_X, 
+            _puzzleTilesFinalSize.y * GameData.PUZZLE_BOARD_SIZE_Y
+        );
 
         // パズル牌の基本位置(0,0)を計算
         _puzzleTileBasePos = new Vector2(_puzzleBoardRect.xMin + _puzzleTilesFinalSize.x * HALF_SCALE, _puzzleBoardRect.yMax + -_puzzleTilesFinalSize.y * HALF_SCALE);
