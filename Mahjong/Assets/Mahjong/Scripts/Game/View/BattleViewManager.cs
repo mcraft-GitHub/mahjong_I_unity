@@ -6,21 +6,8 @@ using System.Collections;
 
 public class BattleViewManager : MonoBehaviour
 {
-    // 点数テキストの高さ
-    private const float ROLE_POINT_TEXT_HEIGHT = 240.0f;
-    // 役テキストと点数テキストの隙間の高さ
-    private const float ROLE_POINT_TO_RESULT_BLANK = 20.0f;
-
-    // 役テキスト・点数テキストの横の空白の割合
-    private const float ROLE_RESULT_BLANK_RATE = 0.1f;
-
     // パズルリザルトの背景のアルファ値
     private const float ROLE_RESULT_BACKGROUND_ALPHA = 0.9f;
-
-    // 半分
-    private const float HALF = 0.5f;
-    // 二倍
-    private const float DOUBLE = 2.0f;
 
     // フェード時間
     private const float FADE_TIME = 0.5f;
@@ -51,46 +38,21 @@ public class BattleViewManager : MonoBehaviour
     {
         //*** プレイヤーのHPゲージの配置・拡縮
         RectTransform playerHpRect = _playerHpGauge.GetComponent<RectTransform>();
-        // 手牌の大きさ
-        Vector2 handTileSize = GameData.TILE_SIZE * GameData._handTilesScale;
-        // HPゲージの高さの半分
-        float halfHpGaugeHeight = GameData.PLAYER_HP_GAUGE_HEIGHT * HALF;
-        // 設定
-        playerHpRect.anchoredPosition = new Vector2(0.0f, GameData.BUTTOM_SAFE_BLANK + handTileSize.y * DOUBLE + GameData.HEIGHT_BLANK * DOUBLE + halfHpGaugeHeight);
-        playerHpRect.sizeDelta = new Vector2(Screen.width - GameData.MINIMUM_BLANK * DOUBLE, GameData.PLAYER_HP_GAUGE_HEIGHT);
+        playerHpRect.anchoredPosition = new Vector2(0.0f, GameUILayoutUtility._playerHpGaugePosY);
+        playerHpRect.sizeDelta = new Vector2(GameUILayoutUtility._gaugeWidth, GameUILayoutUtility._calcPlayerHpGaugeHeight);
 
         //*** 敵画像の配置・拡縮
         RectTransform enemyImageRect = _enemyImage.GetComponent<RectTransform>();
-        // 画面の上の幅
-        float screenUpHeight = GameData.TOP_SAFE_BLANK + GameData.ENEMY_HP_GAUGE_HEIGHT + GameData.ENEMY_ATTACK_GAUGE_HEIGHT;
-        // 敵画像の縦の大きさ
-        float enemyImageHeight = Screen.height - GameData._uiHeight - screenUpHeight;
-        // 横幅より大きければ、横幅に合わせる
-        if (enemyImageHeight > Screen.width)
-            enemyImageHeight = Screen.width;
-        // 設定
-        enemyImageRect.sizeDelta = new Vector2(enemyImageHeight, enemyImageHeight);
-        enemyImageRect.anchoredPosition = new Vector2(0.0f, -screenUpHeight - enemyImageHeight * HALF);
+        enemyImageRect.sizeDelta = new Vector2(GameUILayoutUtility._enemyImageSize, GameUILayoutUtility._enemyImageSize);
+        enemyImageRect.anchoredPosition = new Vector2(0.0f, GameUILayoutUtility._enemyImagePosY);
 
         //*** 敵UIの配置・拡縮
         RectTransform enemyHpRect = _enemyHpGauge.GetComponent<RectTransform>();
         RectTransform enemyAttackRect = _enemyAttackGauge.GetComponent<RectTransform>();
-        enemyHpRect.sizeDelta = new Vector2(Screen.width - GameData.MINIMUM_BLANK * DOUBLE, GameData.ENEMY_HP_GAUGE_HEIGHT);
-        enemyAttackRect.sizeDelta = new Vector2(Screen.width - GameData.MINIMUM_BLANK * DOUBLE, GameData.ENEMY_ATTACK_GAUGE_HEIGHT);
-        enemyHpRect.anchoredPosition = new Vector2(0.0f, -GameData.TOP_SAFE_BLANK - GameData.ENEMY_HP_GAUGE_HEIGHT * HALF);
-        enemyAttackRect.anchoredPosition = new Vector2(0.0f, -GameData.TOP_SAFE_BLANK - GameData.ENEMY_HP_GAUGE_HEIGHT - GameData.ENEMY_ATTACK_GAUGE_HEIGHT * HALF);
-
-        //*** パズルリザルトテキストの配置・拡縮
-        RectTransform roleResultRect = _roleResultText.GetComponent<RectTransform>();
-        RectTransform rolePointRect = _rolePointText.GetComponent<RectTransform>();
-        // 表示しない横幅
-        float roleUnDrawWidth = Screen.width * ROLE_RESULT_BLANK_RATE;
-        // 設定
-        roleResultRect.offsetMax = new Vector2(-roleUnDrawWidth, -GameData.TOP_SAFE_BLANK);
-        rolePointRect.offsetMin = new Vector2(roleUnDrawWidth, playerHpRect.anchoredPosition.y);
-        rolePointRect.offsetMax = new Vector2(-roleUnDrawWidth, -(Screen.height - playerHpRect.anchoredPosition.y - ROLE_POINT_TEXT_HEIGHT));
-        roleResultRect.offsetMin = new Vector2(roleUnDrawWidth, playerHpRect.anchoredPosition.y + ROLE_POINT_TEXT_HEIGHT + ROLE_POINT_TO_RESULT_BLANK);
-
+        enemyHpRect.sizeDelta = new Vector2(GameUILayoutUtility._gaugeWidth, GameUILayoutUtility._calcEnemyHpGaugeHeight);
+        enemyAttackRect.sizeDelta = new Vector2(GameUILayoutUtility._gaugeWidth, GameUILayoutUtility._calcEnemyAttackGaugeHeight);
+        enemyHpRect.anchoredPosition = new Vector2(0.0f, GameUILayoutUtility._enemyHpGaugePosY);
+        enemyAttackRect.anchoredPosition = new Vector2(0.0f, GameUILayoutUtility._enemyAttackGaugePosY);
     }
 
     void Update()

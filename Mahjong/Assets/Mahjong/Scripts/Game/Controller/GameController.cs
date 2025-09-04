@@ -56,7 +56,7 @@ public class GameController : MonoBehaviour
 
     // ***** READY
     // 移動開始位置
-    private Vector2Int? _currentMoveIndex = null;
+    private (int x, int y)? _currentMoveIndex = null;
 
     // ***** MATCH
     // アニメーション中か
@@ -65,7 +65,7 @@ public class GameController : MonoBehaviour
     void Awake()
     {
         // 麻雀牌のスケールと隙間の計算
-        GameData.CalcTileScaleAndMargin();
+        GameUILayoutUtility.CalcUILayout();
     }
 
     void Start()
@@ -164,7 +164,7 @@ public class GameController : MonoBehaviour
             }
 
             // 選択パズル牌の計算
-            Vector2Int? newIndex = _puzzleViewManager.CalcTouchPuzzleTileIndex(_input.GetCurrentDragPosition());
+            (int x, int y)? newIndex = _puzzleViewManager.CalcTouchPuzzleTileIndex(_input.GetCurrentDragPosition());
             // 移動終了
             if (!newIndex.HasValue)
             {
