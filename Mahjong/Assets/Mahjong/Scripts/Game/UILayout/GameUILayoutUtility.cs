@@ -1,121 +1,121 @@
 ﻿using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 
-public static class GameUILayoutUtility
+public class GameUILayoutUtility
 {
     // ***** Public変数
     // 手牌・パズル牌の最終サイズ(基本サイズ x スケール)
-    static public Vector2 _handTilesFinalSize = Vector2.zero;
-    static public Vector2 _puzzleTilesFinalSize = Vector2.zero;
+    public static Vector2 _handTilesFinalSize = Vector2.zero;
+    public static Vector2 _puzzleTilesFinalSize = Vector2.zero;
 
     // 手牌・パズル牌のスケール
-    static public float _handTilesScale = 2.0f;
-    static public float _puzzleTilesScale = 3.0f;
+    public static float _handTilesScale = 2.0f;
+    public static float _puzzleTilesScale = 3.0f;
 
     // パズル牌の見た目スケール
-    static public float _puzzleTilesViewScale = 1.0f;
+    public static float _puzzleTilesViewScale = 1.0f;
 
     // 並べられたパズル牌の4隅座標
-    static public Rect _puzzleBoardRect = Rect.zero;
+    public static Rect _puzzleBoardRect = Rect.zero;
 
     // パズル盤面の枠画像スケール
-    static public float _puzzleFrameScale = 1.0f;
+    public static float _puzzleFrameScale = 1.0f;
 
     // 補助表示牌のY座標
-    static public float _auxiliaryTilesPosY = 0.0f;
+    public static float _auxiliaryTilesPosY = 0.0f;
 
     // 自風表示牌のX座標
-    static public float _jikazeTilesPosX = 0.0f;
+    public static float _jikazeTilesPosX = 0.0f;
 
     // ドラ表示牌のX座標
-    static public float _doraTilesPosX = 0.0f;
+    public static float _doraTilesPosX = 0.0f;
 
     // 雀頭表示牌のX座標
-    static public float[] _headTilesPosX = { 0.0f, 0.0f };
+    public static float[] _headTilesPosX = { 0.0f, 0.0f };
 
     // 割合計算済みプレイヤーHPゲージの縦のサイズ
-    static public float _calcPlayerHpGaugeHeight = 24.0f;
+    public static float _calcPlayerHpGaugeHeight = 24.0f;
 
     // 割合計算済み敵HPゲージの縦のサイズ
-    static public float _calcEnemyHpGaugeHeight = 42.0f;
+    public static float _calcEnemyHpGaugeHeight = 42.0f;
 
     // 割合計算済み敵攻撃ゲージの縦のサイズ
-    static public float _calcEnemyAttackGaugeHeight = 24.0f;
+    public static float _calcEnemyAttackGaugeHeight = 24.0f;
 
     // バトルゲージの幅のサイズ
-    static public float _gaugeWidth = 0.0f;
+    public static float _gaugeWidth = 0.0f;
 
     // プレイヤーHPゲージのY座標
-    static public float _playerHpGaugePosY = 0.0f;
+    public static float _playerHpGaugePosY = 0.0f;
 
     // 敵HPゲージのY座標
-    static public float _enemyHpGaugePosY = 0.0f;
+    public static float _enemyHpGaugePosY = 0.0f;
 
     // 敵攻撃ゲージのY座標
-    static public float _enemyAttackGaugePosY = 0.0f;
+    public static float _enemyAttackGaugePosY = 0.0f;
 
     // 敵画像のサイズ
-    static public float _enemyImageSize = 1.0f;
+    public static float _enemyImageSize = 1.0f;
 
     // 敵画像のY座標
-    static public float _enemyImagePosY = 0.0f;
+    public static float _enemyImagePosY = 0.0f;
 
     // ***** Private変数
     // 半分のサイズ
-    static private readonly float HALF_SCALE = 0.5f;
+    private static readonly float HALF_SCALE = 0.5f;
 
     // 縦に並ぶ手牌の数
-    static private readonly int VERTICAL_HAND_TILES_NUM = 2;
+    private static readonly int VERTICAL_HAND_TILES_NUM = 2;
 
     // 両サイド
-    static private readonly int BOTH_SIDES = 2;
+    private static readonly int BOTH_SIDES = 2;
 
     // タイルの基本サイズ
-    static private readonly Vector2 TILE_SIZE = new Vector2(47.0f, 63.0f);
+    private static readonly Vector2 TILE_SIZE = new Vector2(47.0f, 63.0f);
 
     // ゲームのUIレイアウトデータ
-    static private GameUILayoutData _data;
+    private static GameUILayoutData _data;
 
     // 既に計算を行っているか(一度だけでいいからね)
-    static private bool _isAlreadyCalc = false;
+    private static bool _isAlreadyCalc = false;
 
     // 基準画面サイズと実画面サイズの割合
-    static private float _screenRate = 1.0f;
+    private static float _screenRate = 1.0f;
 
     // パズルUI部分の合計の高さ
-    static private float _uiHeight = 0.0f;
+    private static float _uiHeight = 0.0f;
 
     // 並べられた手牌・パズル牌の横の余白(最低限の余白 + 余白 = 最終余白)
-    static private float _handTilesMargin = 0.0f;
-    static private float _puzzleTilesMargin = 0.0f;
+    private static float _handTilesMargin = 0.0f;
+    private static float _puzzleTilesMargin = 0.0f;
 
     // 割合計算済み画面上の空白のサイズ
-    static private float _calcTopSafeBlank = 64.0f;
+    private static float _calcTopSafeBlank = 64.0f;
 
     // 割合計算済み画面下の空白のサイズ
-    static private float _calcButtomSafeBlank = 36.0f;
+    private static float _calcButtomSafeBlank = 36.0f;
 
     // 割合計算済み画面左右の空白のサイズ
-    static private float _calcSideSafeBlank = 24.0f;
+    private static float _calcSideSafeBlank = 24.0f;
 
     // 割合計算済みUI同士の縦の空白のサイズ
-    static private float _calcHeightBlank = 24.0f;
+    private static float _calcHeightBlank = 24.0f;
 
     // 割合計算済みパズル盤面の枠の幅のサイズ
-    static private float _calcPuzzleBlank = 32.0f;
+    private static float _calcPuzzleBlank = 32.0f;
 
     // 割合計算済み自風牌とドラ牌の隙間のサイズ
-    static private float _calcJikazeDoraBlank = 32.0f;
+    private static float _calcJikazeDoraBlank = 32.0f;
 
     // パズル牌の基本位置(0,0)
-    static public Vector2 _puzzleTileBasePos = Vector2.zero;
+    public static Vector2 _puzzleTileBasePos = Vector2.zero;
 
 
     // ***** Public関数
     /// <summary>
     /// ゲーム部のUIのレイアウト計算
     /// </summary>
-    static public void CalcUILayout()
+    public static void CalcUILayout()
     {
         // 既に計算を行っていれば終了
         if (_isAlreadyCalc)
@@ -166,7 +166,7 @@ public static class GameUILayoutUtility
     /// <param name="indexX">計算牌の盤面Xインデックス</param>
     /// <param name="indexY">計算牌の盤面Yインデックス</param>
     /// <returns>画面上の座標</returns>
-    static public Vector2 CalcPuzzleTilePosFromIndex(int indexX, int indexY)
+    public static Vector2 CalcPuzzleTilePosFromIndex(int indexX, int indexY)
     {
         return new Vector2(_puzzleTileBasePos.x + indexX * _puzzleTilesFinalSize.x, _puzzleTileBasePos.y - indexY * _puzzleTilesFinalSize.y);
     }
@@ -176,7 +176,7 @@ public static class GameUILayoutUtility
     /// </summary>
     /// <param name="index">計算牌の手牌インデックス</param>
     /// <returns>画面上の座標</returns>
-    static public Vector2 CalcHandTilePosFromIndex(int index)
+    public static Vector2 CalcHandTilePosFromIndex(int index)
     {
         // 画面の左端
         float screanLeftEnd = -Screen.width * HALF_SCALE;
@@ -190,7 +190,7 @@ public static class GameUILayoutUtility
     /// <summary>
     /// 各種UIサイズを画面の割合に適応させる
     /// </summary>
-    static private void CalcUISizeWithScreenRate()
+    private static void CalcUISizeWithScreenRate()
     {
         _calcTopSafeBlank           = _data.TopSafeBlank            * _screenRate;
         _calcButtomSafeBlank        = _data.ButtomSafeBlank         * _screenRate;
@@ -206,7 +206,7 @@ public static class GameUILayoutUtility
     /// <summary>
     /// 画面サイズから、牌のスケールと余白を計算する
     /// </summary>
-    static private void CalcTileScaleAndMargin()
+    private static void CalcTileScaleAndMargin()
     {
         _handTilesMargin = 0.0f;
         _puzzleTilesMargin = 0.0f;
@@ -265,7 +265,7 @@ public static class GameUILayoutUtility
     /// <summary>
     /// バトルUIのレイアウトを計算する
     /// </summary>
-    static private void CalcBattleUILayout()
+    private static void CalcBattleUILayout()
     {
         // 画面の左端
         float screanLeftEnd = -Screen.width * HALF_SCALE;
