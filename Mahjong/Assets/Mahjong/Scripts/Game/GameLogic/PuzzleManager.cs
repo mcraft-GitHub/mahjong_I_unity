@@ -208,8 +208,8 @@ public class PuzzleManager
         isMatchTile2 = MatchCheck(tile2.x, tile2.y);
 
         // 入れ替えた牌の周りの牌のマッチ判定
-        isMatchTile1FourSides = MatchCheckFourSides(tile1);
-        isMatchTile2FourSides = MatchCheckFourSides(tile2);
+        isMatchTile1FourSides = MatchCheckFourSides(tile1.x, tile1.y);
+        isMatchTile2FourSides = MatchCheckFourSides(tile2.x, tile2.y);
 
         if (isMatchTile1 || isMatchTile2 || isMatchTile1FourSides || isMatchTile2FourSides)
             MatchProcess();
@@ -218,26 +218,27 @@ public class PuzzleManager
     /// <summary>
     /// 指定した盤面インデックスの周りの牌がマッチしているか
     /// </summary>
-    /// <param name="index">盤面インデックス</param>
+    /// <param name="indexX">盤面Xインデックス</param>
+    /// <param name="indexY">盤面Yインデックス</param>
     /// <returns>マッチしているか</returns>
-    private bool MatchCheckFourSides(Vector2Int index)
+    private bool MatchCheckFourSides(int indexX, int indexY)
     {
         bool isMatchUp = false;
         bool isMatchDown = false;
         bool isMatchLeft = false;
         bool isMatchRight = false;
         // 上
-        if (index.y > 0)
-            isMatchUp = MatchCheck(index.x, index.y - 1);
+        if (indexY > 0)
+            isMatchUp = MatchCheck(indexX, indexY - 1);
         // 下    
-        if (index.y < GameData.PUZZLE_BOARD_SIZE_Y - 1)
-            isMatchDown = MatchCheck(index.x, index.y + 1);
+        if (indexY < GameData.PUZZLE_BOARD_SIZE_Y - 1)
+            isMatchDown = MatchCheck(indexX, indexY + 1);
         // 左
-        if (index.x > 0)
-            isMatchLeft = MatchCheck(index.x - 1, index.y);
+        if (indexX > 0)
+            isMatchLeft = MatchCheck(indexX - 1, indexY);
         // 右
-        if (index.x < GameData.PUZZLE_BOARD_SIZE_X - 1)
-            isMatchRight = MatchCheck(index.x + 1, index.y);
+        if (indexX < GameData.PUZZLE_BOARD_SIZE_X - 1)
+            isMatchRight = MatchCheck(indexX + 1, indexY);
         return isMatchUp || isMatchDown || isMatchLeft || isMatchRight;
     }
 

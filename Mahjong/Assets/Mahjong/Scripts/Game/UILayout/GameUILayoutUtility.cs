@@ -152,11 +152,12 @@ public static class GameUILayoutUtility
     /// <summary>
     /// パズル牌の添え字から画面上の座標を計算する
     /// </summary>
-    /// <param name="index">計算牌の盤面インデックス</param>
+    /// <param name="indexX">計算牌の盤面Xインデックス</param>
+    /// <param name="indexY">計算牌の盤面Yインデックス</param>
     /// <returns>画面上の座標</returns>
-    static public Vector2 CalcPuzzleTilePosFromIndex(Vector2Int index)
+    static public Vector2 CalcPuzzleTilePosFromIndex(int indexX, int indexY)
     {
-        return new Vector2(_puzzleTileBasePos.x + index.x * _puzzleTilesFinalSize.x, _puzzleTileBasePos.y - index.y * _puzzleTilesFinalSize.y);
+        return new Vector2(_puzzleTileBasePos.x + indexX * _puzzleTilesFinalSize.x, _puzzleTileBasePos.y - indexY * _puzzleTilesFinalSize.y);
     }
 
     /// <summary>

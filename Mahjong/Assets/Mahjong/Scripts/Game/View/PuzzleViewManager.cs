@@ -105,7 +105,7 @@ public class PuzzleViewManager : MonoBehaviour
                 GameObject obj = Instantiate(_tilePrefab, _puzzleTilesParent);
                 MahjongTileView tile = obj.GetComponent<MahjongTileView>();
                 _boardTileObjects[y, x] = tile;
-                tile.SetPos(GameUILayoutUtility.CalcPuzzleTilePosFromIndex((x, y)));
+                tile.SetPos(GameUILayoutUtility.CalcPuzzleTilePosFromIndex(x, y));
                 tile.SetScale(GameUILayoutUtility._puzzleTilesViewScale);
                 // 牌類のセット
                 tile.SetKind(boardTiles[y, x]);
@@ -148,7 +148,7 @@ public class PuzzleViewManager : MonoBehaviour
 
                 // タッチされているか
                 if (tileLeftUp.x <= touchPos.x && touchPos.x <= tileRightButtom.x && tileRightButtom.y <= touchPos.y && touchPos.y <= tileLeftUp.y)
-                    return (x, y);
+                    return new Vector2Int(x, y);
 
                 tileLeftUp.x = tileRightButtom.x;
             }
@@ -165,8 +165,8 @@ public class PuzzleViewManager : MonoBehaviour
     public void SwitchingPuzzleTile(Vector2Int tile1, Vector2Int tile2)
     {
         // 座標の入れ替え
-        _boardTileObjects[tile1.y, tile1.x].SetPos(GameUILayoutUtility.CalcPuzzleTilePosFromIndex(tile2), PUZZLE_TILE_MOVE_TIME);
-        _boardTileObjects[tile2.y, tile2.x].SetPos(GameUILayoutUtility.CalcPuzzleTilePosFromIndex(tile1), PUZZLE_TILE_MOVE_TIME);
+        _boardTileObjects[tile1.y, tile1.x].SetPos(GameUILayoutUtility.CalcPuzzleTilePosFromIndex(tile2.x, tile2.y), PUZZLE_TILE_MOVE_TIME);
+        _boardTileObjects[tile2.y, tile2.x].SetPos(GameUILayoutUtility.CalcPuzzleTilePosFromIndex(tile1.x, tile1.y), PUZZLE_TILE_MOVE_TIME);
 
         // 配列の入れ替え
         (_boardTileObjects[tile1.y, tile1.x], _boardTileObjects[tile2.y, tile2.x]) = (_boardTileObjects[tile2.y, tile2.x], _boardTileObjects[tile1.y, tile1.x]);
@@ -219,7 +219,7 @@ public class PuzzleViewManager : MonoBehaviour
                     // ずれた分だけ下に行く
                     _boardTileObjects[y + matchTileCount, x] = _boardTileObjects[y, x];
                     // 移動先座標の設定
-                    _boardTileObjects[y, x].SetPos(GameUILayoutUtility.CalcPuzzleTilePosFromIndex((x, y + matchTileCount)), PUZZLE_TILE_FALL_TIME * matchTileCount);
+                    _boardTileObjects[y, x].SetPos(GameUILayoutUtility.CalcPuzzleTilePosFromIndex(x, y + matchTileCount), PUZZLE_TILE_FALL_TIME * matchTileCount);
                 }
             }
 
@@ -230,12 +230,12 @@ public class PuzzleViewManager : MonoBehaviour
                 GameObject obj = Instantiate(_tilePrefab, _puzzleTilesParent);
                 MahjongTileView tile = obj.GetComponent<MahjongTileView>();
                 _boardTileObjects[(matchTileCount - i), x] = tile;
-                tile.SetPos(GameUILayoutUtility.CalcPuzzleTilePosFromIndex((x, -i)));
+                tile.SetPos(GameUILayoutUtility.CalcPuzzleTilePosFromIndex(x, -i));
                 tile.SetScale(GameUILayoutUtility._puzzleTilesViewScale);
                 // 牌類のセット
                 tile.SetKind(boardTiles[(matchTileCount - i), x]);
                 // 移動先座標
-                tile.SetPos(GameUILayoutUtility.CalcPuzzleTilePosFromIndex((x, (matchTileCount - i))), PUZZLE_TILE_FALL_TIME * matchTileCount);
+                tile.SetPos(GameUILayoutUtility.CalcPuzzleTilePosFromIndex(x, (matchTileCount - i)), PUZZLE_TILE_FALL_TIME * matchTileCount);
             }
         }
     }
@@ -257,7 +257,7 @@ public class PuzzleViewManager : MonoBehaviour
             MahjongTileView tile = obj.GetComponent<MahjongTileView>();
             _handTileObjects.Add(tile);
             // 元の場所に生成
-            tile.SetPos(GameUILayoutUtility.CalcPuzzleTilePosFromIndex(tilesIndex[index[i]]));
+            tile.SetPos(GameUILayoutUtility.CalcPuzzleTilePosFromIndex(tilesIndex[index[i]].x, tilesIndex[index[i]].y));
             tile.SetScale(GameUILayoutUtility._puzzleTilesViewScale);
             // 牌類のセット
             tile.SetKind(handTilesKindList[handTilesKindList.Count - (3 - index[i])]);
