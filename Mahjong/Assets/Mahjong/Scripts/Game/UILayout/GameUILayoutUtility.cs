@@ -67,6 +67,9 @@ public static class GameUILayoutUtility
     // 縦に並ぶ手牌の数
     static private readonly int VERTICAL_HAND_TILES_NUM = 2;
 
+    // 両サイド
+    static private readonly int BOTH_SIDES = 2;
+
     // タイルの基本サイズ
     static private readonly Vector2 TILE_SIZE = new Vector2(47.0f, 63.0f);
 
@@ -210,8 +213,8 @@ public static class GameUILayoutUtility
 
         //*** 画面の横サイズから牌のサイズを求める
         // 横並びの牌の合計幅(余白を引いた画面幅)
-        float totalHandTileWidth = Screen.width - (_calcSideSafeBlank + _handTilesMargin) * 2.0f;
-        float totalPuzzleTileWidth = Screen.width - (_calcSideSafeBlank + _puzzleTilesMargin + _calcPuzzleBlank) * 2.0f;
+        float totalHandTileWidth = Screen.width - (_calcSideSafeBlank + _handTilesMargin) * BOTH_SIDES;
+        float totalPuzzleTileWidth = Screen.width - (_calcSideSafeBlank + _puzzleTilesMargin + _calcPuzzleBlank) * BOTH_SIDES;
 
         // 求めた合計幅を(牌の数x牌の基本サイズ幅)で割り、暫定的な牌のスケールを求める
         _handTilesScale = totalHandTileWidth / (TILE_SIZE.x * GameData.HAND_TILES_NUM);
