@@ -154,7 +154,7 @@ public static class GameUILayoutUtility
     /// </summary>
     /// <param name="index">計算牌の盤面インデックス</param>
     /// <returns>画面上の座標</returns>
-    static public Vector2 CalcPuzzleTilePosFromIndex((int x, int y) index)
+    static public Vector2 CalcPuzzleTilePosFromIndex(Vector2Int index)
     {
         return new Vector2(_puzzleTileBasePos.x + index.x * _puzzleTilesFinalSize.x, _puzzleTileBasePos.y - index.y * _puzzleTilesFinalSize.y);
     }

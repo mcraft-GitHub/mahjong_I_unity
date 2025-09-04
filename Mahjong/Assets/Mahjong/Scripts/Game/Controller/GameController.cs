@@ -56,7 +56,7 @@ public class GameController : MonoBehaviour
 
     // ***** READY
     // 移動開始位置
-    private (int x, int y)? _currentMoveIndex = null;
+    private Vector2Int? _currentMoveIndex = null;
 
     // ***** MATCH
     // アニメーション中か
@@ -164,7 +164,7 @@ public class GameController : MonoBehaviour
             }
 
             // 選択パズル牌の計算
-            (int x, int y)? newIndex = _puzzleViewManager.CalcTouchPuzzleTileIndex(_input.GetCurrentDragPosition());
+            Vector2Int? newIndex = _puzzleViewManager.CalcTouchPuzzleTileIndex(_input.GetCurrentDragPosition());
             // 移動終了
             if (!newIndex.HasValue)
             {

@@ -23,7 +23,7 @@ public class PuzzleManager
 
     // *** MATCH
     // マッチ牌インデックス
-    public List<(int x, int y)[]> _matchTilesIndex { get; } = new List<(int x, int y)[]>();
+    public List<Vector2Int[]> _matchTilesIndex { get; } = new List<Vector2Int[]>();
     // マッチ牌種
     public List<MahjongLogic.TILE_KIND[]> _matchTilesKind { get; } = new List<MahjongLogic.TILE_KIND[]>();
 
@@ -33,11 +33,11 @@ public class PuzzleManager
 
     // *** READY
     // 移動開始位置
-    private (int x, int y)? _beginMoveIndex = null;
+    private Vector2Int? _beginMoveIndex = null;
     // 現在移動位置
-    private (int x, int y) _nowMoveIndex;
+    private Vector2Int _nowMoveIndex;
     // 移動位置履歴
-    private List<(int x, int y)> _moveIndexHistory = new List<(int x, int y)>();
+    private List<Vector2Int> _moveIndexHistory = new List<Vector2Int>();
 
     // *** MATCH
 
@@ -62,7 +62,7 @@ public class PuzzleManager
     /// 指移動中
     /// </summary>
     /// <param name="index">選択中盤面インデックス</param>
-    public void MoveNow((int x, int y) index)
+    public void MoveNow(Vector2Int index)
     {
         if (_beginMoveIndex.HasValue)
         {
@@ -89,7 +89,7 @@ public class PuzzleManager
     /// 指移動終了
     /// </summary>
     /// <param name="index">選択中盤面インデックス</param>
-    public void MoveEnd((int x, int y) index)
+    public void MoveEnd(Vector2Int index)
     {
         // 移動していない
         if (_moveIndexHistory.Count <= 1)
@@ -192,7 +192,7 @@ public class PuzzleManager
     /// </summary>
     /// <param name="tile1">入れ替え牌の盤面インデックス1</param>
     /// <param name="tile2">入れ替え牌の盤面インデックス2</param>
-    private void SwitchTile((int x, int y) tile1, (int x, int y) tile2)
+    private void SwitchTile(Vector2Int tile1, Vector2Int tile2)
     {
         // 入れ替え処理
         (_boardTiles[tile1.y, tile1.x], _boardTiles[tile2.y, tile2.x]) = (_boardTiles[tile2.y, tile2.x], _boardTiles[tile1.y, tile1.x]);
@@ -220,7 +220,7 @@ public class PuzzleManager
     /// </summary>
     /// <param name="index">盤面インデックス</param>
     /// <returns>マッチしているか</returns>
-    private bool MatchCheckFourSides((int x, int y) index)
+    private bool MatchCheckFourSides(Vector2Int index)
     {
         bool isMatchUp = false;
         bool isMatchDown = false;
@@ -264,7 +264,7 @@ public class PuzzleManager
             if (!prev)
             {
                 // 追加
-                _matchTilesIndex.Add(new (int x, int y)[3] { (indexX, indexY), (indexX - 1, indexY), (indexX + 1, indexY) });
+                _matchTilesIndex.Add(new Vector2Int[3] { new Vector2Int(indexX, indexY), new Vector2Int(indexX - 1, indexY), new Vector2Int(indexX + 1, indexY) });
                 _matchTilesKind.Add(new MahjongLogic.TILE_KIND[] { _boardTiles[indexY, indexX], _boardTiles[indexY, indexX - 1], _boardTiles[indexY, indexX + 1] });
 
                 // マッチした牌をなくす
@@ -286,7 +286,7 @@ public class PuzzleManager
             if (!prev)
             {
                 // 追加
-                _matchTilesIndex.Add(new (int x, int y)[3] { (indexX, indexY - 1), (indexX, indexY), (indexX, indexY + 1) });
+                _matchTilesIndex.Add(new Vector2Int[3] { new Vector2Int(indexX, indexY - 1), new Vector2Int(indexX, indexY), new Vector2Int(indexX, indexY + 1) });
                 _matchTilesKind.Add(new MahjongLogic.TILE_KIND[] { _boardTiles[indexY, indexX], _boardTiles[indexY - 1, indexX], _boardTiles[indexY + 1, indexX] });
 
                 // マッチした牌をなくす
@@ -314,7 +314,7 @@ public class PuzzleManager
         {
             for (int j = 0; j < 3; j++)
             {
-                (int x, int y) idx = _matchTilesIndex[i][j];
+                Vector2Int idx = _matchTilesIndex[i][j];
 
                 // 下ににずらす
                 for (int y = idx.y; y > 0; y--)

@@ -118,7 +118,7 @@ public class PuzzleViewManager : MonoBehaviour
     /// </summary>
     /// <param name="touchPos">タッチ座標</param>
     /// <returns>タッチされた盤面インデックス(盤面外の場合はnull)</returns>
-    public (int x, int y)? CalcTouchPuzzleTileIndex(Vector2 touchPos)
+    public Vector2Int? CalcTouchPuzzleTileIndex(Vector2 touchPos)
     {
         // 真ん中下を(0,0)に
         touchPos.x -= Screen.width * 0.5f;
@@ -162,7 +162,7 @@ public class PuzzleViewManager : MonoBehaviour
     /// </summary>
     /// <param name="tile1">入れ替えるパズル牌1</param>
     /// <param name="tile2">入れ替えるパズル牌2</param>
-    public void SwitchingPuzzleTile((int x, int y) tile1, (int x, int y) tile2)
+    public void SwitchingPuzzleTile(Vector2Int tile1, Vector2Int tile2)
     {
         // 座標の入れ替え
         _boardTileObjects[tile1.y, tile1.x].SetPos(GameUILayoutUtility.CalcPuzzleTilePosFromIndex(tile2), PUZZLE_TILE_MOVE_TIME);
@@ -176,7 +176,7 @@ public class PuzzleViewManager : MonoBehaviour
     /// パズル牌の削除
     /// </summary>
     /// <param name="index">削除牌インデックス</param>
-    public void DestroyPuzzleTile((int x, int y) index)
+    public void DestroyPuzzleTile(Vector2Int index)
     {
         Destroy(_boardTileObjects[index.y, index.x].gameObject);
     }
@@ -187,7 +187,7 @@ public class PuzzleViewManager : MonoBehaviour
     public void FallPuzzleTile()
     {
         MahjongLogic.TILE_KIND[,] boardTiles = _puzzleManager._boardTiles;
-        List<(int x, int y)[]> matchIndex = _puzzleManager._matchTilesIndex;
+        List<Vector2Int[]> matchIndex = _puzzleManager._matchTilesIndex;
 
         // 落ちるX列がどこか
         bool[] isFallX = Enumerable.Range(0, GameData.PUZZLE_BOARD_SIZE_X).Select(_ => false).ToArray();
@@ -245,7 +245,7 @@ public class PuzzleViewManager : MonoBehaviour
     /// </summary>
     /// <param name="handTilesKindList">手牌の牌種リスト</param>
     /// <param name="tilesIndex">追加牌の盤面インデックス</param>
-    public void AddHandTiles(List<MahjongLogic.TILE_KIND> handTilesKindList, (int x, int y)[] tilesIndex)
+    public void AddHandTiles(List<MahjongLogic.TILE_KIND> handTilesKindList, Vector2Int[] tilesIndex)
     {
         // 中,左,右の順番で格納されているので自然な順番にする
         int[] index = { 1, 0, 2 };
