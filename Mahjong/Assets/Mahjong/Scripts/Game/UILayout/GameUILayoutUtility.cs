@@ -206,7 +206,7 @@ public static class GameUILayoutUtility
 
         // 求めた合計幅を(牌の数x牌の基本サイズ幅)で割り、暫定的な牌のスケールを求める
         _handTilesScale = totalHandTileWidth / (TILE_SIZE.x * GameData.HAND_TILES_NUM);
-        _puzzleTilesScale = totalHandTileWidth / (TILE_SIZE.x * GameData.PUZZLE_BOARD_SIZE_X);
+        _puzzleTilesScale = totalPuzzleTileWidth / (TILE_SIZE.x * GameData.PUZZLE_BOARD_SIZE_X);
 
         // 牌のサイズを計算
         _handTilesFinalSize = TILE_SIZE * _handTilesScale;
