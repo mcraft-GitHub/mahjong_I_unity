@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c36530ea88c26f54bbddbd30c4eccf14, type: 3}
+  m_Name: GameUILayoutData
+  m_EditorClassIdentifier: 
+  _baseScreenHeight: 2532
+  _maxHeightUiRate: 0.65
+  _topSafeBlank: 64
+  _buttomSafeBlank: 36
+  _sideSafeBlank: 24
+  _heightBlank: 24
+  _puzzleBlank: 32
+  _playerHpGaugeHeight: 24
+  _enemyHpGaugeHeight: 42
+  _enemyAttackGaugeHeight: 24
+  _puzzleTileMarginRate: 0.05

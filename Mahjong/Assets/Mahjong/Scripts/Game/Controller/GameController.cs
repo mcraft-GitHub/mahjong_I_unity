@@ -11,7 +11,7 @@ using UnityEngine.SceneManagement;
 public class GameController : MonoBehaviour
 {
     // 勝敗
-    static public bool _isWin = false;
+    public static bool _isWin = false;
 
     // 風牌の種類
     private const int KAZEHAI_KIND_NUM = 4;
@@ -65,7 +65,7 @@ public class GameController : MonoBehaviour
     void Awake()
     {
         // 麻雀牌のスケールと隙間の計算
-        GameData.CalcTileScaleAndMargin();
+        GameUILayoutUtility.CalcUILayout();
     }
 
     void Start()

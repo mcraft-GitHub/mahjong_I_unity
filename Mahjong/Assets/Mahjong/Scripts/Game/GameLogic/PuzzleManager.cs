@@ -37,7 +37,7 @@ public class PuzzleManager
     // 現在移動位置
     private Vector2Int _nowMoveIndex;
     // 移動位置履歴
-    private List<Vector2> _moveIndexHistory = new List<Vector2>();
+    private List<Vector2Int> _moveIndexHistory = new List<Vector2Int>();
 
     // *** MATCH
 
@@ -182,7 +182,7 @@ public class PuzzleManager
             for (int x = 0; x < GameData.PUZZLE_BOARD_SIZE_X; x++)
             {
                 if (MatchCheck(x, y, true))
-                    Debug.Log("バグや！初手マッチ！：" + new Vector2Int(x, y));
+                    Debug.Log("バグや！初手マッチ！：" + (x, y));
             }
         }
     }
