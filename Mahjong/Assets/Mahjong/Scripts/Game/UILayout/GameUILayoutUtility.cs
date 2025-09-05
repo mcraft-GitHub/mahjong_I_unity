@@ -61,8 +61,11 @@ public class GameUILayoutUtility
     public static float _enemyImagePosY = 0.0f;
 
     // ***** Private変数
-    // 半分のサイズ
-    private static readonly float HALF_SCALE = 0.5f;
+    // 側面から、中心座標を求めるための半分のサイズ
+    private static readonly float CENTER_HALF = 0.5f;
+
+    // 中心座標から、側面を求めるための半分のサイズ
+    private static readonly float SIDE_HALF = 0.5f;
 
     // 縦に並ぶ手牌の数
     private static readonly int VERTICAL_HAND_TILES_NUM = 2;
@@ -143,7 +146,7 @@ public class GameUILayoutUtility
 
         // 並べられたパズル牌の4隅座標を計算
         _puzzleBoardRect = new Rect(
-            _puzzleTilesFinalSize.x * -GameData.PUZZLE_BOARD_SIZE_X * HALF_SCALE, 
+            _puzzleTilesFinalSize.x * -GameData.PUZZLE_BOARD_SIZE_X * SIDE_HALF, 
             //   パズル枠            空白                 HPゲージ                 空白             頭・ドラ・自風　　　　　　空白                 手牌                 画面下空白
             _calcPuzzleBlank + _calcHeightBlank + _calcPlayerHpGaugeHeight + _calcHeightBlank + _handTilesFinalSize.y + _calcHeightBlank + _handTilesFinalSize.y + _calcButtomSafeBlank,
             _puzzleTilesFinalSize.x * GameData.PUZZLE_BOARD_SIZE_X, 
@@ -151,7 +154,7 @@ public class GameUILayoutUtility
         );
 
         // パズル牌の基本位置(0,0)を計算
-        _puzzleTileBasePos = new Vector2(_puzzleBoardRect.xMin + _puzzleTilesFinalSize.x * HALF_SCALE, _puzzleBoardRect.yMax + -_puzzleTilesFinalSize.y * HALF_SCALE);
+        _puzzleTileBasePos = new Vector2(_puzzleBoardRect.xMin + _puzzleTilesFinalSize.x * CENTER_HALF, _puzzleBoardRect.yMax + -_puzzleTilesFinalSize.y * CENTER_HALF);
 
         // パズル盤面の枠画像スケールを計算
         _puzzleFrameScale = GameData.PUZZLE_BOARD_SIZE_Y * _puzzleTilesScale + (_calcPuzzleBlank / _puzzleTilesFinalSize.y);
@@ -179,11 +182,11 @@ public class GameUILayoutUtility
     public static Vector2 CalcHandTilePosFromIndex(int index)
     {
         // 画面の左端
-        float screanLeftEnd = -Screen.width * HALF_SCALE;
+        float screanLeftEnd = -Screen.width * SIDE_HALF;
         // 左の空白の幅
         float leftMargin = _calcSideSafeBlank + _handTilesMargin;
 
-        return new Vector2(screanLeftEnd + leftMargin + _handTilesFinalSize.x * (HALF_SCALE + index), _calcButtomSafeBlank + _handTilesFinalSize.y * HALF_SCALE);
+        return new Vector2(screanLeftEnd + leftMargin + _handTilesFinalSize.x * (CENTER_HALF + index), _calcButtomSafeBlank + _handTilesFinalSize.y * CENTER_HALF);
     }
 
     // ***** Private関数
@@ -255,8 +258,8 @@ public class GameUILayoutUtility
         _puzzleTilesViewScale = _puzzleTilesScale * (1.0f - _data.PuzzleTileMarginRate);
 
         // 横の余白の決定
-        _handTilesMargin = (Screen.width - _handTilesFinalSize.x * GameData.HAND_TILES_NUM) * HALF_SCALE - _calcSideSafeBlank;
-        _puzzleTilesMargin = (Screen.width - _puzzleTilesFinalSize.x * GameData.PUZZLE_BOARD_SIZE_X) * HALF_SCALE - _calcSideSafeBlank - _calcPuzzleBlank;
+        _handTilesMargin = (Screen.width - _handTilesFinalSize.x * GameData.HAND_TILES_NUM) * SIDE_HALF - _calcSideSafeBlank;
+        _puzzleTilesMargin = (Screen.width - _puzzleTilesFinalSize.x * GameData.PUZZLE_BOARD_SIZE_X) * SIDE_HALF - _calcSideSafeBlank - _calcPuzzleBlank;
 
         // パズルUI部分の高さ
         _uiHeight = _handTilesFinalSize.y * VERTICAL_HAND_TILES_NUM + _puzzleTilesFinalSize.y * GameData.PUZZLE_BOARD_SIZE_Y + noTilesUIHeight;
@@ -268,13 +271,13 @@ public class GameUILayoutUtility
     private static void CalcBattleUILayout()
     {
         // 画面の左端
-        float screanLeftEnd = -Screen.width * HALF_SCALE;
+        float screanLeftEnd = -Screen.width * SIDE_HALF;
 
         // 横の空白の幅
         float sideMargin = _calcSideSafeBlank + _handTilesMargin;
 
         // 手牌のハーフサイズ
-        Vector2 handTilesFinalHalfSize = _handTilesFinalSize * HALF_SCALE;
+        Vector2 handTilesFinalHalfSize = _handTilesFinalSize * CENTER_HALF;
 
         //*** 補助表示牌の座標を計算
         // Y座標
@@ -289,14 +292,14 @@ public class GameUILayoutUtility
         // 幅
         _gaugeWidth = _handTilesFinalSize.x * GameData.HAND_TILES_NUM;
         // Y座標
-        _playerHpGaugePosY = _calcButtomSafeBlank + _handTilesFinalSize.y * VERTICAL_HAND_TILES_NUM + _calcHeightBlank * VERTICAL_HAND_TILES_NUM + _calcPlayerHpGaugeHeight * HALF_SCALE;
-        _enemyHpGaugePosY = -_calcTopSafeBlank - _calcEnemyHpGaugeHeight * HALF_SCALE;
-        _enemyAttackGaugePosY = -_calcTopSafeBlank - _calcEnemyHpGaugeHeight - _calcEnemyAttackGaugeHeight * HALF_SCALE;
+        _playerHpGaugePosY = _calcButtomSafeBlank + _handTilesFinalSize.y * VERTICAL_HAND_TILES_NUM + _calcHeightBlank * VERTICAL_HAND_TILES_NUM + _calcPlayerHpGaugeHeight * CENTER_HALF;
+        _enemyHpGaugePosY = -_calcTopSafeBlank - _calcEnemyHpGaugeHeight * CENTER_HALF;
+        _enemyAttackGaugePosY = -_calcTopSafeBlank - _calcEnemyHpGaugeHeight - _calcEnemyAttackGaugeHeight * CENTER_HALF;
 
         //*** 敵画像のサイズとY座標を計算
         // サイズ
         _enemyImageSize = Screen.height - _uiHeight - _calcTopSafeBlank;
         // Y座標
-        _enemyImagePosY = -_calcTopSafeBlank - _enemyImageSize * HALF_SCALE;
+        _enemyImagePosY = -_calcTopSafeBlank - _enemyImageSize * CENTER_HALF;
     }
 }
