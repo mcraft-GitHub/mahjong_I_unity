@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class PuzzleManager
 {
-    public enum GameState
+    public enum PUZZLE_STATE
     {
         READY = 0, // 準備完了(プレイヤー操作可)
         MATCH, // 牌移動中(プレイヤー操作不可)
@@ -14,7 +14,7 @@ public class PuzzleManager
 
     // ***** Public変数
     // ゲームステート
-    public GameState _state { get; private set; } = GameState.READY;
+    public PUZZLE_STATE _state { get; private set; } = PUZZLE_STATE.READY;
 
     // ボードタイル配列
     public MahjongLogic.TILE_KIND[,] _boardTiles { get; } = new MahjongLogic.TILE_KIND[GameData.PUZZLE_BOARD_SIZE_Y, GameData.PUZZLE_BOARD_SIZE_X];
@@ -134,21 +134,9 @@ public class PuzzleManager
         else
         {
             // マッチしていない
-            Debug.Log("ステート変更：" + _state + " > " + GameState.READY);
-            _state = GameState.READY;
+            Debug.Log("パズルステート変更：" + _state + " > " + PUZZLE_STATE.READY);
+            _state = PUZZLE_STATE.READY;
         }
-    }
-
-    /// <summary>
-    /// ランダム牌種の取得
-    /// </summary>
-    /// <returns>ランダムな牌種</returns>
-    public MahjongLogic.TILE_KIND GetRandomTileKind()
-    {
-        if (_useTiles == null)
-            return (MahjongLogic.TILE_KIND)UnityEngine.Random.Range(0, (int)MahjongLogic.TILE_KIND.MAX);
-
-        return _useTiles[UnityEngine.Random.Range(0, _useTiles.Count)];
     }
 
     // ***** Private関数
@@ -162,7 +150,7 @@ public class PuzzleManager
         {
             for (int x = 0; x < GameData.PUZZLE_BOARD_SIZE_X; x++)
             {
-                _boardTiles[y, x] = GetRandomTileKind();
+                _boardTiles[y, x] = MahjongLogic.GetRandomTileKind(_useTiles);
             }
         }
 
@@ -307,8 +295,8 @@ public class PuzzleManager
     /// </summary>
     private void MatchProcess()
     {
-        Debug.Log("ステート変更：" + _state + " > " + GameState.MATCH);
-        _state = GameState.MATCH;
+        Debug.Log("パズルステート変更：" + _state + " > " + PUZZLE_STATE.MATCH);
+        _state = PUZZLE_STATE.MATCH;
 
         // 牌を落とす
         for (int i = 0; i < _matchTilesIndex.Count; i++)
@@ -322,7 +310,7 @@ public class PuzzleManager
                     _boardTiles[y, idx.x] = _boardTiles[y - 1, idx.x];
 
                 // 一番上にはランダムの牌種を入れる
-                _boardTiles[0, idx.x] = GetRandomTileKind();
+                _boardTiles[0, idx.x] = MahjongLogic.GetRandomTileKind(_useTiles);
             }
         }
     }
@@ -343,7 +331,7 @@ public class PuzzleManager
             isMatch = false;
 
             // もう一度ランダム取得
-            _boardTiles[indexY, indexX] = GetRandomTileKind();
+            _boardTiles[indexY, indexX] = MahjongLogic.GetRandomTileKind(_useTiles);
 
             if (MatchCheck(indexX, indexY, true)) 
                 isMatch = true;

@@ -138,6 +138,19 @@ public class MahjongLogic
     };
 
     /// <summary>
+    /// ランダム牌取得
+    /// </summary>
+    /// <param name="useTiles">使用牌(この中から選ばれる)</param>
+    /// <returns>牌種</returns>
+    public static TILE_KIND GetRandomTileKind(List<TILE_KIND> useTiles)
+    {
+        if (useTiles == null)
+            return (TILE_KIND)UnityEngine.Random.Range(0, (int)TILE_KIND.MAX);
+
+        return useTiles[UnityEngine.Random.Range(0, useTiles.Count)];
+    }
+
+    /// <summary>
     /// 面子かどうかの判定
     /// </summary>
     /// <param name="k1">牌種1</param>
@@ -208,26 +221,26 @@ public class MahjongLogic
         List<TILE_KIND>[] handMPST = Enumerable.Range(0, 4).Select(_ => new List<TILE_KIND>()).ToArray();
 
         //*** ソート(必須)
-        hand.Sort();
+        calcHand.Sort();
 
         //*** 種類(萬筒索字)ごとにする
         for (int i = 0; i < HAND_TILES_NUM; i++) 
         {
-            handMPST[CalcMPST(hand[i]) - 1].Add(hand[i]);
+            handMPST[CalcMPST(calcHand[i]) - 1].Add(calcHand[i]);
         }
 
         //*** 頭候補を決める
         for (int i = 1; i < HAND_TILES_NUM; i++)
         {
-            if (hand[i] == hand[i - 1] && (head.Count == 0 || head[head.Count - 1] != hand[i]))
-                head.Add(hand[i]);
+            if (calcHand[i] == calcHand[i - 1] && (head.Count == 0 || head[head.Count - 1] != calcHand[i]))
+                head.Add(calcHand[i]);
         }
 
         //*** 面子候補を決める・役判定
         for (int i = 0; i < head.Count; i++)
         {
             // 面子の探索
-            List<TILE_KIND[][]> mentu = CalcMentu(head[i], hand);
+            List<TILE_KIND[][]> mentu = CalcMentu(head[i], calcHand);
 
             // 同じ面子の組み合わせの削除
             mentu = RemoveDuplicateMentu(mentu);
