@@ -55,10 +55,10 @@ public class StageController
     }
 
     /// <summary>
-    /// 毎フレーム実行処理
+    /// ステートの更新
     /// </summary>
     /// <param name="deltaTime">前フレームからの経過時間</param>
-    public void TickProcess(float deltaTime)
+    public void StateUpdate(float deltaTime)
     {
         // ステート切り替えの影響を受けないため保持しておく
         STAGE_STATE stateBuf = _currentState;
@@ -171,7 +171,7 @@ public class StageController
     private void BattleProcess(float deltaTime)
     {
         // バトルコントローラーの更新
-        _battleController.TickProcess(deltaTime);
+        _battleController.StateUpdate(deltaTime);
 
         // バトルが終了していればステートを切り替える
         if (_battleController.GetBattleState() == BattleManager.BATTLE_STATE.FINISH_WIN)

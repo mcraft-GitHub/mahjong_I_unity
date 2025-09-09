@@ -60,10 +60,10 @@ public class PuzzleController
     }
 
     /// <summary>
-    /// 毎フレーム実行処理
+    /// ステートの更新
     /// </summary>
     /// <param name="deltaTime">前フレームからの経過時間</param>
-    public void TickProcess(float deltaTime)
+    public void StateUpdate(float deltaTime)
     {
         // 毎フレーム初期化
         _matchMentuData = null;

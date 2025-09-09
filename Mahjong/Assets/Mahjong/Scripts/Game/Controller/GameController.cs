@@ -39,6 +39,6 @@ public class GameController : MonoBehaviour
 
     void Update()
     {
-        _stageController.TickProcess(Time.deltaTime);
+        _stageController.StateUpdate(Time.deltaTime);
     }
 }

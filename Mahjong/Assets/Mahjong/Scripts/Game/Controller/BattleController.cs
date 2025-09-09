@@ -72,10 +72,10 @@ public class BattleController
     }
 
     /// <summary>
-    /// 毎フレーム実行処理
+    /// ステートの更新
     /// </summary>
     /// <param name="deltaTime">前フレームからの経過時間</param>
-    public void TickProcess(float deltaTime)
+    public void StateUpdate(float deltaTime)
     {
         // ステート切り替えの影響を受けないため保持しておく
         BattleManager.BATTLE_STATE stateBuf = _battleManager._state;
@@ -127,7 +127,7 @@ public class BattleController
     private void BattleProcess(float deltaTime)
     {
         // パズルコントローラーの更新
-        _puzzleController.TickProcess(deltaTime);
+        _puzzleController.StateUpdate(deltaTime);
 
         // マッチしていたら
         if (_puzzleController._matchMentuData.HasValue)
