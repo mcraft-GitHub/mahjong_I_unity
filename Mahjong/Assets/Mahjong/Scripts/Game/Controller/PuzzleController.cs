@@ -96,20 +96,7 @@ public class PuzzleController
         if (_prevState != PuzzleManager.PUZZLE_STATE.READY)
             _currentMoveIndex = null;
 
-        if (!_currentMoveIndex.HasValue)
-        {
-            // 移動開始判定
-            if (_input.GetTouchState() == TouchInputHandler.TouchState.TouchStarted)
-            {
-                _currentMoveIndex = _puzzleViewManager.CalcTouchPuzzleTileIndex(_input.GetCurrentDragPosition());
-                if (_currentMoveIndex.HasValue)
-                {
-                    // 移動開始
-                    _puzzleManager.MoveNow(_currentMoveIndex.Value);
-                }
-            }
-        }
-        else
+        if (_currentMoveIndex.HasValue)
         {
             // 移動終了
             if (_input.GetTouchState() == TouchInputHandler.TouchState.TouchEnded || _input.GetTouchState() == TouchInputHandler.TouchState.None)
@@ -137,6 +124,19 @@ public class PuzzleController
                 _puzzleViewManager.SwitchingPuzzleTile(_currentMoveIndex.Value, newIndex.Value);
                 _currentMoveIndex = newIndex;
                 _puzzleManager.MoveNow(_currentMoveIndex.Value);
+            }
+        }
+        else
+        {
+            // 移動開始判定
+            if (_input.GetTouchState() == TouchInputHandler.TouchState.TouchStarted)
+            {
+                _currentMoveIndex = _puzzleViewManager.CalcTouchPuzzleTileIndex(_input.GetCurrentDragPosition());
+                if (_currentMoveIndex.HasValue)
+                {
+                    // 移動開始
+                    _puzzleManager.MoveNow(_currentMoveIndex.Value);
+                }
             }
         }
     }
