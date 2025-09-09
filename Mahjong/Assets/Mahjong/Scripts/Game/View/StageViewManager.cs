@@ -23,8 +23,8 @@ public class StageViewManager : MonoBehaviour
     /// <returns>フェードにかかる時間</returns>
     public float BeginFadeIn()
     {
-        _fadeImage.color = new Color(0.0f, 0.0f, 0.0f, 1.0f);
-        _fadeImage.DOColor(new Color(0.0f, 0.0f, 0.0f, 0.0f), FADE_TIME);
+        _fadeImage.color = Color.black;
+        _fadeImage.DOColor(Color.clear, FADE_TIME);
         return FADE_TIME;
     }
 
@@ -35,8 +35,8 @@ public class StageViewManager : MonoBehaviour
     /// <returns>フェードにかかる時間</returns>
     public float BeginFadeOut()
     {
-        _fadeImage.color = new Color(0.0f, 0.0f, 0.0f, 0.0f);
-        _fadeImage.DOColor(new Color(0.0f, 0.0f, 0.0f, 1.0f), FADE_TIME);
+        _fadeImage.color = Color.clear;
+        _fadeImage.DOColor(Color.black, FADE_TIME);
         return FADE_TIME;
     }
 
