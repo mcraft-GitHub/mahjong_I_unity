@@ -173,11 +173,14 @@ public class StageController
         // バトルコントローラーの更新
         _battleController.TickProcess(deltaTime);
 
-        // バトルが終了したか
-        if (_battleController._isBattleWin.HasValue) 
+        // バトルが終了していればステートを切り替える
+        if (_battleController.GetBattleState() == BattleManager.BATTLE_STATE.FINISH_WIN)
         {
-            // ステートの切り替え
-            _currentState = _battleController._isBattleWin.Value ? STAGE_STATE.BATTLE_WIN : STAGE_STATE.BATTLE_LOSE;
+            _currentState = STAGE_STATE.BATTLE_WIN;
+        }
+        else if(_battleController.GetBattleState() == BattleManager.BATTLE_STATE.FINISH_LOSE)
+        {
+            _currentState = STAGE_STATE.BATTLE_LOSE;
         }
     }
 

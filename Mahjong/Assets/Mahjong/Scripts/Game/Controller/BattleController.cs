@@ -3,9 +3,6 @@ using UnityEngine;
 
 public class BattleController
 {
-    // 戦闘に勝利したか(勝利:true, 敗北:false, 戦闘中:null)
-    public bool? _isBattleWin { get; private set; } = null;
-
     // 仮のプレイヤーHP
     private const int TMP_PLAYER_HP = 2000;
 
@@ -80,10 +77,6 @@ public class BattleController
     /// <param name="deltaTime">前フレームからの経過時間</param>
     public void TickProcess(float deltaTime)
     {
-        // 戦闘が終了していれば処理しない(戦闘終了したら呼ばれないはずだけど一応)
-        if (_isBattleWin.HasValue)
-            return;
-
         // ステート切り替えの影響を受けないため保持しておく
         BattleManager.BATTLE_STATE stateBuf = _battleManager._state;
 
@@ -104,11 +97,9 @@ public class BattleController
                 break;
             // 戦闘終了(勝利)
             case BattleManager.BATTLE_STATE.FINISH_WIN:
-                _isBattleWin = true;
                 break;
             // 戦闘終了(敗北)
             case BattleManager.BATTLE_STATE.FINISH_LOSE:
-                _isBattleWin = false;
                 break;
         }
 
@@ -170,6 +161,12 @@ public class BattleController
             _gameController.StartCoroutine(FinishAddHandTilesCoroutine(_waitMatchTime));
         }
     }
+
+    /// <summary>
+    /// バトルステートの取得
+    /// </summary>
+    /// <returns>バトルステート</returns>
+    public BattleManager.BATTLE_STATE GetBattleState() => _battleManager._state;
 
     /// <summary>
     /// 手牌追加の終了コルーチン
