@@ -3,6 +3,9 @@ using UnityEngine;
 
 public class BattleController
 {
+    // 仮のプレイヤーHP
+    private const int TMP_PLAYER_HP = 2000;
+
     // ステージデータ
     private StageData _stageData;
 
@@ -49,7 +52,7 @@ public class BattleController
 
         // バトルマネージャーの生成・初期化(TODO: プレイヤーHPセットシステム)
         _battleManager = new BattleManager();
-        _battleManager.InitBattle(stageData, currentEnemyIdx, 2000);
+        _battleManager.InitBattle(stageData, currentEnemyIdx, TMP_PLAYER_HP);
 
         // 現在の敵データ
         _enemyData = stageData._appearEnemy[currentEnemyIdx];
