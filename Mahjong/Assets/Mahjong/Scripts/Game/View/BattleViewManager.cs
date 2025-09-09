@@ -186,16 +186,10 @@ public class BattleViewManager : MonoBehaviour
         // 中,左,右の順番で格納されているので自然な順番にする
         int[] index = { 1, 0, 2 };
 
-        for (int i = 0; i < handTilesKindList.Count; i++)
-        {
-            Debug.Log("check:" + i + ", " + handTilesKindList[i]);
-        }
-
         for (int i = 0; i < tilesIndex.Length; i++)
         {
             // 手牌の中でのインデックス
             int handIdx = handTilesKindList.Count - (GameData.MENTU_TILES_NUM - index[i]) - (roleResultData.HasValue ? GameData.HEAD_TILES_NUM : 0);
-            //Debug.Log("check:" + handIdx);
 
             // 手牌の生成
             GameObject obj = Instantiate(_tilePrefab, _handTilesParent);

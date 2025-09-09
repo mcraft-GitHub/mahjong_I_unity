@@ -257,8 +257,6 @@ public class StageController
     /// <param name="waitTime">待機時間</param>
     private IEnumerator ChangeStateCoroutine(STAGE_STATE state, float waitTime)
     {
-        Debug.Log("check:" + state + ", " + waitTime);
-
         yield return new WaitForSeconds(waitTime);
 
         _currentState = state;
