@@ -146,7 +146,7 @@ public class PuzzleController
     /// </summary>
     private void MatchProcess()
     {
-        if (_puzzleManager._matchTilesIndex.Count > 0)
+        if (_puzzleManager._matchTilesIndex.Count > 0 && _puzzleManager._matchTilesKind.Count > 0)
         {
             // マッチした面子の牌分ループ
             for (int i = 0; i < GameData.MENTU_TILES_NUM; i++)
@@ -163,6 +163,7 @@ public class PuzzleController
 
             // 処理済みの面子の削除
             _puzzleManager._matchTilesIndex.RemoveAt(0);
+            _puzzleManager._matchTilesKind.RemoveAt(0);
         }
         else
         {
