@@ -112,8 +112,8 @@ public class StageController
             // フェードイン
             wateTime += _stageViewManager.BeginFadeIn();
 
-            // TODO: オープニング演出
-            wateTime += 1.0f;
+            // オープニング演出
+            wateTime += _stageViewManager.OpeningVisualPresentation();
 
             // ステージ進行
             _gameController.StartCoroutine(ChangeStateCoroutine(STAGE_STATE.ADVANCE, wateTime));
@@ -129,8 +129,8 @@ public class StageController
         {
             float wateTime = 0.0f;
 
-            // TODO: ステージ進行演出
-            wateTime += 1.0f;
+            // ステージ進行演出
+            wateTime += _stageViewManager.AdvanceVisualPresentation();
 
             // フェードアウト
             wateTime += _stageViewManager.BeginFadeOut();
@@ -156,8 +156,8 @@ public class StageController
             // フェードイン
             wateTime += _stageViewManager.BeginFadeIn();
 
-            // TODO: 敵遭遇演出
-            wateTime += 1.0f;
+            // 敵遭遇演出
+            wateTime += _stageViewManager.EncountVisualPresentation();
 
             // バトル
             _gameController.StartCoroutine(ChangeStateCoroutine(STAGE_STATE.BATTLE, wateTime));
@@ -190,8 +190,8 @@ public class StageController
         {
             float wateTime = 0.0f;
 
-            // TODO: 勝利演出
-            wateTime += 1.0f;
+            // 勝利演出
+            wateTime += _stageViewManager.BattleWinVisualPresentation();
 
             // 敵のカウントを進める
             _currentEnemyIdx++;
@@ -219,8 +219,8 @@ public class StageController
         {
             float wateTime = 0.0f;
 
-            // TODO: 敗北演出
-            wateTime += 1.0f;
+            // 敗北演出
+            wateTime += _stageViewManager.BattleLoseVisualPresentation();
 
             // フェードアウト
             wateTime += _stageViewManager.BeginFadeOut();
@@ -240,8 +240,8 @@ public class StageController
         {
             float wateTime = 0.0f;
 
-            // TODO: クリア演出
-            wateTime += 1.0f;
+            // クリア演出
+            wateTime += _stageViewManager.StageClearVisualPresentation();
 
             // フェードアウト
             wateTime += _stageViewManager.BeginFadeOut();

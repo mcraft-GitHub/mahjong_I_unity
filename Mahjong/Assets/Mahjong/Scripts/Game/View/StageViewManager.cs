@@ -7,6 +7,9 @@ public class StageViewManager : MonoBehaviour
     // フェードの時間
     private const float FADE_TIME = 1.0f;
 
+    // 仮の演出時間
+    private const float TMP_VISUAL_PRESENTATION_TIME = 1.0f;
+
     // フェード
     [SerializeField] private Image _fadeImage;
 
@@ -35,5 +38,65 @@ public class StageViewManager : MonoBehaviour
         _fadeImage.color = new Color(0.0f, 0.0f, 0.0f, 0.0f);
         _fadeImage.DOColor(new Color(0.0f, 0.0f, 0.0f, 1.0f), FADE_TIME);
         return FADE_TIME;
+    }
+
+    /// <summary>
+    /// オープニング演出
+    /// </summary>
+    /// <returns>演出時間</returns>
+    public float OpeningVisualPresentation()
+    {
+        // TODO:演出
+        return TMP_VISUAL_PRESENTATION_TIME;
+    }
+
+    /// <summary>
+    /// ステージ進行演出
+    /// </summary>
+    /// <returns>演出時間</returns>
+    public float AdvanceVisualPresentation()
+    {
+        // TODO:演出
+        return TMP_VISUAL_PRESENTATION_TIME;
+    }
+
+    /// <summary>
+    /// 敵と遭遇演出
+    /// </summary>
+    /// <returns>演出時間</returns>
+    public float EncountVisualPresentation()
+    {
+        // TODO:演出
+        return TMP_VISUAL_PRESENTATION_TIME;
+    }
+
+    /// <summary>
+    /// 戦闘勝利演出
+    /// </summary>
+    /// <returns>演出時間</returns>
+    public float BattleWinVisualPresentation()
+    {
+        // TODO:演出
+        return TMP_VISUAL_PRESENTATION_TIME;
+    }
+
+    /// <summary>
+    /// 戦闘敗北演出
+    /// </summary>
+    /// <returns>演出時間</returns>
+    public float BattleLoseVisualPresentation()
+    {
+        // TODO:演出
+        return TMP_VISUAL_PRESENTATION_TIME;
+    }
+
+    /// <summary>
+    /// ステージクリア演出
+    /// </summary>
+    /// <returns>演出時間</returns>
+    public float StageClearVisualPresentation()
+    {
+        // TODO:演出
+        return TMP_VISUAL_PRESENTATION_TIME;
     }
 }
