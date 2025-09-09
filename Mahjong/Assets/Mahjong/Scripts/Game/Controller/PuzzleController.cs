@@ -3,6 +3,9 @@ using UnityEngine;
 
 public class PuzzleController
 {
+    // マッチした面子のデータ
+    public (Vector2Int[] index, MahjongLogic.TILE_KIND[] kinds)? _matchMentuData { get; private set; } = null;
+
     // ステージデータ
     private StageData _stageData;
 
@@ -60,11 +63,10 @@ public class PuzzleController
     /// 毎フレーム実行処理
     /// </summary>
     /// <param name="deltaTime">前フレームからの経過時間</param>
-    /// <returns>マッチした面子のデータ(盤面インデックス配列, 牌種配列)</returns>
-    public (Vector2Int[] index, MahjongLogic.TILE_KIND[] kinds)? TickProcess(float deltaTime)
+    public void TickProcess(float deltaTime)
     {
-        // 戻り値
-        (Vector2Int[] index, MahjongLogic.TILE_KIND[] kinds)? mentuTilesData = null;
+        // 毎フレーム初期化
+        _matchMentuData = null;
 
         // ステート切り替えの影響を受けないため保持しておく
         PuzzleManager.PUZZLE_STATE prevState = _puzzleManager._state;
@@ -75,7 +77,7 @@ public class PuzzleController
                 ReadyProcess();
                 break;
             case PuzzleManager.PUZZLE_STATE.MATCH:
-                mentuTilesData = MatchProcess();
+                MatchProcess();
                 break;
             case PuzzleManager.PUZZLE_STATE.PREV_MOVE: // TODO:非マッチ状態で指を話したら移動が戻る機能. 仕様未決定. いつか追加するかも知れない
                 break;
@@ -83,8 +85,6 @@ public class PuzzleController
                 break;
         }
         _prevState = prevState;
-
-        return mentuTilesData;
     }
 
     /// <summary>
@@ -144,11 +144,8 @@ public class PuzzleController
     /// <summary>
     /// パズルマッチ処理
     /// </summary>
-    /// <returns>マッチした面子のデータ(盤面インデックス配列, 牌種配列)</returns>
-    private (Vector2Int[] index, MahjongLogic.TILE_KIND[] kinds)? MatchProcess()
+    private void MatchProcess()
     {
-        (Vector2Int[] index, MahjongLogic.TILE_KIND[] kinds)? mentuTilesData = null;
-
         if (_puzzleManager._matchTilesIndex.Count > 0)
         {
             // マッチした面子の牌分ループ
@@ -159,7 +156,7 @@ public class PuzzleController
             }
 
             // マッチ面子データの代入(タプル！)
-            mentuTilesData = (
+            _matchMentuData = (
                 (Vector2Int[])_puzzleManager._matchTilesIndex[0].Clone(),
                 (MahjongLogic.TILE_KIND[])_puzzleManager._matchTilesKind[0].Clone()
             ); 
@@ -181,8 +178,6 @@ public class PuzzleController
                 _isFalling = true;
             }
         }
-
-        return mentuTilesData;
     }
 
     /// <summary>

@@ -171,13 +171,13 @@ public class StageController
     private void BattleProcess(float deltaTime)
     {
         // バトルコントローラーの更新
-        bool? isWin = _battleController.TickProcess(deltaTime);
+        _battleController.TickProcess(deltaTime);
 
         // バトルが終了したか
-        if (isWin.HasValue)
+        if (_battleController._isBattleWin.HasValue) 
         {
             // ステートの切り替え
-            _currentState = isWin.Value ? STAGE_STATE.BATTLE_WIN : STAGE_STATE.BATTLE_LOSE;
+            _currentState = _battleController._isBattleWin.Value ? STAGE_STATE.BATTLE_WIN : STAGE_STATE.BATTLE_LOSE;
         }
     }
 

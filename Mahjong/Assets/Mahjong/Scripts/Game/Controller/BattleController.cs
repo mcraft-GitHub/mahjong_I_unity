@@ -3,6 +3,9 @@ using UnityEngine;
 
 public class BattleController
 {
+    // 戦闘に勝利したか(勝利:true, 敗北:false, 戦闘中:null)
+    public bool? _isBattleWin { get; private set; } = null;
+
     // 仮のプレイヤーHP
     private const int TMP_PLAYER_HP = 2000;
 
@@ -75,9 +78,12 @@ public class BattleController
     /// 毎フレーム実行処理
     /// </summary>
     /// <param name="deltaTime">前フレームからの経過時間</param>
-    /// <returns>プレイヤーの勝利か(true:勝利, false:敗北, null:バトル中)</returns>
-    public bool? TickProcess(float deltaTime)
+    public void TickProcess(float deltaTime)
     {
+        // 戦闘が終了していれば処理しない(戦闘終了したら呼ばれないはずだけど一応)
+        if (_isBattleWin.HasValue)
+            return;
+
         // ステート切り替えの影響を受けないため保持しておく
         BattleManager.BATTLE_STATE stateBuf = _battleManager._state;
 
@@ -98,16 +104,16 @@ public class BattleController
                 break;
             // 戦闘終了(勝利)
             case BattleManager.BATTLE_STATE.FINISH_WIN:
-                return true;
+                _isBattleWin = true;
+                break;
             // 戦闘終了(敗北)
             case BattleManager.BATTLE_STATE.FINISH_LOSE:
-                return false;
+                _isBattleWin = false;
+                break;
         }
 
         // 前フレームステート
         _prevState = stateBuf;
-
-        return null;
     }
 
     /// <summary>
@@ -130,19 +136,19 @@ public class BattleController
     private void BattleProcess(float deltaTime)
     {
         // パズルコントローラーの更新
-        (Vector2Int[] index, MahjongLogic.TILE_KIND[] kinds)? mentuTilesData = _puzzleController.TickProcess(deltaTime);
+        _puzzleController.TickProcess(deltaTime);
 
         // マッチしていたら
-        if (mentuTilesData.HasValue)
+        if (_puzzleController._matchMentuData.HasValue)
         {
             // 手牌に追加・手牌がそろったら役計算
-            (MahjongLogic.Role role, int damage)? roleResultData = _battleManager.AddHandTiles(mentuTilesData.Value.kinds);
+            (MahjongLogic.Role role, int damage)? roleResultData = _battleManager.AddHandTiles(_puzzleController._matchMentuData.Value.kinds);
 
             // プレイヤーが攻撃しているか
             _isPlayerAttack = roleResultData.HasValue;
 
             // 手牌に加える演出
-            _waitMatchTime = _battleViewManager.AddHandTiles(_battleManager._handTilesKindList, mentuTilesData.Value.index, roleResultData);
+            _waitMatchTime = _battleViewManager.AddHandTiles(_battleManager._handTilesKindList, _puzzleController._matchMentuData.Value.index, roleResultData);
         }
         else
         {
