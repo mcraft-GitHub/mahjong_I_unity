@@ -79,9 +79,11 @@ public class PuzzleController
             case PuzzleManager.PUZZLE_STATE.MATCH:
                 MatchProcess();
                 break;
-            case PuzzleManager.PUZZLE_STATE.PREV_MOVE: // TODO:非マッチ状態で指を話したら移動が戻る機能. 仕様未決定. いつか追加するかも知れない
+            case PuzzleManager.PUZZLE_STATE.PREV_MOVE: 
+                // TODO:非マッチ状態で指を話したら移動が戻る機能. 仕様未決定. いつか追加するかも知れない
                 break;
-            case PuzzleManager.PUZZLE_STATE.PAUSE:     // TODO:ポーズ機能. 仕様未決定. 設定ボタン追加時に追加するかも
+            case PuzzleManager.PUZZLE_STATE.PAUSE:     
+                // TODO:ポーズ機能. 仕様未決定. 設定ボタン追加時に追加するかも
                 break;
         }
         _prevState = prevState;
