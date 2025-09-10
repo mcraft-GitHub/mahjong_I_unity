@@ -3,6 +3,19 @@ using UnityEngine;
 
 public class BattleController
 {
+    // プレイヤーの攻撃データ
+    public class PlayerAttackData
+    {
+        public MahjongLogic.Role role;
+        public int damage;
+
+        public PlayerAttackData(MahjongLogic.Role role, int damage)
+        {
+            this.role = role;
+            this.damage = damage;
+        }
+    }
+
     // 仮のプレイヤーHP
     private const int TMP_PLAYER_HP = 2000;
 
@@ -133,10 +146,10 @@ public class BattleController
         if (_puzzleController._matchMentuData.HasValue)
         {
             // 手牌に追加・手牌がそろったら役計算
-            (MahjongLogic.Role role, int damage)? roleResultData = _battleManager.AddHandTiles(_puzzleController._matchMentuData.Value.kinds);
+            PlayerAttackData roleResultData = _battleManager.AddHandTiles(_puzzleController._matchMentuData.Value.kinds);
 
             // プレイヤーが攻撃しているか
-            _isPlayerAttack = roleResultData.HasValue;
+            _isPlayerAttack = roleResultData != null;
 
             // 手牌に加える演出
             _waitMatchTime = _battleViewManager.AddHandTiles(_battleManager._handTilesKindList, _puzzleController._matchMentuData.Value.index, roleResultData);

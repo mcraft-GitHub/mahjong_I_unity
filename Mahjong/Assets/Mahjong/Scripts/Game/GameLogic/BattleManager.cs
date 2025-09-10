@@ -61,7 +61,7 @@ public class BattleManager
     private StageData _stageData;
 
     // プレイヤーの攻撃
-    private (MahjongLogic.Role role, int damage)? _playerAttackData = null;
+    private BattleController.PlayerAttackData _playerAttackData = null;
 
     // プレイヤーの最大体力
     private int _playerMaxHp;
@@ -159,7 +159,7 @@ public class BattleManager
     /// </summary>
     /// <param name="kinds">追加牌種配列</param>
     /// <returns>未攻撃：null, 攻撃：役とダメージ</returns>
-    public (MahjongLogic.Role role, int damage)? AddHandTiles(MahjongLogic.TILE_KIND[] kinds)
+    public BattleController.PlayerAttackData AddHandTiles(MahjongLogic.TILE_KIND[] kinds)
     {
         Debug.Log("バトルステート変更：" + _state + " > " + BATTLE_STATE.ADD_HAND_TILES);
         _state = BATTLE_STATE.ADD_HAND_TILES;
@@ -184,7 +184,7 @@ public class BattleManager
             int damage = CalcDamage(role);
 
             // プレイヤー攻撃データのセット
-            _playerAttackData = (role, damage);
+            _playerAttackData = new BattleController.PlayerAttackData(role, damage);
         }
 
         return _playerAttackData;
@@ -196,7 +196,7 @@ public class BattleManager
     public void FinishAddHandTiles()
     {
         // 攻撃をしていなければすぐに終了
-        if (!_playerAttackData.HasValue)
+        if (_playerAttackData == null)
         {
             Debug.Log("バトルステート変更：" + _state + " > " + BATTLE_STATE.BATTLE);
             _state = BATTLE_STATE.BATTLE;
@@ -204,9 +204,9 @@ public class BattleManager
         }
 
         // プレイヤーの攻撃計算
-        _enemyHp -= _playerAttackData.Value.damage;
+        _enemyHp -= _playerAttackData.damage;
 
-        Debug.Log("プレイヤーの攻撃 > " + _playerAttackData.Value.damage + "ダメージ / 残り体力" + (int)((float)_enemyHp / _enemyData._hitPoint * 100.0f) + "%");
+        Debug.Log("プレイヤーの攻撃 > " + _playerAttackData.damage + "ダメージ / 残り体力" + (int)((float)_enemyHp / _enemyData._hitPoint * 100.0f) + "%");
 
         // 敵が倒れたか判定
         if (_enemyHp <= 0)

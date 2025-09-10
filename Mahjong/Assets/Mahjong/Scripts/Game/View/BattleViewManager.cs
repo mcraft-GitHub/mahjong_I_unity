@@ -179,9 +179,9 @@ public class BattleViewManager : MonoBehaviour
     /// </summary>
     /// <param name="handTilesKindList">手牌の牌種リスト</param>
     /// <param name="tilesIndex">追加牌の盤面インデックス</param>
-    /// <param name="roleResultData">役の結果</param>
+    /// <param name="playerAttackData">プレイヤーの攻撃データ</param>
     /// <returns>演出時間</returns>
-    public float AddHandTiles(List<MahjongLogic.TILE_KIND> handTilesKindList, Vector2Int[] tilesIndex, (MahjongLogic.Role role, int damage)? roleResultData)
+    public float AddHandTiles(List<MahjongLogic.TILE_KIND> handTilesKindList, Vector2Int[] tilesIndex, BattleController.PlayerAttackData playerAttackData)
     {
         // 中,左,右の順番で格納されているので自然な順番にする
         int[] index = { 1, 0, 2 };
@@ -189,7 +189,7 @@ public class BattleViewManager : MonoBehaviour
         for (int i = 0; i < tilesIndex.Length; i++)
         {
             // 手牌の中でのインデックス
-            int handIdx = handTilesKindList.Count - (GameData.MENTU_TILES_NUM - index[i]) - (roleResultData.HasValue ? GameData.HEAD_TILES_NUM : 0);
+            int handIdx = handTilesKindList.Count - (GameData.MENTU_TILES_NUM - index[i]) - (playerAttackData != null ? GameData.HEAD_TILES_NUM : 0);
 
             // 手牌の生成
             GameObject obj = Instantiate(_tilePrefab, _handTilesParent);
@@ -207,15 +207,15 @@ public class BattleViewManager : MonoBehaviour
         }
 
         // 手牌(役)完成していたら
-        if (roleResultData.HasValue)
+        if (playerAttackData != null)
         {
             // 手牌(役)完成演出
-            StartCoroutine(ShowRoleResultCoroutine(roleResultData.Value.role, roleResultData.Value.damage));
+            StartCoroutine(ShowRoleResultCoroutine(playerAttackData.role, playerAttackData.damage));
 
             // フェード時間(2回分)
             float fadeTime = FADE_TIME + FADE_TIME;
             // 役表示間隔時間(役の数分)
-            float roleTime = (roleResultData.Value.role.roleKinds.Count + (roleResultData.Value.role.dora > 0 ? 1 : 0)) * DRAW_ROLE_DELAY;
+            float roleTime = (playerAttackData.role.roleKinds.Count + (playerAttackData.role.dora > 0 ? 1 : 0)) * DRAW_ROLE_DELAY;
 
             //        手牌移動時間     フェード時間   最初の役表示間隔       役表示       役表示削除間隔
             return HAND_TILE_MOVE_TIME + fadeTime + BEGIN_DRAW_ROLE_DELAY + roleTime + CLEAR_ROLE_RESULT_TIME;
