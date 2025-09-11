@@ -16,8 +16,8 @@ public class ResultManager : MonoBehaviour
 
     void Start()
     {
-        // 勝敗
-        if (GameController._isWin)
+        // TODO: 勝敗
+        if (true)
             _resultText.text = WIN_TEXT;
         else
             _resultText.text = LOSE_TEXT;

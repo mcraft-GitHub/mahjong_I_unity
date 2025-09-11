@@ -2512,10 +2512,14 @@ GameObject:
   - component: {fileID: 1676552244}
   - component: {fileID: 1676552243}
   - component: {fileID: 1676552242}
-  - component: {fileID: 1676552246}
-  - component: {fileID: 1676552245}
   - component: {fileID: 1676552247}
+  - component: {fileID: 1676552246}
+  - component: {fileID: 1676552249}
+  - component: {fileID: 1676552252}
+  - component: {fileID: 1676552251}
+  - component: {fileID: 1676552250}
   - component: {fileID: 1676552248}
+  - component: {fileID: 1676552245}
   m_Layer: 0
   m_Name: EventSystem
   m_TagString: Untagged
@@ -2597,13 +2601,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _tilePrefab: {fileID: 2344373465306326215, guid: 3529b378bf8b9b243b500170db564840, type: 3}
-  _handTilesParent: {fileID: 1738649256}
   _puzzleTilesParent: {fileID: 391286899}
-  _emptyHandTilesParent: {fileID: 14582263}
-  _doraTile: {fileID: 2098137559}
-  _jikazeTile: {fileID: 209901482}
-  _headTile1: {fileID: 975366835}
-  _headTile2: {fileID: 602856150}
   _puzzleFrameRect: {fileID: 1519808931}
 --- !u!114 &1676552246
 MonoBehaviour:
@@ -2617,11 +2615,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 050f425078e53c3499485a0c4cadc7c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _input: {fileID: 1676552247}
-  _puzzleViewManager: {fileID: 1676552245}
-  _battleViewManager: {fileID: 1676552248}
-  _enemyData: {fileID: 11400000, guid: 4ef63020f6b57074a9b1ba602ae9b844, type: 2}
-  _fadeImage: {fileID: 162232713}
+  _stageData: {fileID: 11400000, guid: 8d204c43173582148b711bcef6c3111b, type: 2}
+  _stageController: {fileID: 1676552252}
+  _battleController: {fileID: 1676552251}
+  _puzzleController: {fileID: 1676552250}
 --- !u!114 &1676552247
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2647,6 +2644,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c63c71b112f948438aa0ec86b850865, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _fadeImage: {fileID: 162232713}
+  _tilePrefab: {fileID: 2344373465306326215, guid: 3529b378bf8b9b243b500170db564840, type: 3}
+  _handTilesParent: {fileID: 1738649256}
+  _emptyHandTilesParent: {fileID: 14582263}
+  _doraTile: {fileID: 2098137559}
+  _jikazeTile: {fileID: 209901482}
+  _headTile1: {fileID: 975366835}
+  _headTile2: {fileID: 602856150}
   _enemyHpGauge: {fileID: 3244834692216912462}
   _playerHpGauge: {fileID: 1623033699}
   _enemyAttackGauge: {fileID: 1300515122}
@@ -2655,6 +2660,59 @@ MonoBehaviour:
   _roleResultText: {fileID: 1598471831}
   _rolePointText: {fileID: 999907947}
   _beginCntText: {fileID: 1979546932}
+--- !u!114 &1676552249
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1676552241}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f98277f98844c2458abeee77ce5b7e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _fadeImage: {fileID: 162232713}
+--- !u!114 &1676552250
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1676552241}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ebe453d6a9910c48829c4f44907545b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _puzzleViewManager: {fileID: 1676552245}
+  _input: {fileID: 1676552247}
+--- !u!114 &1676552251
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1676552241}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9909a28a5da8e04b97eaea471c2402d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _battleViewManager: {fileID: 1676552248}
+--- !u!114 &1676552252
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1676552241}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88220a7f85589dd4b979c2b6c598154f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _stageViewManager: {fileID: 1676552249}
 --- !u!1 &1738649255
 GameObject:
   m_ObjectHideFlags: 0
@@ -2939,7 +2997,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 5
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

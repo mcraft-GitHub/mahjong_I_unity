@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8a3cf12cfaa168549a665e8910ea4139, type: 3}
-  m_Name: EnemyData
+  m_Name: ED_piyo
   m_EditorClassIdentifier: 
-  _enemyImage: {fileID: 21300000, guid: 3ab522f8667aefb4ba91e1466d000bdd, type: 3}
+  _enemyImage: {fileID: 21300000, guid: 00c56901e58ca6c49a7d43a2f61a135a, type: 3}
   _attackDelay: 10
-  _attackDamage: 100
-  _hitPoint: 8000
+  _attackDamage: 1200
+  _hitPoint: 100
