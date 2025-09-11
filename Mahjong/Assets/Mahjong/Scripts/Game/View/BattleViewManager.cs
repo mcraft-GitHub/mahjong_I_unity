@@ -7,6 +7,9 @@ using System.Collections.Generic;
 
 public class BattleViewManager : MonoBehaviour
 {
+    // 画面フェードの時間
+    private const float SCREEN_FADE_TIME = 1.0f;
+
     // 手牌の移動時間
     public static readonly float HAND_TILE_MOVE_TIME = 0.3f;
 
@@ -24,6 +27,9 @@ public class BattleViewManager : MonoBehaviour
 
     // ゲージの速度
     private const float GAUGE_MOVE_SPEED = 2.0f;
+
+    // フェード
+    [SerializeField] private Image _fadeImage;
 
     // 麻雀牌プレハブ
     [SerializeField] private GameObject _tilePrefab;
@@ -114,6 +120,29 @@ public class BattleViewManager : MonoBehaviour
     }
 
     /// <summary>
+    /// フェードインを開始
+    /// </summary>
+    /// <returns>フェードにかかる時間</returns>
+    public float BeginFadeIn()
+    {
+        _fadeImage.color = Color.black;
+        _fadeImage.DOColor(Color.clear, SCREEN_FADE_TIME);
+        return SCREEN_FADE_TIME;
+    }
+
+
+    /// <summary>
+    /// フェードアウトを開始
+    /// </summary>
+    /// <returns>フェードにかかる時間</returns>
+    public float BeginFadeOut()
+    {
+        _fadeImage.color = Color.clear;
+        _fadeImage.DOColor(Color.black, SCREEN_FADE_TIME);
+        return SCREEN_FADE_TIME;
+    }
+
+    /// <summary>
     /// ゲーム開始カウントダウンのセット
     /// </summary>
     /// <param name="cnt">カウント, -1なら表示消去</param>
@@ -181,7 +210,7 @@ public class BattleViewManager : MonoBehaviour
     /// <param name="tilesIndex">追加牌の盤面インデックス</param>
     /// <param name="playerAttackData">プレイヤーの攻撃データ</param>
     /// <returns>演出時間</returns>
-    public float AddHandTiles(List<MahjongLogic.TILE_KIND> handTilesKindList, Vector2Int[] tilesIndex, BattleController.PlayerAttackData playerAttackData)
+    public float AddHandTiles(List<MahjongLogic.TILE_KIND> handTilesKindList, Vector2Int[] tilesIndex, BattleManager.PlayerAttackData playerAttackData)
     {
         // 中,左,右の順番で格納されているので自然な順番にする
         int[] index = { 1, 0, 2 };

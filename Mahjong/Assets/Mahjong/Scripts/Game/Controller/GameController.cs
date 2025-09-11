@@ -1,28 +1,55 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
-    // 入力ハンドラ
-    [SerializeField] private TouchInputHandler _input;
-    public TouchInputHandler TouchInputHandler => _input;
+    // ゲームステート
+    public enum GAME_STATE
+    {
+        OPENING = 0,        // オープニング
+        ADVANCE,            // ステージ進行
+        ENCOUNT,            // 接敵
+        COUNTDOWN,          // バトルカウントダウン
+        PUZZLE,             // パズル
+        MATCHING_RESULT,    // マッチ結果の処理
+        BATTLE_WIN,         // バトル勝利
+        BATTLE_LOSE,        // バトル敗北
+        STAGE_CLEAR,        // ステージクリア
+        LOAD_SCENE,         // シーンのロード
+        NONE,
+    }
 
-    // ステージビュー管理クラス
-    [SerializeField] private StageViewManager _stageViewManager;
-    public StageViewManager StageViewManager => _stageViewManager;
+    // ゲームデータ
+    // 各コントローラーのStateUpdate()で変更される
+    public class GameData
+    {
+        // ゲームステート
+        public GAME_STATE currentState = GAME_STATE.NONE;
 
-    // バトルビュー管理クラス
-    [SerializeField] private BattleViewManager _battleViewManager;
-    public BattleViewManager BattleViewManager => _battleViewManager;
+        // 現在の敵のインデックス
+        public int currentEnemtIdx = 0;
 
-    // パズルビュー管理クラス
-    [SerializeField] private PuzzleViewManager _puzzleViewManager;
-    public PuzzleViewManager PuzzleViewManager => _puzzleViewManager;
+        // 手牌に追加する面子
+        public MahjongLogic.GameMentu addHandMentu = null;
+    }
 
     // ステージデータ
     [SerializeField] private StageData _stageData;
 
     // ステージコントローラー
-    private StageController _stageController;
+    [SerializeField] private StageController _stageController;
+
+    // バトルコントローラー
+    [SerializeField] private BattleController _battleController;
+
+    // パズルコントローラー
+    [SerializeField] private PuzzleController _puzzleController;
+
+    // ゲームデータ
+    private GameData _gameData;
+
+    // 前フレームのゲームステート
+    private GAME_STATE _prevState = GAME_STATE.NONE;
 
     void Awake()
     {
@@ -32,13 +59,43 @@ public class GameController : MonoBehaviour
 
     void Start()
     {
-        // ステージコントローラーの作成
-        _stageController = new StageController();
-        _stageController.Init(this, _stageData);
+        // ゲームデータの作成
+        _gameData = new GameData();
+
+        // ステージコントローラーの初期化
+        _stageController.Init(_stageData);
+
+        // バトルコントローラーの初期化
+        _battleController.Init(_stageData);
+
+        // パズルコントローラーの初期化
+        _puzzleController.Init(_stageData);
+
+        // ゲームステートを開始時の値にする
+        _gameData.currentState = GAME_STATE.OPENING;
     }
 
     void Update()
     {
-        _stageController.StateUpdate(Time.deltaTime);
+        // 前フレームステート用に保持
+        GAME_STATE bufState = _gameData.currentState;
+
+        // ステートが切り替わったらデバッグ用表示
+        if (_gameData.currentState != _prevState)
+        {
+            Debug.Log("StateChange:" + _prevState + " > " + _gameData.currentState);
+        }
+
+        // パズルコントローラーの更新
+        _puzzleController.StateUpdate(_gameData, _prevState);
+
+        // バトルコントローラーの更新
+        _battleController.StateUpdate(_gameData, _prevState);
+
+        // ステージコントローラーの更新
+        _stageController.StateUpdate(_gameData, _prevState);
+
+        // 前フレームステートのセット
+        _prevState = bufState;
     }
 }

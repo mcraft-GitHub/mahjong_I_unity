@@ -1,267 +1,223 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public class StageController
+public class StageController : MonoBehaviour
 {
-    // ステート
-    public enum STAGE_STATE
-    {
-        OPENING = 0, // オープニング
-        ADVANCE, // ステージ進行
-        ENCOUNT, // 接敵
-        BATTLE, // バトル
-        BATTLE_WIN, // バトル勝利
-        BATTLE_LOSE, // バトル敗北
-        STAGE_CLEAR, // ステージクリア
-        NONE,
-    }
+    // ステージビュー管理クラス
+    [SerializeField] private StageViewManager _stageViewManager;
 
     // ステージデータ
     private StageData _stageData;
 
-    // 現在の敵インデックス
-    private int _currentEnemyIdx = 0;
-
-    // ゲームコントローラー
-    private GameController _gameController;
-
-    // バトルコントローラー
-    private BattleController _battleController;
-
-    // ステージビューマネージャー
-    private StageViewManager _stageViewManager;
-
-    // 現在のステート
-    private STAGE_STATE _currentState = STAGE_STATE.OPENING;
-
-    // 前フレームのステート
-    private STAGE_STATE _prevState = STAGE_STATE.NONE;
-
     /// <summary>
     /// 初期化処理
     /// </summary>
-    /// <param name="gameController">ゲームコントローラーコンポーネント</param>
     /// <param name="stageData">ステージデータ</param>
-    public void Init(GameController gameController, StageData stageData)
+    public void Init(StageData stageData)
     {
         // 変数の初期化
-        _gameController = gameController;
         _stageData = stageData;
-        _currentState = STAGE_STATE.OPENING;
-        _prevState = STAGE_STATE.NONE;
-
-        // ステージビューマネージャーの取得
-        _stageViewManager = _gameController.StageViewManager;
     }
 
     /// <summary>
     /// ステートの更新
     /// </summary>
-    /// <param name="deltaTime">前フレームからの経過時間</param>
-    public void StateUpdate(float deltaTime)
+    /// <param name="gameData">ゲームデータ</param>
+    /// <param name="prevState">1フレーム前のステート</param>
+    public void StateUpdate(GameController.GameData gameData, GameController.GAME_STATE prevState)
     {
-        // ステート切り替えの影響を受けないため保持しておく
-        STAGE_STATE stateBuf = _currentState;
-
         // 各ステートの処理
-        switch (_currentState)
+        switch (gameData.currentState)
         {
             // オープニング
-            case STAGE_STATE.OPENING:
-                OpeningProcess();
+            case GameController.GAME_STATE.OPENING:
+                ShowOpeningAndChangeState(gameData, prevState);
                 break;
             // 進行
-            case STAGE_STATE.ADVANCE:
-                AdvanceProcess();
+            case GameController.GAME_STATE.ADVANCE:
+                ShowAdvanceAndChangeState(gameData, prevState);
                 break;
             // 遭遇
-            case STAGE_STATE.ENCOUNT:
-                EncountProcess();
-                break;
-            // バトル
-            case STAGE_STATE.BATTLE:
-                BattleProcess(deltaTime);
+            case GameController.GAME_STATE.ENCOUNT:
+                ShowEncountAndChangeState(gameData, prevState);
                 break;
             // バトル勝利
-            case STAGE_STATE.BATTLE_WIN:
-                BattleWinProcess();
+            case GameController.GAME_STATE.BATTLE_WIN:
+                ShowBattleWinAndChangeState(gameData, prevState);
                 break;
             // バトル敗北
-            case STAGE_STATE.BATTLE_LOSE:
-                BattleLoseProcess();
+            case GameController.GAME_STATE.BATTLE_LOSE:
+                ShowBattleLoseAndChangeState(gameData, prevState);
                 break;
             // ステージクリア
-            case STAGE_STATE.STAGE_CLEAR:
-                StageClearProcess();
+            case GameController.GAME_STATE.STAGE_CLEAR:
+                ShowStageClearAndChangeState(gameData, prevState);
+                break;
+            // その他
+            default:
                 break;
         }
-
-        // 前フレームステート
-        _prevState = stateBuf;
     }
 
     /// <summary>
-    /// オープニング処理
+    /// オープニング時のステートの更新
     /// </summary>
-    private void OpeningProcess()
+    /// <param name="gameData">ゲームデータ</param>
+    /// <param name="prevState">1フレーム前のステート</param>
+    private void ShowOpeningAndChangeState(GameController.GameData gameData, GameController.GAME_STATE prevState)
     {
-        if (_prevState != STAGE_STATE.OPENING)
+        if (prevState != GameController.GAME_STATE.OPENING)
         {
-            float wateTime = 0.0f;
+            float waitTime = 0.0f;
 
             // フェードイン
-            wateTime += _stageViewManager.BeginFadeIn();
+            waitTime += _stageViewManager.BeginFadeIn();
 
             // オープニング演出
-            wateTime += _stageViewManager.OpeningVisualPresentation();
+            waitTime += _stageViewManager.OpeningVisualPresentation();
 
-            // ステージ進行
-            _gameController.StartCoroutine(ChangeStateCoroutine(STAGE_STATE.ADVANCE, wateTime));
+            // ステート切り替え
+            StartCoroutine(ChangeStateCoroutine(gameData, GameController.GAME_STATE.ADVANCE, waitTime));
         }
     }
 
     /// <summary>
-    /// 進行処理
+    /// 進行時のステートの更新
     /// </summary>
-    private void AdvanceProcess()
+    /// <param name="gameData">ゲームデータ</param>
+    /// <param name="prevState">1フレーム前のステート</param>
+    private void ShowAdvanceAndChangeState(GameController.GameData gameData, GameController.GAME_STATE prevState)
     {
-        if (_prevState != STAGE_STATE.ADVANCE)
+        if (prevState != GameController.GAME_STATE.ADVANCE)
         {
-            float wateTime = 0.0f;
+            float waitTime = 0.0f;
+
+            // 2体目以降はバトル画面のフェードアウト状態から始めるので、フェードイン
+            if (gameData.currentEnemtIdx > 0)
+            {
+                // フェードイン
+                waitTime += _stageViewManager.BeginFadeIn();
+            }
 
             // ステージ進行演出
-            wateTime += _stageViewManager.AdvanceVisualPresentation();
+            waitTime += _stageViewManager.AdvanceVisualPresentation();
+
+            // ステート切り替え
+            StartCoroutine(ChangeStateCoroutine(gameData, GameController.GAME_STATE.ENCOUNT, waitTime));
+        }
+    }
+
+    /// <summary>
+    /// 遭遇時のステートの更新
+    /// </summary>
+    /// <param name="gameData">ゲームデータ</param>
+    /// <param name="prevState">1フレーム前のステート</param>
+    private void ShowEncountAndChangeState(GameController.GameData gameData, GameController.GAME_STATE prevState)
+    {
+        if (prevState != GameController.GAME_STATE.ENCOUNT)
+        {
+            float waitTime = 0.0f;
 
             // フェードアウト
-            wateTime += _stageViewManager.BeginFadeOut();
-
-            // 敵遭遇
-            _gameController.StartCoroutine(ChangeStateCoroutine(STAGE_STATE.ENCOUNT, wateTime));
-        }
-    }
-
-    /// <summary>
-    /// 遭遇処理
-    /// </summary>
-    private void EncountProcess()
-    {
-        if (_prevState != STAGE_STATE.ENCOUNT)
-        {
-            float wateTime = 0.0f;
-
-            // バトルコントローラーの生成・初期化
-            _battleController = new BattleController();
-            _battleController.Init(_gameController, _stageData, _currentEnemyIdx);
-
-            // フェードイン
-            wateTime += _stageViewManager.BeginFadeIn();
+            waitTime += _stageViewManager.BeginFadeOut();
 
             // 敵遭遇演出
-            wateTime += _stageViewManager.EncountVisualPresentation();
+            waitTime += _stageViewManager.EncountVisualPresentation();
 
-            // バトル
-            _gameController.StartCoroutine(ChangeStateCoroutine(STAGE_STATE.BATTLE, wateTime));
+            // ステート切り替え
+            StartCoroutine(ChangeStateCoroutine(gameData, GameController.GAME_STATE.COUNTDOWN, waitTime));
         }
     }
 
     /// <summary>
-    /// バトル処理
+    /// バトル勝利時のステートの更新
     /// </summary>
-    /// <param name="deltaTime">前フレームからの経過時間</param>
-    private void BattleProcess(float deltaTime)
+    /// <param name="gameData">ゲームデータ</param>
+    /// <param name="prevState">1フレーム前のステート</param>
+    private void ShowBattleWinAndChangeState(GameController.GameData gameData, GameController.GAME_STATE prevState)
     {
-        // バトルコントローラーの更新
-        _battleController.StateUpdate(deltaTime);
-
-        // バトルが終了していればステートを切り替える
-        if (_battleController.GetBattleState() == BattleManager.BATTLE_STATE.FINISH_WIN)
+        if (prevState != GameController.GAME_STATE.BATTLE_WIN)
         {
-            _currentState = STAGE_STATE.BATTLE_WIN;
-        }
-        else if(_battleController.GetBattleState() == BattleManager.BATTLE_STATE.FINISH_LOSE)
-        {
-            _currentState = STAGE_STATE.BATTLE_LOSE;
-        }
-    }
-
-    /// <summary>
-    /// バトル勝利処理
-    /// </summary>
-    private void BattleWinProcess()
-    {
-        if (_prevState != STAGE_STATE.BATTLE_WIN)
-        {
-            float wateTime = 0.0f;
+            float waitTime = 0.0f;
 
             // 勝利演出
-            wateTime += _stageViewManager.BattleWinVisualPresentation();
+            waitTime += _stageViewManager.BattleWinVisualPresentation();
 
-            // 敵のカウントを進める
-            _currentEnemyIdx++;
+            // フェードアウト
+            waitTime += _stageViewManager.BeginFadeOut();
+
+            // 敵のインデックスを進める
+            gameData.currentEnemtIdx++;
 
             // 全ての敵を倒したか
-            if (_stageData._appearEnemy.Count <= _currentEnemyIdx)
+            if (_stageData._appearEnemy.Count <= gameData.currentEnemtIdx)
             {
                 // ステージクリア
-                _gameController.StartCoroutine(ChangeStateCoroutine(STAGE_STATE.STAGE_CLEAR, wateTime));
+                StartCoroutine(ChangeStateCoroutine(gameData, GameController.GAME_STATE.STAGE_CLEAR, waitTime));
             }
             else
             {
                 // ステージ進行
-                _gameController.StartCoroutine(ChangeStateCoroutine(STAGE_STATE.ADVANCE, wateTime));
+                StartCoroutine(ChangeStateCoroutine(gameData, GameController.GAME_STATE.ADVANCE, waitTime));
             }
         }
     }
 
     /// <summary>
-    /// バトル敗北
+    /// バトル敗北時のステートの更新
     /// </summary>
-    private void BattleLoseProcess()
+    /// <param name="gameData">ゲームデータ</param>
+    /// <param name="prevState">1フレーム前のステート</param>
+    private void ShowBattleLoseAndChangeState(GameController.GameData gameData, GameController.GAME_STATE prevState)
     {
-        if (_prevState != STAGE_STATE.BATTLE_LOSE)
+        if (prevState != GameController.GAME_STATE.BATTLE_LOSE)
         {
-            float wateTime = 0.0f;
+            float waitTime = 0.0f;
 
             // 敗北演出
-            wateTime += _stageViewManager.BattleLoseVisualPresentation();
+            waitTime += _stageViewManager.BattleLoseVisualPresentation();
 
             // フェードアウト
-            wateTime += _stageViewManager.BeginFadeOut();
+            waitTime += _stageViewManager.BeginFadeOut();
 
-            // TODO: シーン切り替え
+            // ステート切り替え
+            StartCoroutine(ChangeStateCoroutine(gameData, GameController.GAME_STATE.LOAD_SCENE, waitTime));
         }
     }
 
     /// <summary>
-    /// ステージクリア
+    /// ステージクリア時のステートの更新
     /// </summary>
-    /// <return>ゲーム(ステージ)が終了したか</return>
-    private void StageClearProcess()
+    /// <param name="gameData">ゲームデータ</param>
+    /// <param name="prevState">1フレーム前のステート</param>
+    private void ShowStageClearAndChangeState(GameController.GameData gameData, GameController.GAME_STATE prevState)
     {
 
-        if (_prevState != STAGE_STATE.STAGE_CLEAR)
+        if (prevState != GameController.GAME_STATE.STAGE_CLEAR)
         {
-            float wateTime = 0.0f;
+            float waitTime = 0.0f;
 
             // クリア演出
-            wateTime += _stageViewManager.StageClearVisualPresentation();
+            waitTime += _stageViewManager.StageClearVisualPresentation();
 
             // フェードアウト
-            wateTime += _stageViewManager.BeginFadeOut();
+            waitTime += _stageViewManager.BeginFadeOut();
 
-            // TODO: シーン切り替え
+            // ステート切り替え
+            StartCoroutine(ChangeStateCoroutine(gameData, GameController.GAME_STATE.LOAD_SCENE, waitTime));
         }
     }
 
     /// <summary>
     /// ステート切り替えコルーチン
     /// </summary>
+    /// <param name="gameData">ゲームデータ</param>
     /// <param name="state">切替先ステート</param>
     /// <param name="waitTime">待機時間</param>
-    private IEnumerator ChangeStateCoroutine(STAGE_STATE state, float waitTime)
+    private IEnumerator ChangeStateCoroutine(GameController.GameData gameData, GameController.GAME_STATE state, float waitTime)
     {
         yield return new WaitForSeconds(waitTime);
 
-        _currentState = state;
+        gameData.currentState = state;
     }
 }

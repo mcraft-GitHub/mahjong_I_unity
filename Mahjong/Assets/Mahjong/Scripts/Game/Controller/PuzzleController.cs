@@ -1,28 +1,20 @@
 ﻿using System.Collections;
+using UnityEditor.Overlays;
 using UnityEngine;
 
-public class PuzzleController
+public class PuzzleController : MonoBehaviour
 {
-    // マッチした面子のデータ
-    public (Vector2Int[] index, MahjongLogic.TILE_KIND[] kinds)? _matchMentuData { get; private set; } = null;
+    // パズルビュー管理クラス
+    [SerializeField] private PuzzleViewManager _puzzleViewManager;
+
+    // 入力ハンドラ
+    [SerializeField] private TouchInputHandler _input;
 
     // ステージデータ
     private StageData _stageData;
 
-    // ゲームコントローラー
-    private GameController _gameController;
-
     // パズルマネージャー
     private PuzzleManager _puzzleManager;
-
-    // パズルビューマネージャー
-    private PuzzleViewManager _puzzleViewManager;
-
-    // 前フレームのステート
-    private PuzzleManager.PUZZLE_STATE _prevState = PuzzleManager.PUZZLE_STATE.PAUSE;
-
-    // インプットハンドラー
-    private TouchInputHandler _input;
 
     // ***** READY
     // 移動開始位置
@@ -35,68 +27,76 @@ public class PuzzleController
     /// <summary>
     /// 初期化処理
     /// </summary>
-    /// <param name="gameController">ゲームコントローラーコンポーネント</param>
     /// <param name="stageData">ステージデータ</param>
-    public void Init(GameController gameController, StageData stageData)
+    public void Init(StageData stageData)
     {
         // 変数の初期化
-        _gameController = gameController;
         _stageData = stageData;
-        _prevState = PuzzleManager.PUZZLE_STATE.PAUSE;
-
-        // パズルマネージャーの生成・初期化
-        _puzzleManager = new PuzzleManager();
-        _puzzleManager.InitPuzzle(stageData._useTilesKind);
-
-        // パズルビューマネージャーの取得
-        _puzzleViewManager = _gameController.PuzzleViewManager;
-        // パズルマネージャーのセット
-        _puzzleViewManager.SetClass(_puzzleManager);
-        // 盤面のセット
-        _puzzleViewManager.CreatePuzzleBoard();
-
-        // インプットハンドラーの取得
-        _input = _gameController.TouchInputHandler;
     }
 
     /// <summary>
     /// ステートの更新
     /// </summary>
-    /// <param name="deltaTime">前フレームからの経過時間</param>
-    public void StateUpdate(float deltaTime)
+    /// <param name="gameData">ゲームデータ</param>
+    /// <param name="prevState">1フレーム前のステート</param>
+    public void StateUpdate(GameController.GameData gameData, GameController.GAME_STATE prevState)
     {
-        // 毎フレーム初期化
-        _matchMentuData = null;
-
-        // ステート切り替えの影響を受けないため保持しておく
-        PuzzleManager.PUZZLE_STATE prevState = _puzzleManager._state;
-
-        switch (_puzzleManager._state)
+        // 各ステートの処理
+        switch (gameData.currentState)
         {
-            case PuzzleManager.PUZZLE_STATE.READY:
-                ReadyProcess();
+            // カウントダウン
+            case GameController.GAME_STATE.COUNTDOWN:
+                InitPuzzle(gameData, prevState);
                 break;
-            case PuzzleManager.PUZZLE_STATE.MATCH:
-                MatchProcess();
+            // パズル
+            case GameController.GAME_STATE.PUZZLE:
+                UpdatePuzzleTileMove(gameData, prevState);
                 break;
-            case PuzzleManager.PUZZLE_STATE.PREV_MOVE: 
-                // TODO:非マッチ状態で指を話したら移動が戻る機能. 仕様未決定. いつか追加するかも知れない
+            // マッチング結果処理
+            case GameController.GAME_STATE.MATCHING_RESULT:
+                UpdateMatchMentuAndFallTiles(gameData, prevState);
                 break;
-            case PuzzleManager.PUZZLE_STATE.PAUSE:     
-                // TODO:ポーズ機能. 仕様未決定. 設定ボタン追加時に追加するかも
+            // その他
+            default:
                 break;
         }
-        _prevState = prevState;
     }
 
     /// <summary>
-    /// パズル準備完了(パズル操作中)処理
+    /// パズルの初期化
     /// </summary>
-    private void ReadyProcess()
+    /// <param name="gameData">ゲームデータ</param>
+    /// <param name="prevState">1フレーム前のステート</param>
+    private void InitPuzzle(GameController.GameData gameData, GameController.GAME_STATE prevState)
+    {
+        if (prevState != GameController.GAME_STATE.COUNTDOWN)
+        {
+            // パズルマネージャーの生成・初期化
+            _puzzleManager = new PuzzleManager();
+            _puzzleManager.InitPuzzle(_stageData._useTilesKind);
+
+            // パズルマネージャーのセット
+            _puzzleViewManager.SetClass(_puzzleManager);
+            // 盤面のセット
+            _puzzleViewManager.CreatePuzzleBoard();
+
+            // マッチ面子のクリア
+            _puzzleManager._matchMentu.Clear();
+        }
+    }
+
+    /// <summary>
+    /// パズル牌の移動の更新
+    /// </summary>
+    /// <param name="gameData">ゲームデータ</param>
+    /// <param name="prevState">1フレーム前のステート</param>
+    private void UpdatePuzzleTileMove(GameController.GameData gameData, GameController.GAME_STATE prevState)
     {
         // 切り替わったら現在の位置を初期化
-        if (_prevState != PuzzleManager.PUZZLE_STATE.READY)
+        if (prevState != GameController.GAME_STATE.PUZZLE)
+        {
             _currentMoveIndex = null;
+        }
 
         if (_currentMoveIndex.HasValue)
         {
@@ -125,7 +125,7 @@ public class PuzzleController
                 // 牌の入れ替え
                 _puzzleViewManager.SwitchingPuzzleTile(_currentMoveIndex.Value, newIndex.Value);
                 _currentMoveIndex = newIndex;
-                _puzzleManager.MoveNow(_currentMoveIndex.Value);
+                _puzzleManager.MoveNow(_currentMoveIndex.Value, gameData);
             }
         }
         else
@@ -137,48 +137,50 @@ public class PuzzleController
                 if (_currentMoveIndex.HasValue)
                 {
                     // 移動開始
-                    _puzzleManager.MoveNow(_currentMoveIndex.Value);
+                    _puzzleManager.MoveNow(_currentMoveIndex.Value, gameData);
                 }
             }
         }
     }
 
     /// <summary>
-    /// パズルマッチ処理
+    /// マッチした面子と落下の更新
     /// </summary>
-    private void MatchProcess()
+    /// <param name="gameData">ゲームデータ</param>
+    /// <param name="prevState">1フレーム前のステート</param>
+    private void UpdateMatchMentuAndFallTiles(GameController.GameData gameData, GameController.GAME_STATE prevState)
     {
-        if (_puzzleManager._matchTilesIndex.Count > 0 && _puzzleManager._matchTilesKind.Count > 0)
+        // 手牌の追加が処理されたらnullになる
+        if (gameData.addHandMentu == null)
         {
-            // マッチした面子の牌分ループ
-            for (int i = 0; i < GameData.MENTU_TILES_NUM; i++)
+            if (_puzzleManager._matchMentu.Count > 0)
             {
-                // マッチした牌を削除
-                _puzzleViewManager.DestroyPuzzleTile(_puzzleManager._matchTilesIndex[0][i]);
+                // 次の手牌追加面子にセット
+                gameData.addHandMentu = _puzzleManager._matchMentu[0];
+
+                // マッチした面子の牌分ループ
+                for (int i = 0; i < GameData.MENTU_TILES_NUM; i++)
+                {
+                    // マッチした牌を削除
+                    _puzzleViewManager.DestroyPuzzleTile(_puzzleManager._matchMentu[0].tilesIndex[i]);
+                }
+
+                // 処理済みの面子の削除
+                _puzzleManager._matchMentu.RemoveAt(0);
             }
-
-            // マッチ面子データの代入(タプル！)
-            _matchMentuData = (
-                (Vector2Int[])_puzzleManager._matchTilesIndex[0].Clone(),
-                (MahjongLogic.TILE_KIND[])_puzzleManager._matchTilesKind[0].Clone()
-            ); 
-
-            // 処理済みの面子の削除
-            _puzzleManager._matchTilesIndex.RemoveAt(0);
-            _puzzleManager._matchTilesKind.RemoveAt(0);
-        }
-        else
-        {
-            // 牌を落とす
-            if (!_isFalling)
+            else
             {
-                // 牌の落下
-                float fallTime = _puzzleViewManager.FallPuzzleTile();
+                // 牌を落とす
+                if (!_isFalling)
+                {
+                    // 牌の落下
+                    float fallTime = _puzzleViewManager.FallPuzzleTile();
 
-                // 落下時間分待ってから落下の終了
-                _gameController.StartCoroutine(FinishFallCoroutine(fallTime));
+                    // 落下時間分待ってから落下の終了
+                    StartCoroutine(FinishFallCoroutine(gameData, fallTime));
 
-                _isFalling = true;
+                    _isFalling = true;
+                }
             }
         }
     }
@@ -186,13 +188,14 @@ public class PuzzleController
     /// <summary>
     /// 落下終了コルーチン
     /// </summary>
+    /// <param name="gameData">ゲームデータ</param>
     /// <param name="fallTime"></param>
-    private IEnumerator FinishFallCoroutine(float fallTime)
+    private IEnumerator FinishFallCoroutine(GameController.GameData gameData, float fallTime)
     {
         yield return new WaitForSeconds(fallTime);
 
         // マッチの終了
-        _puzzleManager.FinishMatch();
+        _puzzleManager.FinishMatch(gameData);
 
         // 落下の終了
         _isFalling = false;

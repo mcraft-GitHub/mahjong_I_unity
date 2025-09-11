@@ -5,8 +5,35 @@ using UnityEngine;
 
 public class MahjongLogic
 {
+    // 面子クラス
+    public class GameMentu
+    {
+        // 牌の盤面インデックス
+        public Vector2Int[] tilesIndex = { Vector2Int.zero, Vector2Int.zero, Vector2Int.zero };
+        // 牌種
+        public TILE_KIND[] tilesKind = { TILE_KIND.NONE, TILE_KIND.NONE, TILE_KIND.NONE };
+    }
+
     // 手牌の牌の数
     public static readonly int HAND_TILES_NUM = 14;
+
+    // 役満,三倍満.倍満,跳満,満貫の翻数
+    private static readonly int YAKUMAN_HAN = 13;
+    private static readonly int SANBAIMAN_HAN = 11;
+    private static readonly int BAIMAN_HAN = 8;
+    private static readonly int HANEMAN_HAN = 6;
+    private static readonly int MANGAN_HAN = 4;
+
+    // 役満,三倍満.倍満,跳満,満貫の点数
+    private static readonly int YAKUMAN_POINT = 32000;
+    private static readonly int SANBAIMAN_POINT = 24000;
+    private static readonly int BAIMAN_POINT = 16000;
+    private static readonly int HANEMAN_POINT = 12000;
+    private static readonly int MANGAN_POINT = 8000;
+
+    // 4翻,3翻の時に満貫になる符数
+    private static readonly int FOUR_HAN_MANGAN_FU = 40;
+    private static readonly int THREE_HAN_MANGAN_FU = 70;
 
     // 牌種
     public enum TILE_KIND
@@ -148,6 +175,34 @@ public class MahjongLogic
             return (TILE_KIND)UnityEngine.Random.Range(0, (int)TILE_KIND.MAX);
 
         return useTiles[UnityEngine.Random.Range(0, useTiles.Count)];
+    }
+
+    /// <summary>
+    /// 点数計算
+    /// </summary>
+    /// <param name="role">役</param>
+    /// <returns>点数</returns>
+    public static int CalcScore(Role role)
+    {
+        // 符の切り上げ
+        role.fu = (int)(Math.Ceiling(role.fu / (double)10) * 10);
+
+        // 満貫以上は翻数で確定
+        if (role.han >= YAKUMAN_HAN) return YAKUMAN_POINT * (role.han / YAKUMAN_HAN);
+        if (role.han >= SANBAIMAN_HAN) return SANBAIMAN_POINT;
+        if (role.han >= BAIMAN_HAN) return BAIMAN_POINT;
+        if (role.han >= HANEMAN_HAN) return HANEMAN_POINT;
+        if (role.han >= (MANGAN_HAN + 1)) return MANGAN_POINT;
+        if (role.han >= MANGAN_HAN && role.fu >= FOUR_HAN_MANGAN_FU) return MANGAN_POINT;
+        if (role.han >= (MANGAN_HAN - 1) && role.fu >= THREE_HAN_MANGAN_FU) return MANGAN_POINT;
+
+        // 点数計算
+        double score= role.fu * 4 * Math.Pow(2, role.han + 2);
+
+        // 切り上げ
+        score = (int)(Math.Ceiling(score / 100) * 100);
+
+        return (int)score;
     }
 
     /// <summary>
