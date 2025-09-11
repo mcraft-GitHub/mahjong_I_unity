@@ -12,6 +12,9 @@ public class BattleController : MonoBehaviour
     // ステージデータ
     private StageData _stageData;
 
+    // プレイヤーキャラデータ
+    private CharacterData _playerCharaData;
+
     // バトルマネージャー
     private BattleManager _battleManager;
 
@@ -28,10 +31,13 @@ public class BattleController : MonoBehaviour
     /// 初期化処理
     /// </summary>
     /// <param name="stageData">敵データ</param>
-    public void Init(StageData stageData)
+    public void Init(StageData stageData, CharacterData playerCharaData)
     {
         // ステージデータのセット
         _stageData = stageData;
+
+        // プレイヤーキャラクターデータのセット
+        _playerCharaData = playerCharaData;
     }
 
     /// <summary>

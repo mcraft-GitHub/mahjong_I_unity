@@ -25,8 +25,8 @@ public class CharacterData : ScriptableObject
     // 経験値
     public int _experiencePoints;
 
-    // 属性(複数属性の可能性もあるので、ビット演算かも)
-    public int _elemental;
+    // 属性
+    public GameData.ELEMENTAL _elemental;
 
     // 攻撃力
     public int _attackPower;

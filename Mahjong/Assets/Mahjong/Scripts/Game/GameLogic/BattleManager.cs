@@ -41,8 +41,8 @@ public class BattleManager
     // ステージデータ
     private StageData _stageData;
 
-    // プレイヤーの最大体力
-    private int _playerMaxHp;
+    // プレイヤーキャラデータ
+    private CharacterData _playerCharaData;
 
     // プレイヤーの体力
     private int _playerHp;
@@ -62,14 +62,14 @@ public class BattleManager
     /// </summary>
     /// <param name="enemyData">敵データ</param>
     /// <param name="playerHp">プレイヤー体力</param>
-    public void InitBattle(StageData stageData, int currentEnemyIdx, int playerHp)
+    public void InitBattle(StageData stageData, int currentEnemyIdx, CharacterData playerCharaData)
     {
         // 各変数の代入
         _stageData = stageData;
         _enemyData = stageData._appearEnemy[currentEnemyIdx];
         _enemyHp = _enemyData._hitPoint;
-        _playerMaxHp = playerHp;
-        _playerHp = playerHp;
+        _playerCharaData = playerCharaData;
+        _playerHp = _playerCharaData._hitPoint;
         _attackDelayCnt = 0.0f;
 
         // 各変数の初期化
@@ -123,7 +123,7 @@ public class BattleManager
                 gameData._currentState = GameController.GAME_STATE.BATTLE_LOSE;
             }
 
-            Debug.Log("敵の攻撃 > " + _enemyData._attackDamage + "ダメージ / 残り体力" + (int)((float)_playerHp / _playerMaxHp * 100.0f) + "%");
+            Debug.Log("敵の攻撃 > " + _enemyData._attackDamage + "ダメージ / 残り体力" + (int)((float)_playerHp / _playerCharaData._hitPoint * 100.0f) + "%");
 
             _attackDelayCnt = 0;
             return true;
@@ -204,7 +204,7 @@ public class BattleManager
     /// <returns>(1f～0f)</returns>
     public float GetPlayerHpRate()
     {
-        return (float)_playerHp / _playerMaxHp;
+        return (float)_playerHp / _playerCharaData._hitPoint;
     }
 
     /// <summary>

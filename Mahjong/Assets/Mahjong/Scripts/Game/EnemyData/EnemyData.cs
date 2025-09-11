@@ -9,9 +9,21 @@ public class EnemyData : ScriptableObject
     // 攻撃間隔
     public float _attackDelay = 10.0f;
 
-    // 攻撃ダメージ
-    public int _attackDamage = 1200;
+    // 属性
+    public GameData.ELEMENTAL _elemental;
+
+    // 与えるダメージ
+    public int _attackDamage;
+
+    // 攻撃力
+    public int _attackPower;
+
+    // 属性攻撃力
+    public int _elementalAttackPower;
 
     // 体力
     public int _hitPoint = 10000;
+
+    // 防御力
+    public int _defence;
 }

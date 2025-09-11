@@ -45,6 +45,9 @@ public class GameController : MonoBehaviour
     // パズルコントローラー
     [SerializeField] private PuzzleController _puzzleController;
 
+    // プレイヤーキャラデータ(仮でインスペクターから追加)
+    [SerializeField] private CharacterData _playerCharaData;
+
     // ゲームデータ
     private GameData _gameData;
 
