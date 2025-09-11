@@ -239,12 +239,12 @@ public class BattleViewManager : MonoBehaviour
         if (playerAttackData != null)
         {
             // 手牌(役)完成演出
-            StartCoroutine(ShowRoleResultCoroutine(playerAttackData.role, playerAttackData.damage));
+            StartCoroutine(ShowRoleResultCoroutine(playerAttackData._role, playerAttackData._damage));
 
             // フェード時間(2回分)
             float fadeTime = FADE_TIME + FADE_TIME;
             // 役表示間隔時間(役の数分)
-            float roleTime = (playerAttackData.role.roleKinds.Count + (playerAttackData.role.dora > 0 ? 1 : 0)) * DRAW_ROLE_DELAY;
+            float roleTime = (playerAttackData._role.roleKinds.Count + (playerAttackData._role.dora > 0 ? 1 : 0)) * DRAW_ROLE_DELAY;
 
             //        手牌移動時間     フェード時間   最初の役表示間隔       役表示       役表示削除間隔
             return HAND_TILE_MOVE_TIME + fadeTime + BEGIN_DRAW_ROLE_DELAY + roleTime + CLEAR_ROLE_RESULT_TIME;

@@ -7,13 +7,13 @@ public class BattleManager
     // プレイヤーの攻撃データ
     public class PlayerAttackData
     {
-        public MahjongLogic.Role role;
-        public int damage;
+        public MahjongLogic.Role _role;
+        public int _damage;
 
         public PlayerAttackData(MahjongLogic.Role role, int damage)
         {
-            this.role = role;
-            this.damage = damage;
+            this._role = role;
+            this._damage = damage;
         }
     }
 
@@ -98,7 +98,7 @@ public class BattleManager
             _beginCnt = -1;
 
             // 開始
-            gameData.currentState = GameController.GAME_STATE.PUZZLE;
+            gameData._currentState = GameController.GAME_STATE.PUZZLE;
         }
     }
 
@@ -120,7 +120,7 @@ public class BattleManager
             {
                 _playerHp = 0;
                 // 敗北
-                gameData.currentState = GameController.GAME_STATE.BATTLE_LOSE;
+                gameData._currentState = GameController.GAME_STATE.BATTLE_LOSE;
             }
 
             Debug.Log("敵の攻撃 > " + _enemyData._attackDamage + "ダメージ / 残り体力" + (int)((float)_playerHp / _playerMaxHp * 100.0f) + "%");
@@ -182,7 +182,7 @@ public class BattleManager
             _enemyHp = 0;
 
             // 勝利
-            gameData.currentState = GameController.GAME_STATE.BATTLE_WIN;
+            gameData._currentState = GameController.GAME_STATE.BATTLE_WIN;
         }
         else
         {

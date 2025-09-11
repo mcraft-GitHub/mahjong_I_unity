@@ -24,13 +24,13 @@ public class GameController : MonoBehaviour
     public class GameData
     {
         // ゲームステート
-        public GAME_STATE currentState = GAME_STATE.NONE;
+        public GAME_STATE _currentState = GAME_STATE.NONE;
 
         // 現在の敵のインデックス
-        public int currentEnemtIdx = 0;
+        public int _currentEnemtIdx = 0;
 
         // 手牌に追加する面子
-        public MahjongLogic.GameMentu addHandMentu = null;
+        public MahjongLogic.GameMentu _addHandMentu = null;
     }
 
     // ステージデータ
@@ -72,18 +72,18 @@ public class GameController : MonoBehaviour
         _puzzleController.Init(_stageData);
 
         // ゲームステートを開始時の値にする
-        _gameData.currentState = GAME_STATE.OPENING;
+        _gameData._currentState = GAME_STATE.OPENING;
     }
 
     void Update()
     {
         // 前フレームステート用に保持
-        GAME_STATE bufState = _gameData.currentState;
+        GAME_STATE bufState = _gameData._currentState;
 
         // ステートが切り替わったらデバッグ用表示
-        if (_gameData.currentState != _prevState)
+        if (_gameData._currentState != _prevState)
         {
-            Debug.Log("StateChange:" + _prevState + " > " + _gameData.currentState);
+            Debug.Log("StateChange:" + _prevState + " > " + _gameData._currentState);
         }
 
         // パズルコントローラーの更新

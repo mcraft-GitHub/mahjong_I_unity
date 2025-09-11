@@ -42,7 +42,7 @@ public class BattleController : MonoBehaviour
     public void StateUpdate(GameController.GameData gameData, GameController.GAME_STATE prevState)
     {
         // 各ステートの処理
-        switch (gameData.currentState)
+        switch (gameData._currentState)
         {
             // カウントダウン
             case GameController.GAME_STATE.COUNTDOWN:
@@ -107,13 +107,13 @@ public class BattleController : MonoBehaviour
     private void UpdateHandWithNewMentu(GameController.GameData gameData, GameController.GAME_STATE prevState)
     {
         // 手牌に追加する面子がある & 手牌に追加中ではない
-        if (gameData.addHandMentu != null && !_isAddHand)
+        if (gameData._addHandMentu != null && !_isAddHand)
         {
             // 手牌に追加・手牌がそろったら役計算
-            _playerAttackData = _battleManager.AddHandTiles(gameData.addHandMentu);
+            _playerAttackData = _battleManager.AddHandTiles(gameData._addHandMentu);
 
             // 手牌に加える演出
-            _waitMatchTime = _battleViewManager.AddHandTiles(_battleManager._handTilesKindList, gameData.addHandMentu.tilesIndex, _playerAttackData);
+            _waitMatchTime = _battleViewManager.AddHandTiles(_battleManager._handTilesKindList, gameData._addHandMentu.tilesIndex, _playerAttackData);
 
             // 手牌・攻撃追加演出が終了処理
             StartCoroutine(FinishAddHandTilesProcessCoroutine(_waitMatchTime, gameData));
@@ -136,7 +136,7 @@ public class BattleController : MonoBehaviour
         if (_playerAttackData != null)
         {
             // プレイヤーの攻撃
-            _battleManager.PlayerAttack(_playerAttackData.damage, gameData);
+            _battleManager.PlayerAttack(_playerAttackData._damage, gameData);
 
             // 敵HPゲージの更新
             _battleViewManager.SetEnemyHp(_battleManager.GetEnemyHpRate());
@@ -149,7 +149,7 @@ public class BattleController : MonoBehaviour
         }
 
         // 追加した面子を削除
-        gameData.addHandMentu = null;
+        gameData._addHandMentu = null;
 
         // 手牌に加える処理の終了
         _isAddHand = false;
@@ -164,12 +164,12 @@ public class BattleController : MonoBehaviour
     {
         // バトルマネージャーの生成・初期化(TODO: プレイヤーHPセットシステム)
         _battleManager = new BattleManager();
-        _battleManager.InitBattle(_stageData, gameData.currentEnemtIdx, playerHp);
+        _battleManager.InitBattle(_stageData, gameData._currentEnemtIdx, playerHp);
 
         // ゲージの初期化
         _battleViewManager.InitUIGauge();
         // 敵の画像のセット
-        _battleViewManager.SetEnemyImage(_stageData._appearEnemy[gameData.currentEnemtIdx]._enemyImage);
+        _battleViewManager.SetEnemyImage(_stageData._appearEnemy[gameData._currentEnemtIdx]._enemyImage);
         // ドラ・雀頭・自風のセット
         _battleViewManager.SetDoraHeadJikazeKind(_battleManager._doraTilesKind, _battleManager._headTilesKind, _battleManager._jikazeCnt);
     }

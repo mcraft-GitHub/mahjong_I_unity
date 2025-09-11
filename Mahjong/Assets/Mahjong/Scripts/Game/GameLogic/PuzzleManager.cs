@@ -111,7 +111,7 @@ public class PuzzleManager
         else
         {
             // マッチしていない場合は、マッチ処理を終了する
-            gameData.currentState = GameController.GAME_STATE.PUZZLE;
+            gameData._currentState = GameController.GAME_STATE.PUZZLE;
         }
     }
 
@@ -287,7 +287,7 @@ public class PuzzleManager
     private void MatchProcess(GameController.GameData gameData)
     {
         // ステートの切り替え
-        gameData.currentState = GameController.GAME_STATE.MATCHING_RESULT;
+        gameData._currentState = GameController.GAME_STATE.MATCHING_RESULT;
 
         // 牌を落とす
         for (int i = 0; i < _matchMentu.Count; i++)

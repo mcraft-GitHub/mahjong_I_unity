@@ -27,7 +27,7 @@ public class StageController : MonoBehaviour
     public void StateUpdate(GameController.GameData gameData, GameController.GAME_STATE prevState)
     {
         // 各ステートの処理
-        switch (gameData.currentState)
+        switch (gameData._currentState)
         {
             // オープニング
             case GameController.GAME_STATE.OPENING:
@@ -93,7 +93,7 @@ public class StageController : MonoBehaviour
             float waitTime = 0.0f;
 
             // 2体目以降はバトル画面のフェードアウト状態から始めるので、フェードイン
-            if (gameData.currentEnemtIdx > 0)
+            if (gameData._currentEnemtIdx > 0)
             {
                 // フェードイン
                 waitTime += _stageViewManager.BeginFadeIn();
@@ -147,10 +147,10 @@ public class StageController : MonoBehaviour
             waitTime += _stageViewManager.BeginFadeOut();
 
             // 敵のインデックスを進める
-            gameData.currentEnemtIdx++;
+            gameData._currentEnemtIdx++;
 
             // 全ての敵を倒したか
-            if (_stageData._appearEnemy.Count <= gameData.currentEnemtIdx)
+            if (_stageData._appearEnemy.Count <= gameData._currentEnemtIdx)
             {
                 // ステージクリア
                 StartCoroutine(ChangeStateCoroutine(gameData, GameController.GAME_STATE.STAGE_CLEAR, waitTime));
@@ -218,6 +218,6 @@ public class StageController : MonoBehaviour
     {
         yield return new WaitForSeconds(waitTime);
 
-        gameData.currentState = state;
+        gameData._currentState = state;
     }
 }

@@ -42,7 +42,7 @@ public class PuzzleController : MonoBehaviour
     public void StateUpdate(GameController.GameData gameData, GameController.GAME_STATE prevState)
     {
         // 各ステートの処理
-        switch (gameData.currentState)
+        switch (gameData._currentState)
         {
             // カウントダウン
             case GameController.GAME_STATE.COUNTDOWN:
@@ -151,12 +151,12 @@ public class PuzzleController : MonoBehaviour
     private void UpdateMatchMentuAndFallTiles(GameController.GameData gameData, GameController.GAME_STATE prevState)
     {
         // 手牌の追加が処理されたらnullになる
-        if (gameData.addHandMentu == null)
+        if (gameData._addHandMentu == null)
         {
             if (_puzzleManager._matchMentu.Count > 0)
             {
                 // 次の手牌追加面子にセット
-                gameData.addHandMentu = _puzzleManager._matchMentu[0];
+                gameData._addHandMentu = _puzzleManager._matchMentu[0];
 
                 // マッチした面子の牌分ループ
                 for (int i = 0; i < GameData.MENTU_TILES_NUM; i++)
