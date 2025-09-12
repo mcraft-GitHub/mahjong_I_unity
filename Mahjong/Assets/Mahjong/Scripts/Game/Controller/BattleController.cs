@@ -78,7 +78,7 @@ public class BattleController : MonoBehaviour
         if (prevState != GameController.GAME_STATE.COUNTDOWN)
         {
             // バトルの初期化
-            InitBattle(gameData, TMP_PLAYER_HP);
+            InitBattle(gameData);
         }
 
         // フェードイン
@@ -142,7 +142,7 @@ public class BattleController : MonoBehaviour
         if (_playerAttackData != null)
         {
             // プレイヤーの攻撃
-            _battleManager.PlayerAttack(_playerAttackData._damage, gameData);
+            _battleManager.PlayerAttack(_playerAttackData, gameData);
 
             // 敵HPゲージの更新
             _battleViewManager.SetEnemyHp(_battleManager.GetEnemyHpRate());
@@ -166,11 +166,11 @@ public class BattleController : MonoBehaviour
     /// </summary>
     /// <param name="gameData">ゲームデータ</param>
     /// <param name="playerHp">プレイヤーのHP</param>
-    private void InitBattle(GameController.GameData gameData, int playerHp)
+    private void InitBattle(GameController.GameData gameData)
     {
         // バトルマネージャーの生成・初期化(TODO: プレイヤーHPセットシステム)
         _battleManager = new BattleManager();
-        _battleManager.InitBattle(_stageData, gameData._currentEnemtIdx, playerHp);
+        _battleManager.InitBattle(_stageData, gameData._currentEnemtIdx, _playerCharaData);
 
         // ゲージの初期化
         _battleViewManager.InitUIGauge();
