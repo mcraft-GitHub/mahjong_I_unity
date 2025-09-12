@@ -2619,6 +2619,7 @@ MonoBehaviour:
   _stageController: {fileID: 1676552252}
   _battleController: {fileID: 1676552251}
   _puzzleController: {fileID: 1676552250}
+  _playerCharaData: {fileID: 11400000, guid: 56cbf2e2a9e9f8e4dbd3e8711099c0c9, type: 2}
 --- !u!114 &1676552247
 MonoBehaviour:
   m_ObjectHideFlags: 0
