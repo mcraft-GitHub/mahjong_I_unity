@@ -240,10 +240,10 @@ public class BattleManager
         baseDamage = baseDamage * 0.5f;
 
         // 通常攻撃ダメージ
-        float normalDamage = baseDamage * (float)((float)_enemyData._attackPower / _playerCharaData._defence);
+        float normalDamage = baseDamage * ((float)_enemyData._attackPower / _playerCharaData._defence);
 
         // 属性攻撃ダメージ
-        float elementalDamage = baseDamage * (float)(_enemyData._elementalAttackPower / (_playerCharaData._defence * 0.5f));
+        float elementalDamage = baseDamage * (_enemyData._elementalAttackPower / (_playerCharaData._defence * 0.5f));
 
         return (int)(normalDamage + elementalDamage);
     }
@@ -261,7 +261,7 @@ public class BattleManager
         baseDamage = baseDamage * 0.5f;
 
         // 通常攻撃ダメージ
-        float normalDamage = baseDamage * (float)((float)_playerCharaData._attackPower / _enemyData._defence);
+        float normalDamage = baseDamage * ((float)_playerCharaData._attackPower / _enemyData._defence);
 
         // 面子の数で分ける
         baseDamage = baseDamage * 0.25f;
@@ -276,7 +276,7 @@ public class BattleManager
             float charaElementalBuff = _playerCharaData._elemental == playerAttackData._role.elementals[i] ? GameData.ELEMENTAL_AFFINITY_DAMAGE_GOOD : GameData.ELEMENTAL_AFFINITY_DAMAGE_DEFAULT;
 
             // 属性ダメージ計算
-            elementalDamage += baseDamage * (float)(_playerCharaData._elementalAttackPower / (_enemyData._defence * 0.5f)) * affinityRato * charaElementalBuff;
+            elementalDamage += baseDamage * (_playerCharaData._elementalAttackPower / (_enemyData._defence * 0.5f)) * affinityRato * charaElementalBuff;
         }
 
         return (int)(normalDamage + elementalDamage);
