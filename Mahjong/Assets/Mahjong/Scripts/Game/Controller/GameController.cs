@@ -45,6 +45,9 @@ public class GameController : MonoBehaviour
     // パズルコントローラー
     [SerializeField] private PuzzleController _puzzleController;
 
+    // プレイヤーキャラデータ(仮でインスペクターから追加)
+    [SerializeField] private CharacterData _playerCharaData;
+
     // ゲームデータ
     private GameData _gameData;
 
@@ -66,7 +69,7 @@ public class GameController : MonoBehaviour
         _stageController.Init(_stageData);
 
         // バトルコントローラーの初期化
-        _battleController.Init(_stageData);
+        _battleController.Init(_stageData, _playerCharaData);
 
         // パズルコントローラーの初期化
         _puzzleController.Init(_stageData);

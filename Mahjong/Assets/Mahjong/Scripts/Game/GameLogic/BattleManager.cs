@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using static BattleManager;
 
 public class BattleManager
 {
@@ -8,12 +9,12 @@ public class BattleManager
     public class PlayerAttackData
     {
         public MahjongLogic.Role _role;
-        public int _damage;
+        public int _score;
 
         public PlayerAttackData(MahjongLogic.Role role, int damage)
         {
-            this._role = role;
-            this._damage = damage;
+            _role = role;
+            _score = damage;
         }
     }
 
@@ -41,8 +42,8 @@ public class BattleManager
     // ステージデータ
     private StageData _stageData;
 
-    // プレイヤーの最大体力
-    private int _playerMaxHp;
+    // プレイヤーキャラデータ
+    private CharacterData _playerCharaData;
 
     // プレイヤーの体力
     private int _playerHp;
@@ -62,14 +63,14 @@ public class BattleManager
     /// </summary>
     /// <param name="enemyData">敵データ</param>
     /// <param name="playerHp">プレイヤー体力</param>
-    public void InitBattle(StageData stageData, int currentEnemyIdx, int playerHp)
+    public void InitBattle(StageData stageData, int currentEnemyIdx, CharacterData playerCharaData)
     {
         // 各変数の代入
         _stageData = stageData;
         _enemyData = stageData._appearEnemy[currentEnemyIdx];
         _enemyHp = _enemyData._hitPoint;
-        _playerMaxHp = playerHp;
-        _playerHp = playerHp;
+        _playerCharaData = playerCharaData;
+        _playerHp = _playerCharaData._hitPoint;
         _attackDelayCnt = 0.0f;
 
         // 各変数の初期化
@@ -115,7 +116,8 @@ public class BattleManager
         if (_attackDelayCnt >= _enemyData._attackDelay)
         {
             // 敵の攻撃
-            _playerHp -= _enemyData._attackDamage;
+            int damage = CalcEnemyAttackDamage();
+            _playerHp -= damage;
             if (_playerHp < 0)
             {
                 _playerHp = 0;
@@ -123,7 +125,7 @@ public class BattleManager
                 gameData._currentState = GameController.GAME_STATE.BATTLE_LOSE;
             }
 
-            Debug.Log("敵の攻撃 > " + _enemyData._attackDamage + "ダメージ / 残り体力" + (int)((float)_playerHp / _playerMaxHp * 100.0f) + "%");
+            Debug.Log("敵の攻撃 > " + damage + "ダメージ / 残り体力" + (int)((float)_playerHp / _playerCharaData._hitPoint * 100.0f) + "%");
 
             _attackDelayCnt = 0;
             return true;
@@ -155,10 +157,10 @@ public class BattleManager
             MahjongLogic.Role role =　MahjongLogic.CalcHandTilesRole(_handTilesKindList, _doraTilesKind, (MahjongLogic.TILE_KIND)((int)MahjongLogic.TILE_KIND.TON + _jikazeCnt));
 
             // ダメージの計算
-            int damage = (int)(MahjongLogic.CalcScore(role) * _damageMultiple);
+            int score = MahjongLogic.CalcScore(role);
 
             // プレイヤー攻撃データを返却
-            return new PlayerAttackData(role, damage);
+            return new PlayerAttackData(role, score);
         }
 
         return null;
@@ -167,11 +169,12 @@ public class BattleManager
     /// <summary>
     /// プレイヤーの攻撃
     /// </summary>
-    /// <param name="damage">ダメージ</param>
+    /// <param name="playerAttackData">プレイヤー攻撃情報</param>
     /// <param name="gameData">ゲームデータ</param>
-    public void PlayerAttack(int damage, GameController.GameData gameData)
+    public void PlayerAttack(PlayerAttackData playerAttackData, GameController.GameData gameData)
     {
         // プレイヤーの攻撃計算
+        int damage = CalcPlayerAttackDamage(playerAttackData);
         _enemyHp -= damage;
 
         Debug.Log("プレイヤーの攻撃 > " + damage + "ダメージ / 残り体力" + (int)((float)_enemyHp / _enemyData._hitPoint * 100.0f) + "%");
@@ -204,7 +207,7 @@ public class BattleManager
     /// <returns>(1f～0f)</returns>
     public float GetPlayerHpRate()
     {
-        return (float)_playerHp / _playerMaxHp;
+        return (float)_playerHp / _playerCharaData._hitPoint;
     }
 
     /// <summary>
@@ -223,5 +226,161 @@ public class BattleManager
     public float GetEnemyAttackRate()
     {
         return _attackDelayCnt / _enemyData._attackDelay;
+    }
+
+    /// <summary>
+    /// 敵の攻撃のダメージの計算
+    /// </summary>
+    /// <returns>ダメージ</returns>
+    private int CalcEnemyAttackDamage()
+    {
+        // 通常攻撃と属性攻撃で半分に分ける
+        float baseDamage = _enemyData._attackDamage * 0.5f;
+
+        // 通常攻撃ダメージ
+        float normalDamage = baseDamage * ((float)_enemyData._attackPower / _playerCharaData._defence);
+
+        // 属性攻撃ダメージ
+        float elementalDamage = baseDamage * (_enemyData._elementalAttackPower / (_playerCharaData._defence * 0.5f));
+
+        return (int)(normalDamage + elementalDamage);
+    }
+
+    /// <summary>
+    /// プレイヤーの攻撃のダメージの計算
+    /// </summary>
+    /// <param name="playerAttackData">プレイヤー攻撃情報</param>
+    /// <returns>ダメージ</returns>
+    private int CalcPlayerAttackDamage(PlayerAttackData playerAttackData)
+    {
+        // 通常攻撃と属性攻撃で半分に分ける
+        float baseDamage = playerAttackData._score * 0.5f;
+
+        // 通常攻撃ダメージ
+        float normalDamage = baseDamage * ((float)_playerCharaData._attackPower / _enemyData._defence);
+
+        // 面子の数で分ける
+        baseDamage = baseDamage / GameData.MAX_MENTU_NUM;
+
+        // 属性攻撃ダメージ
+        float elementalDamage = 0.0f;
+        for (int i = 0; i < GameData.MAX_MENTU_NUM; i++)
+        {
+            // 属性の相性レート
+            float affinityRato = CalcElementalAffinityDamageRate(playerAttackData._role.elementals[i], _enemyData._elemental);
+            // プレイヤーキャラと同じ属性ならダメージアップ
+            float charaElementalBuff = _playerCharaData._elemental == playerAttackData._role.elementals[i] ? GameData.ELEMENTAL_AFFINITY_DAMAGE_GOOD : GameData.ELEMENTAL_AFFINITY_DAMAGE_DEFAULT;
+
+            // 属性ダメージ計算
+            elementalDamage += baseDamage * (_playerCharaData._elementalAttackPower / (_enemyData._defence * 0.5f)) * affinityRato * charaElementalBuff;
+        }
+
+        return (int)(normalDamage + elementalDamage);
+    }
+
+    /// <summary>
+    /// 属性相性のダメージ倍率の計算
+    /// </summary>
+    /// <param name="attack">攻撃側属性</param>
+    /// <param name="defense">防御側属性</param>
+    /// <returns>ダメージ倍率</returns>
+    private float CalcElementalAffinityDamageRate(GameData.ELEMENTAL attack, GameData.ELEMENTAL defense)
+    {
+        // 萬子(火)
+        if (attack == GameData.ELEMENTAL.FIRE)
+        {
+            // 筒子(水)
+            if (defense == GameData.ELEMENTAL.WATER)
+                return GameData.ELEMENTAL_AFFINITY_DAMAGE_POOR;
+            // 索子(木)
+            if (defense == GameData.ELEMENTAL.WOOD)
+                return GameData.ELEMENTAL_AFFINITY_DAMAGE_GOOD;
+            // 白(淼)
+            if (defense == GameData.ELEMENTAL.OCEAN)
+                return GameData.ELEMENTAL_AFFINITY_DAMAGE_AWFUL;
+            // その他
+            return GameData.ELEMENTAL_AFFINITY_DAMAGE_DEFAULT;
+        }
+        // 筒子(水)
+        else if (attack == GameData.ELEMENTAL.WATER)
+        {
+            // 索子(木)
+            if (defense == GameData.ELEMENTAL.WOOD)
+                return GameData.ELEMENTAL_AFFINITY_DAMAGE_POOR;
+            // 萬子(火)
+            if (defense == GameData.ELEMENTAL.FIRE)
+                return GameData.ELEMENTAL_AFFINITY_DAMAGE_GOOD;
+            // 發(森)
+            if (defense == GameData.ELEMENTAL.FOREST)
+                return GameData.ELEMENTAL_AFFINITY_DAMAGE_AWFUL;
+            // その他
+            return GameData.ELEMENTAL_AFFINITY_DAMAGE_DEFAULT;
+        }
+        // 索子(木)
+        else if (attack == GameData.ELEMENTAL.WOOD)
+        {
+            // 萬子(火)
+            if (defense == GameData.ELEMENTAL.FIRE)
+                return GameData.ELEMENTAL_AFFINITY_DAMAGE_POOR;
+            // 筒子(水)
+            if (defense == GameData.ELEMENTAL.WATER)
+                return GameData.ELEMENTAL_AFFINITY_DAMAGE_GOOD;
+            // 中(焱)
+            if (defense == GameData.ELEMENTAL.FLAME)
+                return GameData.ELEMENTAL_AFFINITY_DAMAGE_AWFUL;
+            // その他
+            return GameData.ELEMENTAL_AFFINITY_DAMAGE_DEFAULT;
+        }
+        // 風牌(無)
+        else if (attack == GameData.ELEMENTAL.VOID)
+        {
+            return GameData.ELEMENTAL_AFFINITY_DAMAGE_DEFAULT;
+        }
+        // 白(淼)
+        else if (attack == GameData.ELEMENTAL.OCEAN)
+        {
+            // 萬子(火)
+            if (defense == GameData.ELEMENTAL.FIRE)
+                return GameData.ELEMENTAL_AFFINITY_DAMAGE_GREAT;
+            // 中(焱)
+            if (defense == GameData.ELEMENTAL.FLAME)
+                return GameData.ELEMENTAL_AFFINITY_DAMAGE_GOOD;
+            // 發(森)
+            if (defense == GameData.ELEMENTAL.FLAME)
+                return GameData.ELEMENTAL_AFFINITY_DAMAGE_POOR;
+            // その他
+            return GameData.ELEMENTAL_AFFINITY_DAMAGE_DEFAULT;
+        }
+        // 發(森)
+        else if (attack == GameData.ELEMENTAL.FOREST)
+        {
+            // 筒子(水)
+            if (defense == GameData.ELEMENTAL.WATER)
+                return GameData.ELEMENTAL_AFFINITY_DAMAGE_GREAT;
+            // 白(淼)
+            if (defense == GameData.ELEMENTAL.OCEAN)
+                return GameData.ELEMENTAL_AFFINITY_DAMAGE_GOOD;
+            // 中(焱)
+            if (defense == GameData.ELEMENTAL.FLAME)
+                return GameData.ELEMENTAL_AFFINITY_DAMAGE_POOR;
+            // その他
+            return GameData.ELEMENTAL_AFFINITY_DAMAGE_DEFAULT;
+        }
+        // 中(焱)
+        else if (attack == GameData.ELEMENTAL.FLAME)
+        {
+            // 索子(木)
+            if (defense == GameData.ELEMENTAL.WOOD)
+                return GameData.ELEMENTAL_AFFINITY_DAMAGE_GREAT;
+            // 發(森)
+            if (defense == GameData.ELEMENTAL.FLAME)
+                return GameData.ELEMENTAL_AFFINITY_DAMAGE_GOOD;
+            // 白(淼)
+            if (defense == GameData.ELEMENTAL.OCEAN)
+                return GameData.ELEMENTAL_AFFINITY_DAMAGE_POOR;
+            // その他
+            return GameData.ELEMENTAL_AFFINITY_DAMAGE_DEFAULT;
+        }
+        return GameData.ELEMENTAL_AFFINITY_DAMAGE_DEFAULT;
     }
 }

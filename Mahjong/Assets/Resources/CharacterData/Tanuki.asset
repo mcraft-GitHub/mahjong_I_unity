@@ -19,11 +19,11 @@ MonoBehaviour:
   _description: "\u304B\u308F\u3044\u3044\u3044\u304D\u3082\u306E"
   _level: 5
   _experiencePoints: 3
-  _elemental: 1
-  _attackPower: 10
-  _elementalAttackPower: 10
-  _hitPoint: 10
-  _defence: 10
+  _elemental: 0
+  _attackPower: 120
+  _elementalAttackPower: 80
+  _hitPoint: 100000
+  _defence: 100
   _activeSkill: {fileID: 11400000, guid: 02a7e6780683c0f479c4a863b5a50f01, type: 2}
   _passiveSkills:
   - {fileID: 11400000, guid: 892761cac18ee3047845e8253868c0d6, type: 2}

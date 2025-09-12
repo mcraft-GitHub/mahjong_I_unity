@@ -239,7 +239,7 @@ public class BattleViewManager : MonoBehaviour
         if (playerAttackData != null)
         {
             // 手牌(役)完成演出
-            StartCoroutine(ShowRoleResultCoroutine(playerAttackData._role, playerAttackData._damage));
+            StartCoroutine(ShowRoleResultCoroutine(playerAttackData._role, playerAttackData._score));
 
             // フェード時間(2回分)
             float fadeTime = FADE_TIME + FADE_TIME;
@@ -308,8 +308,8 @@ public class BattleViewManager : MonoBehaviour
             yield return new WaitForSeconds(DRAW_ROLE_DELAY);
         }
 
-        // ダメージ表示
-        _rolePointText.text = damage + "ダメージ";
+        // 点数表示
+        _rolePointText.text = damage + "点";
         yield return new WaitForSeconds(CLEAR_ROLE_RESULT_TIME);
 
         // 表示消去

@@ -155,6 +155,7 @@ public class MahjongLogic
         public int han;
         public int dora;
         public int fu;
+        public GameData.ELEMENTAL[] elementals;
     }
 
     // ハン数
@@ -309,10 +310,14 @@ public class MahjongLogic
                 if (role.han < tmpRole.han)
                 {
                     role = tmpRole;
+                    // 属性の計算
+                    role.elementals = CalcElementals(mentu[j]);
                 }
                 else if(role.han == tmpRole.han && role.fu < tmpRole.fu)
                 {
                     role = tmpRole;
+                    // 属性の計算
+                    role.elementals = CalcElementals(mentu[j]);
                 }
 
                 // デバッグ
@@ -467,6 +472,53 @@ public class MahjongLogic
         }
 
         return uniqueMentu;
+    }
+
+    /// <summary>
+    /// 属性の計算
+    /// </summary>
+    /// <param name="mentu">面子配列</param>
+    /// <returns>属性配列</returns>
+    private static GameData.ELEMENTAL[] CalcElementals(TILE_KIND[][] mentu)
+    {
+        GameData.ELEMENTAL[] elementals = new GameData.ELEMENTAL[GameData.MAX_MENTU_NUM];
+
+        for (int i = 0; i < GameData.MAX_MENTU_NUM; i++)
+        {
+            // MPST(萬子, 筒子, 索子, 字牌)の計算
+            int mpst = CalcMPST(mentu[i][0]);
+            
+            // 字牌以外ならそのまま計算
+            if (mpst != 4)
+            {
+                elementals[i] = (GameData.ELEMENTAL)(mpst - 1);
+            }
+            else
+            {
+                if (mentu[i][0] == TILE_KIND.HAKU)
+                {
+                    // 白
+                    elementals[i] = GameData.ELEMENTAL.OCEAN;
+                }
+                else if (mentu[i][0] == TILE_KIND.HAKU)
+                {
+                    // 發
+                    elementals[i] = GameData.ELEMENTAL.FOREST;
+                }
+                else if (mentu[i][0] == TILE_KIND.HAKU)
+                {
+                    // 中
+                    elementals[i] = GameData.ELEMENTAL.FLAME;
+                }
+                else
+                {
+                    // 風
+                    elementals[i] = GameData.ELEMENTAL.VOID;
+                }
+            }
+        }
+
+        return elementals;
     }
 
     /// <summary>

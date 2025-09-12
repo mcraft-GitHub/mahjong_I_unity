@@ -14,5 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _enemyImage: {fileID: 21300000, guid: 00c56901e58ca6c49a7d43a2f61a135a, type: 3}
   _attackDelay: 10
-  _attackDamage: 1200
-  _hitPoint: 100
+  _elemental: 0
+  _attackDamage: 12000
+  _attackPower: 120
+  _elementalAttackPower: 120
+  _hitPoint: 20000
+  _defence: 50
