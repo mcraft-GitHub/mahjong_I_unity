@@ -260,7 +260,7 @@ public class BattleManager
         float normalDamage = baseDamage * ((float)_playerCharaData._attackPower / _enemyData._defence);
 
         // 面子の数で分ける
-        baseDamage = baseDamage * 0.25f;
+        baseDamage = baseDamage / GameData.MAX_MENTU_NUM;
 
         // 属性攻撃ダメージ
         float elementalDamage = 0.0f;

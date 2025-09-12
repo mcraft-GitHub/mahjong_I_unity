@@ -474,9 +474,14 @@ public class MahjongLogic
         return uniqueMentu;
     }
 
+    /// <summary>
+    /// 属性の計算
+    /// </summary>
+    /// <param name="mentu">面子配列</param>
+    /// <returns>属性配列</returns>
     private static GameData.ELEMENTAL[] CalcElementals(TILE_KIND[][] mentu)
     {
-        GameData.ELEMENTAL[] elementals = new GameData.ELEMENTAL[4];
+        GameData.ELEMENTAL[] elementals = new GameData.ELEMENTAL[GameData.MAX_MENTU_NUM];
 
         for (int i = 0; i < GameData.MAX_MENTU_NUM; i++)
         {
