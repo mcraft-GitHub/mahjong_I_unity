@@ -234,10 +234,8 @@ public class BattleManager
     /// <returns>ダメージ</returns>
     private int CalcEnemyAttackDamage()
     {
-        float baseDamage = _enemyData._attackDamage;
-
         // 通常攻撃と属性攻撃で半分に分ける
-        baseDamage = baseDamage * 0.5f;
+        float baseDamage = _enemyData._attackDamage * 0.5f;
 
         // 通常攻撃ダメージ
         float normalDamage = baseDamage * ((float)_enemyData._attackPower / _playerCharaData._defence);
@@ -255,10 +253,8 @@ public class BattleManager
     /// <returns>ダメージ</returns>
     private int CalcPlayerAttackDamage(PlayerAttackData playerAttackData)
     {
-        float baseDamage = playerAttackData._score;
-
         // 通常攻撃と属性攻撃で半分に分ける
-        baseDamage = baseDamage * 0.5f;
+        float baseDamage = playerAttackData._score * 0.5f;
 
         // 通常攻撃ダメージ
         float normalDamage = baseDamage * ((float)_playerCharaData._attackPower / _enemyData._defence);
