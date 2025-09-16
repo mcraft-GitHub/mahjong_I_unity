@@ -53,6 +53,9 @@ public class BattleViewManager : MonoBehaviour
     [SerializeField] private Slider _playerHpGauge;
     [SerializeField] private Slider _enemyAttackGauge;
 
+    // プレイヤーキャラ画像
+    [SerializeField] private Image _playerCharaImage;
+
     // 敵画像
     [SerializeField] private Image _enemyImage;
 
@@ -69,7 +72,7 @@ public class BattleViewManager : MonoBehaviour
 
     void Start()
     {
-        //*** 雀頭牌とドラ牌と自風牌の配置・拡縮
+        // 雀頭牌とドラ牌と自風牌の配置・拡縮
         _headTile1.SetPos(new Vector2(GameUILayoutUtility._headTilesPosX[0], GameUILayoutUtility._auxiliaryTilesPosY));
         _headTile1.SetScale(GameUILayoutUtility._handTilesScale);
         _headTile2.SetPos(new Vector2(GameUILayoutUtility._headTilesPosX[1], GameUILayoutUtility._auxiliaryTilesPosY));
@@ -79,17 +82,22 @@ public class BattleViewManager : MonoBehaviour
         _jikazeTile.SetPos(new Vector2(GameUILayoutUtility._jikazeTilesPosX, GameUILayoutUtility._auxiliaryTilesPosY));
         _jikazeTile.SetScale(GameUILayoutUtility._handTilesScale);
 
-        //*** プレイヤーのHPゲージの配置・拡縮
+        // プレイヤーのHPゲージの配置・拡縮
         RectTransform playerHpRect = _playerHpGauge.GetComponent<RectTransform>();
-        playerHpRect.anchoredPosition = new Vector2(0.0f, GameUILayoutUtility._playerHpGaugePosY);
+        playerHpRect.anchoredPosition = GameUILayoutUtility._playerHpGaugePos;
         playerHpRect.sizeDelta = new Vector2(GameUILayoutUtility._gaugeWidth, GameUILayoutUtility._calcPlayerHpGaugeHeight);
 
-        //*** 敵画像の配置・拡縮
+        // プレイヤーキャラ画像の配置・拡縮
+        RectTransform playerCharaImageRect = _playerCharaImage.GetComponent<RectTransform>();
+        playerCharaImageRect.sizeDelta = new Vector2(GameUILayoutUtility._calcPlayerCharaImageSize, GameUILayoutUtility._calcPlayerCharaImageSize);
+        playerCharaImageRect.anchoredPosition = GameUILayoutUtility._playerCharaImagePos;
+
+        // 敵画像の配置・拡縮
         RectTransform enemyImageRect = _enemyImage.GetComponent<RectTransform>();
         enemyImageRect.sizeDelta = new Vector2(GameUILayoutUtility._enemyImageSize, GameUILayoutUtility._enemyImageSize);
         enemyImageRect.anchoredPosition = new Vector2(0.0f, GameUILayoutUtility._enemyImagePosY);
 
-        //*** 敵UIの配置・拡縮
+        // 敵UIの配置・拡縮
         RectTransform enemyHpRect = _enemyHpGauge.GetComponent<RectTransform>();
         RectTransform enemyAttackRect = _enemyAttackGauge.GetComponent<RectTransform>();
         enemyHpRect.sizeDelta = new Vector2(GameUILayoutUtility._gaugeWidth, GameUILayoutUtility._calcEnemyHpGaugeHeight);
@@ -97,7 +105,7 @@ public class BattleViewManager : MonoBehaviour
         enemyHpRect.anchoredPosition = new Vector2(0.0f, GameUILayoutUtility._enemyHpGaugePosY);
         enemyAttackRect.anchoredPosition = new Vector2(0.0f, GameUILayoutUtility._enemyAttackGaugePosY);
 
-        //*** 空の手牌の生成
+        // 空の手牌の生成
         for (int i = 0; i < GameData.HAND_TILES_NUM; i++)
         {
             // 生成
@@ -182,6 +190,15 @@ public class BattleViewManager : MonoBehaviour
 
         // 敵HPゲージの更新
         _enemyHpGauge.DOValue(value, enemyDamage * GAUGE_MOVE_SPEED);
+    }
+
+    /// <summary>
+    /// プレイヤーキャラの画像のセット
+    /// </summary>
+    /// <param name="image">プレイヤーキャラの画像</param>
+    public void SetPlayerCharaImage(Sprite image)
+    {
+        _playerCharaImage.sprite = image;
     }
 
     /// <summary>
