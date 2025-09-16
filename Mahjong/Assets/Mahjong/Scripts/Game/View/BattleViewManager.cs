@@ -4,6 +4,7 @@ using TMPro;
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
+using static UnityEngine.Rendering.DebugUI;
 
 public class BattleViewManager : MonoBehaviour
 {
@@ -158,13 +159,26 @@ public class BattleViewManager : MonoBehaviour
     }
 
     /// <summary>
+    /// プレイヤーHPのセット
+    /// </summary>
+    /// <param name="value">敵HP(1f～0f)</param>
+    public void SetPlayerHp(float value)
+    {
+        // 敵HPの減少値(ダメージ)を計算
+        float playerDamage = Mathf.Abs(_playerHpGauge.value - value);
+
+        // 敵HPゲージの更新
+        _playerHpGauge.DOValue(value, playerDamage * GAUGE_MOVE_SPEED);
+    }
+
+    /// <summary>
     /// 敵HPのセット
     /// </summary>
     /// <param name="value">敵HP(1f～0f)</param>
     public void SetEnemyHp(float value)
     {
         // 敵HPの減少値(ダメージ)を計算
-        float enemyDamage = _enemyHpGauge.value - value;
+        float enemyDamage = Mathf.Abs(_enemyHpGauge.value - value);
 
         // 敵HPゲージの更新
         _enemyHpGauge.DOValue(value, enemyDamage * GAUGE_MOVE_SPEED);
@@ -195,11 +209,8 @@ public class BattleViewManager : MonoBehaviour
         {
             // TODO: 攻撃の演出
 
-            // プレイヤーHPの減少値(ダメージ)を計算
-            float playerDamage = _playerHpGauge.value - playerHpRate;
-
             // プレイヤーHPゲージの更新
-            _playerHpGauge.DOValue(playerHpRate, playerDamage * GAUGE_MOVE_SPEED);
+            SetPlayerHp(playerHpRate);
         }
     }
 

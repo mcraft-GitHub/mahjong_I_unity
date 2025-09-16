@@ -32,6 +32,7 @@ public class GameData
         OCEAN,      // 白(淼)
         FOREST,     // 發(森)
         FLAME,      // 中(焱)
+        MAX,
     }
 
     // 属性相性ダメージ(通常)
@@ -44,4 +45,47 @@ public class GameData
     public static readonly float ELEMENTAL_AFFINITY_DAMAGE_POOR = 0.625f;
     // 属性相性ダメージ(超今一つ)
     public static readonly float ELEMENTAL_AFFINITY_DAMAGE_AWFUL = 0.4f;
+
+    // 平和の効果の倍率
+    public static readonly float PINFU_MAGNIFICATION = 0.05f;
+    // タンヤオの効果の倍率
+    public static readonly float TANYAO_MAGNIFICATION = 1.25f;
+    // 自風の効果の倍率
+    public static readonly float KAZE_MAGNIFICATION = 5.0f;
+    // 白の効果の倍率
+    public static readonly float HAKU_MAGNIFICATION = 1.25f;
+    // 發の効果の倍率
+    public static readonly float HATU_MAGNIFICATION = 1.25f;
+    // 中の効果の倍率
+    public static readonly float TYUN_MAGNIFICATION = 1.25f;
+    // 一盃口の効果の倍率
+    public static readonly float IPEKO_MAGNIFICATION = 0.15f;
+    // 三色同順の効果の倍率
+    public static readonly float SANSYOKUDOUJUN_MAGNIFICATION = 0.7f;
+    // 一通の効果の倍率
+    public static readonly float ITTU_MAGNIFICATION = 1.5f;
+    // チャンタの効果の倍率
+    public static readonly float TYANTA_MAGNIFICATION = 0.8f;
+    // 小三元の効果の倍率
+    public static readonly float SYOSANGEN_MAGNIFICATION = 1.1f;
+    // 三色同刻の効果の倍率
+    public static readonly float SANSYOKUDOUKOU_MAGNIFICATION = 0.7f;
+    // ホンイツの効果の倍率
+    public static readonly float HONITU_MAGNIFICATION = 1.1f;
+    // 二盃口の効果の倍率
+    public static readonly float RYANPEKO_MAGNIFICATION = 0.25f;
+    // 純チャンの効果の倍率
+    public static readonly float JUNTYAN_MAGNIFICATION = 0.5f;
+    // 清一色の効果の倍率
+    public static readonly float TINITU_MAGNIFICATION = 1.25f;
+    // 大三元の効果の倍率
+    public static readonly float DAISANGEN_MAGNIFICATION = 1.5f;
+    // 小四喜の効果の倍率
+    public static readonly float SYOSUSI_MAGNIFICATION = 100.0f;
+    // 大四喜の効果の倍率
+    public static readonly float DAISUSI_MAGNIFICATION = 200.0f;
+    // 九蓮宝燈の効果の倍率
+    public static readonly float TYURENPOTO_MAGNIFICATION = 2.0f;
+    // 清老頭の効果の倍率
+    public static readonly float TINROTO_MAGNIFICATION = 3.0f;
 }
