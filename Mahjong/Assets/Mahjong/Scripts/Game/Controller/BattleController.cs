@@ -144,6 +144,9 @@ public class BattleController : MonoBehaviour
             // プレイヤーの攻撃
             _battleManager.PlayerAttack(_playerAttackData, gameData);
 
+            // プレイヤーHPゲージの更新
+            _battleViewManager.SetPlayerHp(_battleManager.GetPlayerHpRate());
+
             // 敵HPゲージの更新
             _battleViewManager.SetEnemyHp(_battleManager.GetEnemyHpRate());
 

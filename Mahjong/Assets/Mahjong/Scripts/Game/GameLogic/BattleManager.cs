@@ -57,6 +57,20 @@ public class BattleManager
     // 攻撃間隔時間カウント
     private float _attackDelayCnt = 0.0f;
 
+    //*** バフ
+    // 緑一色バフ
+    private bool _isRyuisoBuff = false;
+    // 字一色バフ
+    private bool _isTuisoBuff = false;
+    // 次の攻撃の通常攻撃力バフ
+    private float _nextAttackPowerBuff;
+    // 次の攻撃の各属性攻撃力バフ
+    private float[] _nextElementalAttackPowerBuff = new float[(int)GameData.ELEMENTAL.MAX];
+    // 通常ダメージ軽減バフ
+    private float _damageReductionBuff;
+    // 属性ダメージ軽減バフ
+    private float _elementalDamageReductionBuff;
+
     // ***** Public関数
     /// <summary>
     /// バトルの初期化
@@ -82,6 +96,13 @@ public class BattleManager
         _headTilesKind = MahjongLogic.GetRandomTileKind(_stageData._useTilesKind);
         // 自風のカウント
         _jikazeCnt = 0;
+
+        // バフの初期化
+        _nextAttackPowerBuff = 1.0f;
+        for (int i = 0; i < (int)GameData.ELEMENTAL.MAX; i++)
+            _nextElementalAttackPowerBuff[i] = 1.0f;
+        _damageReductionBuff = 1.0f;
+        _elementalDamageReductionBuff = 1.0f;
     }
 
     /// <summary>
@@ -234,14 +255,29 @@ public class BattleManager
     /// <returns>ダメージ</returns>
     private int CalcEnemyAttackDamage()
     {
+        // 字一色バフ中ならダメージを受けない
+        if (_isTuisoBuff)
+        {
+            // ダメージ軽減バフの初期化
+            _isTuisoBuff = false;
+            _damageReductionBuff = 1.0f;
+            _elementalDamageReductionBuff = 1.0f;
+
+            return 0;
+        }
+
         // 通常攻撃と属性攻撃で半分に分ける
         float baseDamage = _enemyData._attackDamage * 0.5f;
 
         // 通常攻撃ダメージ
-        float normalDamage = baseDamage * ((float)_enemyData._attackPower / _playerCharaData._defence);
+        float normalDamage = baseDamage * ((float)_enemyData._attackPower / _playerCharaData._defence) * _damageReductionBuff;
 
         // 属性攻撃ダメージ
-        float elementalDamage = baseDamage * (_enemyData._elementalAttackPower / (_playerCharaData._defence * 0.5f));
+        float elementalDamage = baseDamage * (_enemyData._elementalAttackPower / (_playerCharaData._defence * 0.5f)) * _elementalDamageReductionBuff;
+
+        // ダメージ軽減バフの初期化
+        _damageReductionBuff = 1.0f;
+        _elementalDamageReductionBuff = 1.0f;
 
         return (int)(normalDamage + elementalDamage);
     }
@@ -253,11 +289,30 @@ public class BattleManager
     /// <returns>ダメージ</returns>
     private int CalcPlayerAttackDamage(PlayerAttackData playerAttackData)
     {
+        // 役効果による体力の回復値
+        int healHitPoint = 0;
+        // 役効果によるダメージ
+        int fixedDamage = 0;
+        // 役効果による攻撃力バフ
+        float attackPowerBuff = _nextAttackPowerBuff; ;
+        // 役効果による属性攻撃力バフ
+        float[] elementalAttackPowerBuff = (float[])_nextElementalAttackPowerBuff.Clone();
+        // 緑一色バフがあるか
+        bool isRyuisoBuff = _isRyuisoBuff;
+
+        // 役の特殊効果の計算
+        CalcRoleSpecialEffects(playerAttackData._role, ref healHitPoint, ref fixedDamage, ref attackPowerBuff, elementalAttackPowerBuff);
+
+        // プレイヤーのHPの回復
+        _playerHp += healHitPoint;
+        if (_playerHp > _playerCharaData._hitPoint)
+            _playerHp = _playerCharaData._hitPoint;
+
         // 通常攻撃と属性攻撃で半分に分ける
         float baseDamage = playerAttackData._score * 0.5f;
 
         // 通常攻撃ダメージ
-        float normalDamage = baseDamage * ((float)_playerCharaData._attackPower / _enemyData._defence);
+        float normalDamage = baseDamage * ((float)_playerCharaData._attackPower / _enemyData._defence) * attackPowerBuff;
 
         // 面子の数で分ける
         baseDamage = baseDamage / GameData.MAX_MENTU_NUM;
@@ -266,16 +321,17 @@ public class BattleManager
         float elementalDamage = 0.0f;
         for (int i = 0; i < GameData.MAX_MENTU_NUM; i++)
         {
-            // 属性の相性レート
-            float affinityRato = CalcElementalAffinityDamageRate(playerAttackData._role.elementals[i], _enemyData._elemental);
+            // 属性の相性レート(緑一色バフ中なら全て森)
+            float affinityRato = CalcElementalAffinityDamageRate(isRyuisoBuff ? GameData.ELEMENTAL.FOREST : playerAttackData._role.elementals[i], _enemyData._elemental);
             // プレイヤーキャラと同じ属性ならダメージアップ
             float charaElementalBuff = _playerCharaData._elemental == playerAttackData._role.elementals[i] ? GameData.ELEMENTAL_AFFINITY_DAMAGE_GOOD : GameData.ELEMENTAL_AFFINITY_DAMAGE_DEFAULT;
 
             // 属性ダメージ計算
-            elementalDamage += baseDamage * (_playerCharaData._elementalAttackPower / (_enemyData._defence * 0.5f)) * affinityRato * charaElementalBuff;
+            float elementalDamageBuff = charaElementalBuff * elementalAttackPowerBuff[(int)playerAttackData._role.elementals[i]];
+            elementalDamage += baseDamage * (_playerCharaData._elementalAttackPower / (_enemyData._defence * 0.5f)) * affinityRato * elementalDamageBuff;
         }
 
-        return (int)(normalDamage + elementalDamage);
+        return (int)(normalDamage + elementalDamage + fixedDamage);
     }
 
     /// <summary>
@@ -382,5 +438,122 @@ public class BattleManager
             return GameData.ELEMENTAL_AFFINITY_DAMAGE_DEFAULT;
         }
         return GameData.ELEMENTAL_AFFINITY_DAMAGE_DEFAULT;
+    }
+
+    /// <summary>
+    /// 役特殊効果計算
+    /// </summary>
+    /// <param name="role">役</param>
+    /// <param name="healHitPoint">体力回復</param>
+    /// <param name="fixedDamage">固定ダメージ</param>
+    /// <param name="attackPowerBuff">今回の攻撃の通常攻撃バフ</param>
+    /// <param name="elementalAttackPowerBuff">今回の攻撃の各属性攻撃バフ</param>
+    private void CalcRoleSpecialEffects(MahjongLogic.Role role, ref int healHitPoint, ref int fixedDamage, ref float attackPowerBuff, float[] elementalAttackPowerBuff)
+    {
+        // 次回攻撃バフの初期化
+        _isRyuisoBuff = false;
+        _nextAttackPowerBuff = 1.0f;
+        for (int i = 0; i < (int)GameData.ELEMENTAL.MAX; i++)
+            _nextElementalAttackPowerBuff[i] = 1.0f;
+
+        for (int i = 0; i < role.roleKinds.Count; i++)
+        {
+            switch (role.roleKinds[i])
+            {
+                case MahjongLogic.ROLE_KIND.TUMO:
+                    break;
+                case MahjongLogic.ROLE_KIND.PINFU:
+                    healHitPoint += (int)(_playerCharaData._hitPoint * GameData.PINFU_MAGNIFICATION);
+                    break;
+                case MahjongLogic.ROLE_KIND.TANYAO:
+                    attackPowerBuff *= GameData.TANYAO_MAGNIFICATION;
+                    break;
+                case MahjongLogic.ROLE_KIND.KAZE:
+                    fixedDamage += (int)(_playerCharaData._attackPower * GameData.KAZE_MAGNIFICATION);
+                    break;
+                case MahjongLogic.ROLE_KIND.HAKU:
+                    elementalAttackPowerBuff[(int)GameData.ELEMENTAL.WATER] *= GameData.HAKU_MAGNIFICATION;
+                    break;
+                case MahjongLogic.ROLE_KIND.HATU:
+                    elementalAttackPowerBuff[(int)GameData.ELEMENTAL.WOOD] *= GameData.HATU_MAGNIFICATION;
+                    break;
+                case MahjongLogic.ROLE_KIND.TYUN:
+                    elementalAttackPowerBuff[(int)GameData.ELEMENTAL.FIRE] *= GameData.TYUN_MAGNIFICATION;
+                    break;
+                case MahjongLogic.ROLE_KIND.IPEKO:
+                    healHitPoint += (int)(_playerCharaData._hitPoint * GameData.IPEKO_MAGNIFICATION);
+                    break;
+                case MahjongLogic.ROLE_KIND.SANSYOKUDOUJUN:
+                    _elementalDamageReductionBuff *= GameData.SANSYOKUDOUJUN_MAGNIFICATION;
+                    break;
+                case MahjongLogic.ROLE_KIND.ITTU:
+                    attackPowerBuff *= GameData.ITTU_MAGNIFICATION;
+                    break;
+                case MahjongLogic.ROLE_KIND.TYANTA:
+                    _damageReductionBuff *= GameData.TYANTA_MAGNIFICATION;
+                    break;
+                case MahjongLogic.ROLE_KIND.SANANKO:
+                    break;
+                case MahjongLogic.ROLE_KIND.SYOSANGEN:
+                    for (int j = 0; j < (int)GameData.ELEMENTAL.MAX; j++)
+                        elementalAttackPowerBuff[j] *= GameData.SYOSANGEN_MAGNIFICATION;
+                    break;
+                case MahjongLogic.ROLE_KIND.SANSYOKUDOUKOU:
+                    _elementalDamageReductionBuff *= GameData.SANSYOKUDOUKOU_MAGNIFICATION;
+                    break;
+                case MahjongLogic.ROLE_KIND.HONITU:
+                    for (int j = 0; j < GameData.MAX_MENTU_NUM; j++)
+                    {
+                        // 字牌以外
+                        if ((int)role.elementals[j] <= (int)GameData.ELEMENTAL.WOOD)
+                        {
+                            _nextElementalAttackPowerBuff[(int)role.elementals[j]] *= GameData.HONITU_MAGNIFICATION;
+                            break;
+                        }
+                    }
+                    break;
+                case MahjongLogic.ROLE_KIND.RYANPEKO:
+                    healHitPoint += (int)(_playerCharaData._hitPoint * GameData.RYANPEKO_MAGNIFICATION);
+                    break;
+                case MahjongLogic.ROLE_KIND.JUNTYAN:
+                    _damageReductionBuff *= GameData.JUNTYAN_MAGNIFICATION;
+                    break;
+                case MahjongLogic.ROLE_KIND.TINITU:
+                    for (int j = 0; j < GameData.MAX_MENTU_NUM; j++)
+                    {
+                        // 字牌以外
+                        if ((int)role.elementals[j] <= (int)GameData.ELEMENTAL.WOOD)
+                        {
+                            _nextElementalAttackPowerBuff[(int)role.elementals[j]] *= GameData.TINITU_MAGNIFICATION;
+                            break;
+                        }
+                    }
+                    break;
+                case MahjongLogic.ROLE_KIND.SUANKO:
+                    break;
+                case MahjongLogic.ROLE_KIND.DAISANGEN:
+                    for (int j = 0; j < (int)GameData.ELEMENTAL.MAX; j++)
+                        elementalAttackPowerBuff[j] *= GameData.DAISANGEN_MAGNIFICATION;
+                    break;
+                case MahjongLogic.ROLE_KIND.SYOSUSI:
+                    fixedDamage += (int)(_playerCharaData._attackPower * GameData.SYOSUSI_MAGNIFICATION);
+                    break;
+                case MahjongLogic.ROLE_KIND.DAISUSI:
+                    fixedDamage += (int)(_playerCharaData._attackPower * GameData.DAISUSI_MAGNIFICATION);
+                    break;
+                case MahjongLogic.ROLE_KIND.TYURENPOTO:
+                    attackPowerBuff *= GameData.TYURENPOTO_MAGNIFICATION;
+                    break;
+                case MahjongLogic.ROLE_KIND.RYUISO:
+                    _isRyuisoBuff = true;
+                    break;
+                case MahjongLogic.ROLE_KIND.TUISO:
+                    _isTuisoBuff = true;
+                    break;
+                case MahjongLogic.ROLE_KIND.TINROTO:
+                    _nextAttackPowerBuff *= GameData.TINROTO_MAGNIFICATION;
+                    break;
+            }
+        }
     }
 }
