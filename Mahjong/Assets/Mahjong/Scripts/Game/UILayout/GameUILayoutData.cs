@@ -31,6 +31,10 @@ public class GameUILayoutData : ScriptableObject
     [SerializeField] private float _puzzleBlank = 32.0f;
     public float PuzzleBlank => _puzzleBlank;
 
+    // プレイヤーキャラの画像の縦のサイズ
+    [SerializeField] private float _playerCharaImageSize = 160.0f;
+    public float PlayerCharaImageSize => _playerCharaImageSize;
+
     // プレイヤーHPゲージの縦のサイズ
     [SerializeField] private float _playerHpGaugeHeight = 24.0f;
     public float PlayerHpGaugeHeight => _playerHpGaugeHeight;

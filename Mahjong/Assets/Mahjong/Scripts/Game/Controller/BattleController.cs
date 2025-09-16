@@ -177,6 +177,8 @@ public class BattleController : MonoBehaviour
 
         // ゲージの初期化
         _battleViewManager.InitUIGauge();
+        // プレイヤーキャラの画像のセット
+        _battleViewManager.SetPlayerCharaImage(_playerCharaData._image);
         // 敵の画像のセット
         _battleViewManager.SetEnemyImage(_stageData._appearEnemy[gameData._currentEnemtIdx]._enemyImage);
         // ドラ・雀頭・自風のセット
