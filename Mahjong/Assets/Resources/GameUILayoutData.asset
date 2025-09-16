@@ -19,7 +19,9 @@ MonoBehaviour:
   _sideSafeBlank: 24
   _heightBlank: 24
   _puzzleBlank: 32
+  _playerCharaImageSize: 240
   _playerHpGaugeHeight: 24
   _enemyHpGaugeHeight: 42
   _enemyAttackGaugeHeight: 24
+  _jikazeDoraBlank: 32
   _puzzleTileMarginRate: 0.05

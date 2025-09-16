@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b0ef55002dfb8114383e6521434a2f15, type: 3}
-  m_Name: Tanuki
+  m_Name: Test
   m_EditorClassIdentifier: 
   _characterId: 0
   _kindId: 1
-  _image: {fileID: 21300000, guid: 00c56901e58ca6c49a7d43a2f61a135a, type: 3}
-  _name: "\u305F\u306C\u304D"
-  _description: "\u304B\u308F\u3044\u3044\u3044\u304D\u3082\u306E"
+  _image: {fileID: 21300000, guid: 31bbaff774d90744486cd2896e58e0ad, type: 3}
+  _name: "\u9EBB\u96C0\u30AC\u30FC\u30EB"
+  _description: "\u9EBB\u96C0\u304C\u597D\u304D\u306A\u5C11\u5973\u3002\u89AA\u306FChatGPT"
   _level: 5
   _experiencePoints: 3
   _elemental: 0
