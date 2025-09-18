@@ -7,7 +7,7 @@ using UnityEngine.UIElements;
 public class EffectManager : MonoBehaviour
 {
     // レンダーテクスチャの深度バッファを無効
-    private const int RENDER_TEXTURE_DEPTH = 0;
+    private const int RENDER_TEXTURE_DEPTH = 24;
 
     // スクリーンサイズを半分にする
     private const float SCREEN_SIZE_HALF = 0.5f;
