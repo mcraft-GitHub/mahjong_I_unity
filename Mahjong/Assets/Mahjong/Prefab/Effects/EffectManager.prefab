@@ -193,42 +193,42 @@ MonoBehaviour:
   _effectPrefab: {fileID: 6837212330685336816, guid: 442cd7587f32d4a4090acf44572cdbb5, type: 3}
   _effectDataList:
   - _kind: 0
-    _beginImage: {fileID: 21300000, guid: a1002e1336f86b743a3fb90cc3ff00cf, type: 3}
-    _controller: {fileID: 9100000, guid: e42f721b3dddd664f9786158a9efb84d, type: 2}
+    _beginImage: {fileID: 21300000, guid: d32e82afeff002d4fac9ca911bcefd01, type: 3}
+    _controller: {fileID: 9100000, guid: b2fb7bf41f8cf01439aa4c01c904aac9, type: 2}
     _baseScale: 70
-    _baseSpeed: 1.2
+    _baseSpeed: 2.4
   - _kind: 1
-    _beginImage: {fileID: 21300000, guid: f6fea40dd52f9eb4290d42f5b084afc9, type: 3}
-    _controller: {fileID: 9100000, guid: ce85fa1c412273844b267201b7e998fa, type: 2}
+    _beginImage: {fileID: 21300000, guid: 7b475a4b0b00b744d8cea10233da5c06, type: 3}
+    _controller: {fileID: 9100000, guid: f8ca25781ed0e2145970bb887b9409e8, type: 2}
     _baseScale: 130
-    _baseSpeed: 2
+    _baseSpeed: 4
   - _kind: 2
-    _beginImage: {fileID: 21300000, guid: 775d7f3e519e4e847b0d6fb865b7346e, type: 3}
-    _controller: {fileID: 9100000, guid: 80d71d40df0e4b8429fe1d0e1d41838e, type: 2}
+    _beginImage: {fileID: 21300000, guid: 2bb949907cf583a4ba40bff9c771d523, type: 3}
+    _controller: {fileID: 9100000, guid: 5f41eba1b286e3547a60c5eeb63c7998, type: 2}
     _baseScale: 100
-    _baseSpeed: 2
+    _baseSpeed: 4
   - _kind: 3
-    _beginImage: {fileID: 21300000, guid: 08d05bb4d9c161c46ba88ddf8b31ce3f, type: 3}
-    _controller: {fileID: 9100000, guid: 7fb5ff0a0b0aeb841a1ebb536a267222, type: 2}
+    _beginImage: {fileID: 21300000, guid: 34c1c481c55f42b43b6e00e31251a429, type: 3}
+    _controller: {fileID: 9100000, guid: 4f2b4bb30170c484f8471b9f3e4c5482, type: 2}
     _baseScale: 100
-    _baseSpeed: 2
+    _baseSpeed: 4
   - _kind: 4
-    _beginImage: {fileID: 21300000, guid: 24848681b7eb07943a451f8e0dea0b16, type: 3}
-    _controller: {fileID: 9100000, guid: 2eeabc308c495ed4bb62505c982d5337, type: 2}
+    _beginImage: {fileID: 21300000, guid: 0261479d39a57bd43ac4bb9417c566b1, type: 3}
+    _controller: {fileID: 9100000, guid: a85abf378a2920441b00db050253197b, type: 2}
     _baseScale: 100
-    _baseSpeed: 2
+    _baseSpeed: 4
   - _kind: 5
-    _beginImage: {fileID: 21300000, guid: 2b0e8b5fd7dffbc4a82646a954fff9cd, type: 3}
-    _controller: {fileID: 9100000, guid: 527a30f606ec9d24a86f2ce215266e29, type: 2}
+    _beginImage: {fileID: 21300000, guid: a54d13070a8bc4342ba6cf0d935c4fa1, type: 3}
+    _controller: {fileID: 9100000, guid: 4e0bfe05712195c42b57eb1b062c1db7, type: 2}
     _baseScale: 120
-    _baseSpeed: 2
+    _baseSpeed: 4
   - _kind: 6
-    _beginImage: {fileID: 21300000, guid: b785f73969a77da4881cc09401f865f8, type: 3}
-    _controller: {fileID: 9100000, guid: b575118b30bc23543927b888654048b4, type: 2}
+    _beginImage: {fileID: 21300000, guid: fd2bc65bfb98c44498860504e1883cb5, type: 3}
+    _controller: {fileID: 9100000, guid: d1aa094c867f20e429cd0709fa6ac368, type: 2}
     _baseScale: 100
-    _baseSpeed: 2
+    _baseSpeed: 4
   - _kind: 7
-    _beginImage: {fileID: 21300000, guid: 2cd98df30a75d954b80c25eeebcda636, type: 3}
-    _controller: {fileID: 9100000, guid: e5d47cc0ce53d3141bb9b346345ed6af, type: 2}
+    _beginImage: {fileID: 21300000, guid: 4afff8cd5c09c474988fbd22b8bf3164, type: 3}
+    _controller: {fileID: 9100000, guid: c6acacad8b962f941bdda722fda770b1, type: 2}
     _baseScale: 100
-    _baseSpeed: 2
+    _baseSpeed: 4
