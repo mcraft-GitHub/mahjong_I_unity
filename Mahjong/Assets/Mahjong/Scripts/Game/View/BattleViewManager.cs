@@ -29,11 +29,24 @@ public class BattleViewManager : MonoBehaviour
     // ゲージの速度
     private const float GAUGE_MOVE_SPEED = 2.0f;
 
+    // 画面の真ん中を求めるための定数
+    private const float SCREEN_CENTER = 0.5f;
+
+    // エフェクト再生開始X座標の補正率
+    private const float EFFECT_POS_X_RATE = 0.3f;
+
+    // エフェクト同士の間隔の倍率
+    private const float EFFECT_SPACE_RATE = 0.2f;
+
+
     // フェード
     [SerializeField] private Image _fadeImage;
 
     // 麻雀牌プレハブ
     [SerializeField] private GameObject _tilePrefab;
+
+    // エフェクトマネージャー
+    [SerializeField] private EffectManager _effectManager;
 
     // 手牌の親オブジェクトTransform
     [SerializeField] private Transform _handTilesParent;
@@ -308,6 +321,52 @@ public class BattleViewManager : MonoBehaviour
         _headTile1.SetKind(head);
         _headTile2.SetKind(head);
         _jikazeTile.SetKind((MahjongLogic.TILE_KIND)((int)MahjongLogic.TILE_KIND.TON + jikazeCnt));
+    }
+
+    /// <summary>
+    /// プレイヤーの攻撃エフェクトの再生
+    /// </summary>
+    /// <param name="role">役情報</param>
+    public void PlayPlayerAttackEffect(MahjongLogic.Role role)
+    {
+        // 面子の数のエフェクトを左から横に並べる
+
+        // 開始座標
+        Vector2 beginPos = new Vector2(0.0f, Screen.height + GameUILayoutUtility._enemyImagePosY);
+        // 開始X座標の計算
+        beginPos.x = Screen.width * SCREEN_CENTER - GameUILayoutUtility._enemyImageSize * EFFECT_POS_X_RATE;
+        // エフェクトの間隔
+        float effectWidth = GameUILayoutUtility._enemyImageSize * EFFECT_SPACE_RATE;
+
+        // エフェクト再生
+        for (int i = 0; i < GameData.MAX_MENTU_NUM; i++)
+        {
+            switch (role.elementals[i])
+            {
+                case GameData.ELEMENTAL.FIRE:
+                    _effectManager.PlayEffect(EffectManager.EFFECT_KIND.FIRE, beginPos);
+                    break;
+                case GameData.ELEMENTAL.WATER:
+                    _effectManager.PlayEffect(EffectManager.EFFECT_KIND.WATER, beginPos);
+                    break;
+                case GameData.ELEMENTAL.WOOD:
+                    _effectManager.PlayEffect(EffectManager.EFFECT_KIND.WOOD, beginPos);
+                    break;
+                case GameData.ELEMENTAL.VOID:
+                    _effectManager.PlayEffect(EffectManager.EFFECT_KIND.VOID, beginPos);
+                    break;
+                case GameData.ELEMENTAL.OCEAN:
+                    _effectManager.PlayEffect(EffectManager.EFFECT_KIND.OCEAN, beginPos);
+                    break;
+                case GameData.ELEMENTAL.FOREST:
+                    _effectManager.PlayEffect(EffectManager.EFFECT_KIND.FOREST, beginPos);
+                    break;
+                case GameData.ELEMENTAL.FLAME:
+                    _effectManager.PlayEffect(EffectManager.EFFECT_KIND.FLAME, beginPos);
+                    break;
+            }
+            beginPos.x += effectWidth;
+        }
     }
 
     /// <summary>
