@@ -6,8 +6,8 @@ public class BattleController : MonoBehaviour
     // バトルビュー管理クラス
     [SerializeField] private BattleViewManager _battleViewManager;
 
-    // 仮のプレイヤーHP
-    private const int TMP_PLAYER_HP = 2000;
+    // エフェクト待機時間
+    private const float EFFECT_WAIT_TIME = 0.8f;
 
     // ステージデータ
     private StageData _stageData;
@@ -122,7 +122,7 @@ public class BattleController : MonoBehaviour
             _waitMatchTime = _battleViewManager.AddHandTiles(_battleManager._handTilesKindList, gameData._addHandMentu.tilesIndex, _playerAttackData);
 
             // 手牌・攻撃追加演出が終了処理
-            StartCoroutine(FinishAddHandTilesProcessCoroutine(_waitMatchTime, gameData));
+            StartCoroutine(FinishAddHandTilesProcessCoroutine(_waitMatchTime, gameData, _playerAttackData));
         }
     }
 
@@ -131,7 +131,8 @@ public class BattleController : MonoBehaviour
     /// </summary>
     /// <param name="waitTime">待機時間</param>
     /// <param name="gameData">ゲームデータ</param>
-    private IEnumerator FinishAddHandTilesProcessCoroutine(float waitTime, GameController.GameData gameData)
+    /// <param name="playerAttackData">プレイヤーの攻撃情報</param>
+    private IEnumerator FinishAddHandTilesProcessCoroutine(float waitTime, GameController.GameData gameData, BattleManager.PlayerAttackData playerAttackData)
     {
         // 手牌に加える処理の開始
         _isAddHand = true;
@@ -144,6 +145,9 @@ public class BattleController : MonoBehaviour
             // プレイヤーの攻撃
             _battleManager.PlayerAttack(_playerAttackData, gameData);
 
+            // プレイヤーの攻撃エフェクトの再生
+            _battleViewManager.PlayPlayerAttackEffect(playerAttackData._role);
+
             // プレイヤーHPゲージの更新
             _battleViewManager.SetPlayerHp(_battleManager.GetPlayerHpRate());
 
@@ -155,6 +159,8 @@ public class BattleController : MonoBehaviour
 
             // 手牌クリア
             _battleViewManager.ClearHandTiles();
+
+            yield return new WaitForSeconds(EFFECT_WAIT_TIME);
         }
 
         // 追加した面子を削除
