@@ -4,6 +4,10 @@ using UnityEngine;
 public class GameUILayoutUtility
 {
     // ***** Public変数
+    // 基準画面サイズと実画面サイズの割合
+    public static float _screenHeightRate = 1.0f;
+    public static float _screenWidthRate = 1.0f;
+
     // 手牌・パズル牌の最終サイズ(基本サイズ x スケール)
     public static Vector2 _handTilesFinalSize = Vector2.zero;
     public static Vector2 _puzzleTilesFinalSize = Vector2.zero;
@@ -91,9 +95,6 @@ public class GameUILayoutUtility
     // 既に計算を行っているか(一度だけでいいからね)
     private static bool _isAlreadyCalc = false;
 
-    // 基準画面サイズと実画面サイズの割合
-    private static float _screenRate = 1.0f;
-
     // パズルUI部分の合計の高さ
     private static float _uiHeight = 0.0f;
 
@@ -142,7 +143,8 @@ public class GameUILayoutUtility
         }
 
         // 基準画面サイズと実画面サイズの割合の計算
-        _screenRate = (float)Screen.height / _data.BaseScreenHeight;
+        _screenHeightRate = (float)Screen.height / _data.BaseScreenHeight;
+        _screenWidthRate = (float)Screen.width / _data.BaseScreenWidth;
 
         // UIサイズの計算
         CalcUISizeWithScreenRate();
@@ -204,16 +206,16 @@ public class GameUILayoutUtility
     /// </summary>
     private static void CalcUISizeWithScreenRate()
     {
-        _calcTopSafeBlank           = _data.TopSafeBlank            * _screenRate;
-        _calcButtomSafeBlank        = _data.ButtomSafeBlank         * _screenRate;
-        _calcSideSafeBlank          = _data.SideSafeBlank           * _screenRate;
-        _calcHeightBlank            = _data.HeightBlank             * _screenRate;
-        _calcPuzzleBlank            = _data.PuzzleBlank             * _screenRate;
-        _calcPlayerCharaImageSize   = _data.PlayerCharaImageSize    * _screenRate;
-        _calcPlayerHpGaugeHeight    = _data.PlayerHpGaugeHeight     * _screenRate;
-        _calcEnemyHpGaugeHeight     = _data.EnemyHpGaugeHeight      * _screenRate;
-        _calcEnemyAttackGaugeHeight = _data.EnemyAttackGaugeHeight  * _screenRate;
-        _calcJikazeDoraBlank        = _data.JikazeDoraBlank         * _screenRate;
+        _calcTopSafeBlank           = _data.TopSafeBlank            * _screenHeightRate;
+        _calcButtomSafeBlank        = _data.ButtomSafeBlank         * _screenHeightRate;
+        _calcSideSafeBlank          = _data.SideSafeBlank           * _screenHeightRate;
+        _calcHeightBlank            = _data.HeightBlank             * _screenHeightRate;
+        _calcPuzzleBlank            = _data.PuzzleBlank             * _screenHeightRate;
+        _calcPlayerCharaImageSize   = _data.PlayerCharaImageSize    * _screenHeightRate;
+        _calcPlayerHpGaugeHeight    = _data.PlayerHpGaugeHeight     * _screenHeightRate;
+        _calcEnemyHpGaugeHeight     = _data.EnemyHpGaugeHeight      * _screenHeightRate;
+        _calcEnemyAttackGaugeHeight = _data.EnemyAttackGaugeHeight  * _screenHeightRate;
+        _calcJikazeDoraBlank        = _data.JikazeDoraBlank         * _screenHeightRate;
     }
 
     /// <summary>

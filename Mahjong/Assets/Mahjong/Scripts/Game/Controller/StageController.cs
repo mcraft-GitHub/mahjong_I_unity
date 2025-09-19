@@ -70,11 +70,8 @@ public class StageController : MonoBehaviour
         {
             float waitTime = 0.0f;
 
-            // フェードイン
-            waitTime += _stageViewManager.BeginFadeIn();
-
             // オープニング演出
-            waitTime += _stageViewManager.OpeningVisualPresentation();
+            waitTime += _stageViewManager.OpeningVisualPresentation(_stageData._name);
 
             // ステート切り替え
             StartCoroutine(ChangeStateCoroutine(gameData, GameController.GAME_STATE.ADVANCE, waitTime));
@@ -92,12 +89,8 @@ public class StageController : MonoBehaviour
         {
             float waitTime = 0.0f;
 
-            // 2体目以降はバトル画面のフェードアウト状態から始めるので、フェードイン
-            if (gameData._currentEnemtIdx > 0)
-            {
-                // フェードイン
-                waitTime += _stageViewManager.BeginFadeIn();
-            }
+            // フェードイン
+            waitTime += _stageViewManager.BeginFadeIn();
 
             // ステージ進行演出
             waitTime += _stageViewManager.AdvanceVisualPresentation();
