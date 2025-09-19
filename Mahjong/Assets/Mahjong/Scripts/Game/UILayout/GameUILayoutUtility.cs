@@ -45,8 +45,11 @@ public class GameUILayoutUtility
     // 割合計算済み敵攻撃ゲージの縦のサイズ
     public static float _calcEnemyAttackGaugeHeight = 24.0f;
 
-    // バトルゲージの幅のサイズ
-    public static float _gaugeWidth = 0.0f;
+    // プレイヤーゲージの幅のサイズ
+    public static float _playerGaugeWidth = 0.0f;
+
+    // 敵ゲージの幅のサイズ
+    public static float _enemyGaugeWidth = 0.0f;
 
     // プレイヤーキャラ画像の座標
     public static Vector2 _playerCharaImagePos = new Vector2(0.0f, 0.0f);
@@ -250,12 +253,19 @@ public class GameUILayoutUtility
         }
 
         //*** サイズを調整する
-        // 1つの牌につき、どのくらい削るかを計算する
-        float cutHeight = (_uiHeight - Screen.height * _data.MaxHeightUiRate) / (GameData.PUZZLE_BOARD_SIZE_Y + VERTICAL_HAND_TILES_NUM) / TILE_SIZE.y;
+        // 合計で、どのくらいスケールを削るかを計算する
+        float cutHeight = (_uiHeight - Screen.height * _data.MaxHeightUiRate) / TILE_SIZE.y;
+
+        // 削るタイルの合計数
+        int totalCutTilesNum = GameData.PUZZLE_BOARD_SIZE_X + GameData.HAND_TILES_NUM * GameData.PUZZLE_BOARD_SIZE_Y;
+
+        // 手牌とパズル牌の削る割合
+        float subHandTilesScale = cutHeight * GameData.PUZZLE_BOARD_SIZE_X / totalCutTilesNum;
+        float subPuzzleTilesScale = cutHeight * GameData.HAND_TILES_NUM / totalCutTilesNum;
 
         // 牌のサイズの決定
-        _handTilesScale -= cutHeight;
-        _puzzleTilesScale -= cutHeight;
+        _handTilesScale -= subHandTilesScale;
+        _puzzleTilesScale -= subPuzzleTilesScale;
 
         // 牌のサイズを計算
         _handTilesFinalSize = TILE_SIZE * _handTilesScale;
@@ -269,7 +279,7 @@ public class GameUILayoutUtility
         _puzzleTilesMargin = (Screen.width - _puzzleTilesFinalSize.x * GameData.PUZZLE_BOARD_SIZE_X) * SIDE_HALF - _calcSideSafeBlank - _calcPuzzleBlank;
 
         // パズルUI部分の高さ
-        _uiHeight = _handTilesFinalSize.y * VERTICAL_HAND_TILES_NUM + _puzzleTilesFinalSize.y * GameData.PUZZLE_BOARD_SIZE_Y + noTilesUIHeight;
+        _uiHeight = _handTilesFinalSize.y + _puzzleTilesFinalSize.y * GameData.PUZZLE_BOARD_SIZE_Y + noTilesUIHeight;
     }
 
     /// <summary>
@@ -297,7 +307,8 @@ public class GameUILayoutUtility
 
         //*** バトルゲージの幅と座標を計算
         // 幅
-        _gaugeWidth = _handTilesFinalSize.x * GameData.HAND_TILES_NUM - _calcHeightBlank - _calcPlayerCharaImageSize;
+        _enemyGaugeWidth = _handTilesFinalSize.x * GameData.HAND_TILES_NUM;
+        _playerGaugeWidth = _enemyGaugeWidth - _calcHeightBlank - _calcPlayerCharaImageSize;
         // 座標
         _playerHpGaugePos.x = (_calcHeightBlank + _calcPlayerCharaImageSize) * SIDE_HALF;
         _playerHpGaugePos.y = _calcButtomSafeBlank + _calcHeightBlank + _handTilesFinalSize.y + _calcPlayerCharaImageSize - _calcPlayerHpGaugeHeight * CENTER_HALF;

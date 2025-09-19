@@ -98,7 +98,7 @@ public class BattleViewManager : MonoBehaviour
         // プレイヤーのHPゲージの配置・拡縮
         RectTransform playerHpRect = _playerHpGauge.GetComponent<RectTransform>();
         playerHpRect.anchoredPosition = GameUILayoutUtility._playerHpGaugePos;
-        playerHpRect.sizeDelta = new Vector2(GameUILayoutUtility._gaugeWidth, GameUILayoutUtility._calcPlayerHpGaugeHeight);
+        playerHpRect.sizeDelta = new Vector2(GameUILayoutUtility._playerGaugeWidth, GameUILayoutUtility._calcPlayerHpGaugeHeight);
 
         // プレイヤーキャラ画像の配置・拡縮
         RectTransform playerCharaImageRect = _playerCharaImage.GetComponent<RectTransform>();
@@ -113,8 +113,8 @@ public class BattleViewManager : MonoBehaviour
         // 敵UIの配置・拡縮
         RectTransform enemyHpRect = _enemyHpGauge.GetComponent<RectTransform>();
         RectTransform enemyAttackRect = _enemyAttackGauge.GetComponent<RectTransform>();
-        enemyHpRect.sizeDelta = new Vector2(GameUILayoutUtility._gaugeWidth, GameUILayoutUtility._calcEnemyHpGaugeHeight);
-        enemyAttackRect.sizeDelta = new Vector2(GameUILayoutUtility._gaugeWidth, GameUILayoutUtility._calcEnemyAttackGaugeHeight);
+        enemyHpRect.sizeDelta = new Vector2(GameUILayoutUtility._enemyGaugeWidth, GameUILayoutUtility._calcEnemyHpGaugeHeight);
+        enemyAttackRect.sizeDelta = new Vector2(GameUILayoutUtility._enemyGaugeWidth, GameUILayoutUtility._calcEnemyAttackGaugeHeight);
         enemyHpRect.anchoredPosition = new Vector2(0.0f, GameUILayoutUtility._enemyHpGaugePosY);
         enemyAttackRect.anchoredPosition = new Vector2(0.0f, GameUILayoutUtility._enemyAttackGaugePosY);
 
