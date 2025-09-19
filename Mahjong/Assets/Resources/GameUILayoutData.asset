@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: GameUILayoutData
   m_EditorClassIdentifier: 
   _baseScreenHeight: 2532
+  _baseScreenWidth: 1170
   _maxHeightUiRate: 0.65
   _topSafeBlank: 64
   _buttomSafeBlank: 36

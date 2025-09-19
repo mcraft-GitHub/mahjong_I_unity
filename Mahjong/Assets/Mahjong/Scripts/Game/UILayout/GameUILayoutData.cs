@@ -7,6 +7,10 @@ public class GameUILayoutData : ScriptableObject
     [SerializeField] private int _baseScreenHeight = 2532; // iPhone14
     public int BaseScreenHeight => _baseScreenHeight;
 
+    // 基準の画面の幅(サイズを決めるときに使用していた画面の幅)
+    [SerializeField] private int _baseScreenWidth = 1170; // iPhone14
+    public int BaseScreenWidth => _baseScreenWidth;
+
     // 画面の縦サイズにおける、パズル + 取得牌表示の最大割合
     [SerializeField] private float _maxHeightUiRate = 0.65f;
     public float MaxHeightUiRate => _maxHeightUiRate;

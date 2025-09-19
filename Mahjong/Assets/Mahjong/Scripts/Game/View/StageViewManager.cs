@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using DG.Tweening;
+using TMPro;
+using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,6 +13,13 @@ public class StageViewManager : MonoBehaviour
     // 仮の演出時間
     private const float TMP_VISUAL_PRESENTATION_TIME = 1.0f;
 
+    // 演出同士の間隔
+    private const float VISUAL_PRESENTATION_DELAY_TIME = 0.5f;
+
+    //***OpeningVisualPresentation
+    // 文字フェード時間
+    private const float OPENING_TEXT_FADE_TIME = 0.7f;
+
     //*** BattleWinVisualPresentation
     // 演出開始待機時間
     private const float BATTLE_WIN_BEGIN_WAIT_TIME = 1.5f;
@@ -19,6 +28,11 @@ public class StageViewManager : MonoBehaviour
 
     // フェード
     [SerializeField] private Image _fadeImage;
+
+    // ステージタイトル
+    [SerializeField] private TMP_Text _openingText;
+    // ステージタイトル色
+    [SerializeField] private Color _openingTextColor;
 
     // 敵の画像描画範囲(マスク)
     [SerializeField] private RectTransform _enemyImageMaskRect;
@@ -35,6 +49,9 @@ public class StageViewManager : MonoBehaviour
         _enemyImageMaskRect.anchoredPosition = new Vector2(0.0f, GameUILayoutUtility._enemyImagePosY);
         // 敵の画像の変形の取得
         _enemyImageRect = _enemyImage.GetComponent<RectTransform>();
+
+        // テキストサイズの調整
+        _openingText.fontSize = _openingText.fontSize * GameUILayoutUtility._screenWidthRate;
     }
 
     /// <summary>
@@ -91,10 +108,28 @@ public class StageViewManager : MonoBehaviour
     /// オープニング演出
     /// </summary>
     /// <returns>演出時間</returns>
-    public float OpeningVisualPresentation()
+    public float OpeningVisualPresentation(string stageName)
     {
-        // TODO:演出
-        return TMP_VISUAL_PRESENTATION_TIME;
+        // 初手黒
+        _fadeImage.color = Color.black;
+
+        // 文字の初期化
+        _openingText.text = stageName;
+        _openingText.color = Color.clear;
+
+        // 演出コルーチン
+        IEnumerator VisualPresentation()
+        {
+            // フェードイン
+            _openingText.DOColor(_openingTextColor, OPENING_TEXT_FADE_TIME);
+            yield return new WaitForSeconds(OPENING_TEXT_FADE_TIME + VISUAL_PRESENTATION_DELAY_TIME);
+            // フェードアウト
+            _openingText.DOColor(Color.clear, OPENING_TEXT_FADE_TIME);
+        }
+        // コルーチンの開始
+        StartCoroutine(VisualPresentation());
+
+        return OPENING_TEXT_FADE_TIME + OPENING_TEXT_FADE_TIME + VISUAL_PRESENTATION_DELAY_TIME + VISUAL_PRESENTATION_DELAY_TIME;
     }
 
     /// <summary>
