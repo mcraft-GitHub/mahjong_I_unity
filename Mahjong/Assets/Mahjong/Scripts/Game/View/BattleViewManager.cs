@@ -69,9 +69,6 @@ public class BattleViewManager : MonoBehaviour
     // プレイヤーキャラ画像
     [SerializeField] private Image _playerCharaImage;
 
-    // 敵画像
-    [SerializeField] private Image _enemyImage;
-
     // パズル(役)リザルトの背景・役テキスト・点数テキスト
     [SerializeField] private Image _puzzleResultBackground;
     [SerializeField] private TMP_Text _roleResultText;
@@ -104,11 +101,6 @@ public class BattleViewManager : MonoBehaviour
         RectTransform playerCharaImageRect = _playerCharaImage.GetComponent<RectTransform>();
         playerCharaImageRect.sizeDelta = new Vector2(GameUILayoutUtility._calcPlayerCharaImageSize, GameUILayoutUtility._calcPlayerCharaImageSize);
         playerCharaImageRect.anchoredPosition = GameUILayoutUtility._playerCharaImagePos;
-
-        // 敵画像の配置・拡縮
-        RectTransform enemyImageRect = _enemyImage.GetComponent<RectTransform>();
-        enemyImageRect.sizeDelta = new Vector2(GameUILayoutUtility._enemyImageSize, GameUILayoutUtility._enemyImageSize);
-        enemyImageRect.anchoredPosition = new Vector2(0.0f, GameUILayoutUtility._enemyImagePosY);
 
         // 敵UIの配置・拡縮
         RectTransform enemyHpRect = _enemyHpGauge.GetComponent<RectTransform>();
@@ -212,15 +204,6 @@ public class BattleViewManager : MonoBehaviour
     public void SetPlayerCharaImage(Sprite image)
     {
         _playerCharaImage.sprite = image;
-    }
-
-    /// <summary>
-    /// 敵の画像のセット
-    /// </summary>
-    /// <param name="image">敵の画像</param>
-    public void SetEnemyImage(Sprite image)
-    {
-        _enemyImage.sprite = image;
     }
 
     /// <summary>

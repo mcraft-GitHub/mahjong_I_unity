@@ -118,6 +118,9 @@ public class StageController : MonoBehaviour
         {
             float waitTime = 0.0f;
 
+            // 敵画像の更新
+            _stageViewManager.SetEnemyImage(_stageData._appearEnemy[gameData._currentEnemtIdx]._enemyImage);
+
             // フェードアウト
             waitTime += _stageViewManager.BeginFadeOut();
 
@@ -144,7 +147,7 @@ public class StageController : MonoBehaviour
             waitTime += _stageViewManager.BattleWinVisualPresentation();
 
             // フェードアウト
-            waitTime += _stageViewManager.BeginFadeOut();
+            waitTime += _stageViewManager.BeginFadeOut(waitTime);
 
             // 敵のインデックスを進める
             gameData._currentEnemtIdx++;
