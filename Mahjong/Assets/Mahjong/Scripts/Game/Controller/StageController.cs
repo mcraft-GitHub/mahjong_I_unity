@@ -109,9 +109,6 @@ public class StageController : MonoBehaviour
             // 勝利演出
             waitTime += _stageViewManager.BattleWinVisualPresentation();
 
-            // フェードアウト
-            waitTime += _stageViewManager.BeginFadeOut(waitTime);
-
             // 敵のインデックスを進める
             gameData._currentEnemtIdx++;
 
@@ -123,6 +120,9 @@ public class StageController : MonoBehaviour
             }
             else
             {
+                // フェードアウト
+                waitTime += _stageViewManager.BeginFadeOut(waitTime);
+
                 // ステージ進行
                 StartCoroutine(ChangeStateCoroutine(gameData, GameController.GAME_STATE.ADVANCE, waitTime));
             }
@@ -161,13 +161,8 @@ public class StageController : MonoBehaviour
 
         if (prevState != GameController.GAME_STATE.STAGE_CLEAR)
         {
-            float waitTime = 0.0f;
-
             // クリア演出
-            waitTime += _stageViewManager.StageClearVisualPresentation();
-
-            // フェードアウト
-            waitTime += _stageViewManager.BeginFadeOut();
+            float waitTime = _stageViewManager.StageClearVisualPresentation();
 
             // ステート切り替え
             StartCoroutine(ChangeStateCoroutine(gameData, GameController.GAME_STATE.LOAD_SCENE, waitTime));
