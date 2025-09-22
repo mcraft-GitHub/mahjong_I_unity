@@ -110,6 +110,23 @@ public class BattleViewManager : MonoBehaviour
         enemyHpRect.anchoredPosition = new Vector2(0.0f, GameUILayoutUtility._enemyHpGaugePosY);
         enemyAttackRect.anchoredPosition = new Vector2(0.0f, GameUILayoutUtility._enemyAttackGaugePosY);
 
+        // リザルトテキストの配置・拡縮
+        RectTransform roleResultRect = _roleResultText.GetComponent<RectTransform>();
+        RectTransform rolePointRect = _rolePointText.GetComponent<RectTransform>();
+        roleResultRect.sizeDelta = new Vector2(roleResultRect.sizeDelta.x * GameUILayoutUtility._screenWidthRate, roleResultRect.sizeDelta.y * GameUILayoutUtility._screenHeightRate);
+        rolePointRect.sizeDelta = new Vector2(rolePointRect.sizeDelta.x * GameUILayoutUtility._screenWidthRate, rolePointRect.sizeDelta.y * GameUILayoutUtility._screenHeightRate);
+        roleResultRect.anchoredPosition = new Vector2(0.0f, GameUILayoutUtility._enemyHpGaugePosY);
+        rolePointRect.anchoredPosition = new Vector2(0.0f, GameUILayoutUtility._puzzleBoardRect.yMin);
+        // リザルトテキストのフォントサイズの調整
+        float roleFontSizeMax = _roleResultText.fontSizeMax * GameUILayoutUtility._screenHeightRate;
+        float roleFontSizeMin = _roleResultText.fontSizeMin * GameUILayoutUtility._screenHeightRate;
+        _roleResultText.fontSize = roleFontSizeMax;
+        _roleResultText.fontSizeMax = roleFontSizeMax;
+        _roleResultText.fontSizeMin = roleFontSizeMin;
+        _rolePointText.fontSize = roleFontSizeMax;
+        _rolePointText.fontSizeMax = roleFontSizeMax;
+        _rolePointText.fontSizeMin = roleFontSizeMin;
+
         // 空の手牌の生成
         for (int i = 0; i < GameData.HAND_TILES_NUM; i++)
         {
