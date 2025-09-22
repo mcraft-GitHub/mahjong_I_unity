@@ -288,8 +288,6 @@ public class StageViewManager : MonoBehaviour
         // 演出コルーチン
         IEnumerator VisualPresentation()
         {
-            string text = _clearText.text;
-
             // 文字数分ループし、一文字ずつ表示
             for (int i = 1; i < bufText.Length; i++)
             {
