@@ -8,7 +8,6 @@ public class GameController : MonoBehaviour
     {
         OPENING = 0,        // オープニング
         ADVANCE,            // ステージ進行
-        ENCOUNT,            // 接敵
         COUNTDOWN,          // バトルカウントダウン
         PUZZLE,             // パズル
         MATCHING_RESULT,    // マッチ結果の処理

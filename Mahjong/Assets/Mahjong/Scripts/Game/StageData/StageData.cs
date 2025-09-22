@@ -19,5 +19,11 @@ public class StageData : ScriptableObject
     // 使用牌
     public List<MahjongLogic.TILE_KIND> _useTilesKind;
 
+    // ステージ進行時画像
+    public Sprite _advanceImage;
+
+    // ステージ背景色
+    public Color _backgroundColor;
+
     // TODO: 報酬(未定)
 }

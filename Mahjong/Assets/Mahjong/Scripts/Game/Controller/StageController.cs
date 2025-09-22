@@ -17,6 +17,9 @@ public class StageController : MonoBehaviour
     {
         // 変数の初期化
         _stageData = stageData;
+
+        // advance画像のセット
+        _stageViewManager.SetAdvanceImage(stageData._advanceImage);
     }
 
     /// <summary>
@@ -36,10 +39,6 @@ public class StageController : MonoBehaviour
             // 進行
             case GameController.GAME_STATE.ADVANCE:
                 ShowAdvanceAndChangeState(gameData, prevState);
-                break;
-            // 遭遇
-            case GameController.GAME_STATE.ENCOUNT:
-                ShowEncountAndChangeState(gameData, prevState);
                 break;
             // バトル勝利
             case GameController.GAME_STATE.BATTLE_WIN:
@@ -68,10 +67,8 @@ public class StageController : MonoBehaviour
     {
         if (prevState != GameController.GAME_STATE.OPENING)
         {
-            float waitTime = 0.0f;
-
             // オープニング演出
-            waitTime += _stageViewManager.OpeningVisualPresentation(_stageData._name);
+            float waitTime = _stageViewManager.OpeningVisualPresentation(_stageData._name);
 
             // ステート切り替え
             StartCoroutine(ChangeStateCoroutine(gameData, GameController.GAME_STATE.ADVANCE, waitTime));
@@ -87,38 +84,11 @@ public class StageController : MonoBehaviour
     {
         if (prevState != GameController.GAME_STATE.ADVANCE)
         {
-            float waitTime = 0.0f;
-
-            // フェードイン
-            waitTime += _stageViewManager.BeginFadeIn();
-
             // ステージ進行演出
-            waitTime += _stageViewManager.AdvanceVisualPresentation();
+            float waitTime = _stageViewManager.AdvanceVisualPresentation(_stageData, gameData);
 
-            // ステート切り替え
-            StartCoroutine(ChangeStateCoroutine(gameData, GameController.GAME_STATE.ENCOUNT, waitTime));
-        }
-    }
-
-    /// <summary>
-    /// 遭遇時のステートの更新
-    /// </summary>
-    /// <param name="gameData">ゲームデータ</param>
-    /// <param name="prevState">1フレーム前のステート</param>
-    private void ShowEncountAndChangeState(GameController.GameData gameData, GameController.GAME_STATE prevState)
-    {
-        if (prevState != GameController.GAME_STATE.ENCOUNT)
-        {
-            float waitTime = 0.0f;
-
-            // 敵画像の更新
+            // 敵の画像のセット
             _stageViewManager.SetEnemyImage(_stageData._appearEnemy[gameData._currentEnemtIdx]._enemyImage);
-
-            // フェードアウト
-            waitTime += _stageViewManager.BeginFadeOut();
-
-            // 敵遭遇演出
-            waitTime += _stageViewManager.EncountVisualPresentation();
 
             // ステート切り替え
             StartCoroutine(ChangeStateCoroutine(gameData, GameController.GAME_STATE.COUNTDOWN, waitTime));
