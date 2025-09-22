@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 public class PuzzleViewManager : MonoBehaviour
 {
@@ -16,6 +17,9 @@ public class PuzzleViewManager : MonoBehaviour
 
     // パズル枠兼背景
     [SerializeField] private RectTransform _puzzleFrameRect;
+
+    // パズル枠兼背景の画像
+    [SerializeField] private Image _puzzleFrameImage;
 
     // パズルマネージャー
     private PuzzleManager _puzzleManager;
@@ -37,6 +41,15 @@ public class PuzzleViewManager : MonoBehaviour
     public void SetClass(PuzzleManager puzzleManager)
     {
         _puzzleManager = puzzleManager;
+    }
+
+    /// <summary>
+    /// パズル枠の色のセット
+    /// </summary>
+    /// <param name="color">パズル枠の色</param>
+    public void SetPuzzleFrameColor(Color color)
+    {
+        _puzzleFrameImage.color = color;
     }
 
     /// <summary>

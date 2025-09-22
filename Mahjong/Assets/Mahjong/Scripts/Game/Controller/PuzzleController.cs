@@ -32,6 +32,9 @@ public class PuzzleController : MonoBehaviour
     {
         // 変数の初期化
         _stageData = stageData;
+
+        // パズル枠の色のセット
+        _puzzleViewManager.SetPuzzleFrameColor(_stageData._backgroundColor);
     }
 
     /// <summary>
