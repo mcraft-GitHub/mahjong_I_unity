@@ -39,9 +39,6 @@ public class StageViewManager : MonoBehaviour
     private const float BATTLE_WIN_ENEMY_EXIT_TIME = 0.7f;
 
     //*** ClearVisualPresentation
-    // 透明タグ
-    private const string CLEAR_TEXT_CLEAR_TAG_BEGIN = "<color=#00000000>";
-    private const string CLEAR_TEXT_CLEAR_TAG_END = "</color>";
     // 文字表示間隔
     private const float CLEAR_TEXT_DELAY_TIME = 0.2f;
     // 文字完全表示時間
@@ -283,7 +280,7 @@ public class StageViewManager : MonoBehaviour
         Color textColor = _clearText.color;
         textColor.a = 1.0f;
         _clearText.color = textColor;
-        _clearText.text = CLEAR_TEXT_CLEAR_TAG_BEGIN + _clearText.text + CLEAR_TEXT_CLEAR_TAG_END;
+        _clearText.text = $"<color=#00000000>{_clearText.text}</color>";
 
         // 演出コルーチン
         IEnumerator VisualPresentation()
@@ -293,10 +290,7 @@ public class StageViewManager : MonoBehaviour
             {
                 yield return new WaitForSeconds(CLEAR_TEXT_DELAY_TIME);
 
-                _clearText.text = bufText.Substring(0, i);
-                _clearText.text += CLEAR_TEXT_CLEAR_TAG_BEGIN;
-                _clearText.text += bufText.Substring(i);
-                _clearText.text += CLEAR_TEXT_CLEAR_TAG_END;
+                _clearText.text = $"{bufText.Substring(0, i)}<color=#00000000>{bufText.Substring(i)}</color>";
             }
 
             yield return new WaitForSeconds(CLEAR_TEXT_DELAY_TIME);
