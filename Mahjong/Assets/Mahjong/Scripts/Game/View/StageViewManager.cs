@@ -252,6 +252,11 @@ public class StageViewManager : MonoBehaviour
         IEnumerator VisualPresentation()
         {
             yield return new WaitForSeconds(BATTLE_WIN_BEGIN_WAIT_TIME);
+
+            // SEの再生
+            SoundManager._instance.PlaySE(SoundManager.SE_NAME.BATTLE_DESTROY);
+
+            // 画像の移動
             _enemyImageRect.DOAnchorPosY(-GameUILayoutUtility._enemyImageSize, BATTLE_WIN_ENEMY_EXIT_TIME);
         }
         // コルーチンの開始

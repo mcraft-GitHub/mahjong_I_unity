@@ -3,6 +3,9 @@ using UnityEngine;
 
 public class StageController : MonoBehaviour
 {
+    // 進行BGMの音量
+    private const float ADVANCE_BGM_VOLUME = 1.0f;
+
     // ステージビュー管理クラス
     [SerializeField] private StageViewManager _stageViewManager;
 
@@ -67,6 +70,9 @@ public class StageController : MonoBehaviour
     {
         if (prevState != GameController.GAME_STATE.OPENING)
         {
+            // BGMの切り替え
+            SoundManager._instance.PlayBGM(SoundManager.BGM_NAME.GAME_ADVANCE, ADVANCE_BGM_VOLUME, GameData.BGM_SWITCHING_DEFAULT_TIME);
+
             // オープニング演出
             float waitTime = _stageViewManager.OpeningVisualPresentation(_stageData._name);
 
@@ -84,6 +90,9 @@ public class StageController : MonoBehaviour
     {
         if (prevState != GameController.GAME_STATE.ADVANCE)
         {
+            // BGMの切り替え
+            SoundManager._instance.PlayBGM(SoundManager.BGM_NAME.GAME_ADVANCE, ADVANCE_BGM_VOLUME, GameData.BGM_SWITCHING_DEFAULT_TIME);
+
             // ステージ進行演出
             float waitTime = _stageViewManager.AdvanceVisualPresentation(_stageData, gameData);
 

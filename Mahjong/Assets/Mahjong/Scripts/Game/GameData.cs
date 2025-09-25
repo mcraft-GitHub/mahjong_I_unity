@@ -22,6 +22,9 @@ public class GameData
     // ゲーム開始カウントダウン
     public static readonly float BEGIN_GAME_COUNTDOWN_TIME = 4.0f;
 
+    // BGMの標準切り替え時間
+    public static readonly float BGM_SWITCHING_DEFAULT_TIME = 0.5f;
+
     // 属性
     public enum ELEMENTAL
     {

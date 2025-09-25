@@ -324,10 +324,10 @@ public class BattleViewManager : MonoBehaviour
     }
 
     /// <summary>
-    /// プレイヤーの攻撃エフェクトの再生
+    /// プレイヤーの攻撃エフェクトとSEの再生
     /// </summary>
     /// <param name="role">役情報</param>
-    public void PlayPlayerAttackEffect(MahjongLogic.Role role)
+    public void PlayPlayerAttackEffectAndSe(MahjongLogic.Role role)
     {
         // 面子の数のエフェクトを左から横に並べる
 
@@ -344,24 +344,31 @@ public class BattleViewManager : MonoBehaviour
             switch (role.elementals[i])
             {
                 case GameData.ELEMENTAL.FIRE:
+                    SoundManager._instance.PlaySE(SoundManager.SE_NAME.BATTLE_ATTTACK_FIRE);
                     _effectManager.PlayEffect(EffectManager.EFFECT_KIND.FIRE, beginPos);
                     break;
                 case GameData.ELEMENTAL.WATER:
+                    SoundManager._instance.PlaySE(SoundManager.SE_NAME.BATTLE_ATTTACK_WATER);
                     _effectManager.PlayEffect(EffectManager.EFFECT_KIND.WATER, beginPos);
                     break;
                 case GameData.ELEMENTAL.WOOD:
+                    SoundManager._instance.PlaySE(SoundManager.SE_NAME.BATTLE_ATTTACK_WOOD);
                     _effectManager.PlayEffect(EffectManager.EFFECT_KIND.WOOD, beginPos);
                     break;
                 case GameData.ELEMENTAL.VOID:
+                    SoundManager._instance.PlaySE(SoundManager.SE_NAME.BATTLE_ATTTACK_VOID);
                     _effectManager.PlayEffect(EffectManager.EFFECT_KIND.VOID, beginPos);
                     break;
                 case GameData.ELEMENTAL.OCEAN:
+                    SoundManager._instance.PlaySE(SoundManager.SE_NAME.BATTLE_ATTTACK_WATER);
                     _effectManager.PlayEffect(EffectManager.EFFECT_KIND.OCEAN, beginPos);
                     break;
                 case GameData.ELEMENTAL.FOREST:
+                    SoundManager._instance.PlaySE(SoundManager.SE_NAME.BATTLE_ATTTACK_WOOD);
                     _effectManager.PlayEffect(EffectManager.EFFECT_KIND.FOREST, beginPos);
                     break;
                 case GameData.ELEMENTAL.FLAME:
+                    SoundManager._instance.PlaySE(SoundManager.SE_NAME.BATTLE_ATTTACK_FIRE);
                     _effectManager.PlayEffect(EffectManager.EFFECT_KIND.FLAME, beginPos);
                     break;
             }
@@ -394,6 +401,9 @@ public class BattleViewManager : MonoBehaviour
             _roleResultText.text += "ドラ" + role.dora + '\n';
             yield return new WaitForSeconds(DRAW_ROLE_DELAY);
         }
+
+        // SEの再生
+        SoundManager._instance.PlaySE(SoundManager.SE_NAME.BATTLE_ROLE_POINT);
 
         // 点数表示
         _rolePointText.text = damage + "点";
