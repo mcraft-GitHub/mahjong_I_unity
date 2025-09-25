@@ -45,9 +45,6 @@ public class BattleViewManager : MonoBehaviour
     // 麻雀牌プレハブ
     [SerializeField] private GameObject _tilePrefab;
 
-    // エフェクトマネージャー
-    [SerializeField] private EffectManager _effectManager;
-
     // 手牌の親オブジェクトTransform
     [SerializeField] private Transform _handTilesParent;
     // 空の手牌の親オブジェクトTransform
@@ -345,31 +342,31 @@ public class BattleViewManager : MonoBehaviour
             {
                 case GameData.ELEMENTAL.FIRE:
                     SoundManager._instance.PlaySE(SoundManager.SE_NAME.BATTLE_ATTTACK_FIRE);
-                    _effectManager.PlayEffect(EffectManager.EFFECT_KIND.FIRE, beginPos);
+                    EffectManager._instance.PlayEffect(EffectManager.EFFECT_KIND.FIRE, beginPos);
                     break;
                 case GameData.ELEMENTAL.WATER:
                     SoundManager._instance.PlaySE(SoundManager.SE_NAME.BATTLE_ATTTACK_WATER);
-                    _effectManager.PlayEffect(EffectManager.EFFECT_KIND.WATER, beginPos);
+                    EffectManager._instance.PlayEffect(EffectManager.EFFECT_KIND.WATER, beginPos);
                     break;
                 case GameData.ELEMENTAL.WOOD:
                     SoundManager._instance.PlaySE(SoundManager.SE_NAME.BATTLE_ATTTACK_WOOD);
-                    _effectManager.PlayEffect(EffectManager.EFFECT_KIND.WOOD, beginPos);
+                    EffectManager._instance.PlayEffect(EffectManager.EFFECT_KIND.WOOD, beginPos);
                     break;
                 case GameData.ELEMENTAL.VOID:
                     SoundManager._instance.PlaySE(SoundManager.SE_NAME.BATTLE_ATTTACK_VOID);
-                    _effectManager.PlayEffect(EffectManager.EFFECT_KIND.VOID, beginPos);
+                    EffectManager._instance.PlayEffect(EffectManager.EFFECT_KIND.VOID, beginPos);
                     break;
                 case GameData.ELEMENTAL.OCEAN:
                     SoundManager._instance.PlaySE(SoundManager.SE_NAME.BATTLE_ATTTACK_WATER);
-                    _effectManager.PlayEffect(EffectManager.EFFECT_KIND.OCEAN, beginPos);
+                    EffectManager._instance.PlayEffect(EffectManager.EFFECT_KIND.OCEAN, beginPos);
                     break;
                 case GameData.ELEMENTAL.FOREST:
                     SoundManager._instance.PlaySE(SoundManager.SE_NAME.BATTLE_ATTTACK_WOOD);
-                    _effectManager.PlayEffect(EffectManager.EFFECT_KIND.FOREST, beginPos);
+                    EffectManager._instance.PlayEffect(EffectManager.EFFECT_KIND.FOREST, beginPos);
                     break;
                 case GameData.ELEMENTAL.FLAME:
                     SoundManager._instance.PlaySE(SoundManager.SE_NAME.BATTLE_ATTTACK_FIRE);
-                    _effectManager.PlayEffect(EffectManager.EFFECT_KIND.FLAME, beginPos);
+                    EffectManager._instance.PlayEffect(EffectManager.EFFECT_KIND.FLAME, beginPos);
                     break;
             }
             beginPos.x += effectWidth;

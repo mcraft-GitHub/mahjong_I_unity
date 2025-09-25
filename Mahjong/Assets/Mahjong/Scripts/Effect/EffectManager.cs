@@ -2,7 +2,6 @@
 using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.UIElements;
 
 public class EffectManager : MonoBehaviour
 {
@@ -11,6 +10,9 @@ public class EffectManager : MonoBehaviour
 
     // スクリーンサイズを半分にする
     private const float SCREEN_SIZE_HALF = 0.5f;
+
+    // シングルトン用
+    public static EffectManager _instance { get; private set; }
 
     public enum EFFECT_KIND
     {
@@ -51,6 +53,14 @@ public class EffectManager : MonoBehaviour
 
     void Awake()
     {
+        if (_instance != null && _instance != this)
+        {
+            Destroy(this.gameObject);
+            return;
+        }
+        _instance = this;
+        DontDestroyOnLoad(this.gameObject);
+
         // エフェクトを描画するレンダーテクスチャの作成
         RenderTexture effectRenderTexture = new RenderTexture(Screen.width, Screen.height, RENDER_TEXTURE_DEPTH, RenderTextureFormat.ARGB32);
         effectRenderTexture.Create();

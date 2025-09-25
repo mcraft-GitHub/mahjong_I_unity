@@ -3676,7 +3676,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _fadeImage: {fileID: 162232713}
   _tilePrefab: {fileID: 2344373465306326215, guid: 3529b378bf8b9b243b500170db564840, type: 3}
-  _effectManager: {fileID: 1902022015}
   _handTilesParent: {fileID: 1738649256}
   _emptyHandTilesParent: {fileID: 14582263}
   _doraTile: {fileID: 2098137559}
@@ -4005,34 +4004,6 @@ PrefabInstance:
       propertyPath: _effectImage
       value: 
       objectReference: {fileID: 1180306397}
-    - target: {fileID: 4505728010039598869, guid: 9d1415f0db7cdff4598527d366ac1c26, type: 3}
-      propertyPath: _effectDataList.Array.data[1]._baseSpeed
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 4505728010039598869, guid: 9d1415f0db7cdff4598527d366ac1c26, type: 3}
-      propertyPath: _effectDataList.Array.data[2]._baseSpeed
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 4505728010039598869, guid: 9d1415f0db7cdff4598527d366ac1c26, type: 3}
-      propertyPath: _effectDataList.Array.data[3]._baseSpeed
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 4505728010039598869, guid: 9d1415f0db7cdff4598527d366ac1c26, type: 3}
-      propertyPath: _effectDataList.Array.data[4]._baseSpeed
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 4505728010039598869, guid: 9d1415f0db7cdff4598527d366ac1c26, type: 3}
-      propertyPath: _effectDataList.Array.data[5]._baseSpeed
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 4505728010039598869, guid: 9d1415f0db7cdff4598527d366ac1c26, type: 3}
-      propertyPath: _effectDataList.Array.data[6]._baseSpeed
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 4505728010039598869, guid: 9d1415f0db7cdff4598527d366ac1c26, type: 3}
-      propertyPath: _effectDataList.Array.data[7]._baseSpeed
-      value: 3
-      objectReference: {fileID: 0}
     - target: {fileID: 4603781651177422747, guid: 9d1415f0db7cdff4598527d366ac1c26, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -4161,17 +4132,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1874284480}
   m_CullTransparentMesh: 1
---- !u!114 &1902022015 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4505728010039598869, guid: 9d1415f0db7cdff4598527d366ac1c26, type: 3}
-  m_PrefabInstance: {fileID: 1827158263}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2f6fc450bf80db843a5b320247d2c270, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1903601578
 GameObject:
   m_ObjectHideFlags: 0
