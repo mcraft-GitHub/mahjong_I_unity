@@ -125,6 +125,9 @@ public class PuzzleController : MonoBehaviour
             // 移動
             if (newIndex.Value.x != _currentMoveIndex.Value.x || newIndex.Value.y != _currentMoveIndex.Value.y)
             {
+                // SEの再生
+                SoundManager._instance.PlaySE(SoundManager.SE_NAME.PUZZLE_MOVE);
+
                 // 牌の入れ替え
                 _puzzleViewManager.SwitchingPuzzleTile(_currentMoveIndex.Value, newIndex.Value);
                 _currentMoveIndex = newIndex;
@@ -158,6 +161,9 @@ public class PuzzleController : MonoBehaviour
         {
             if (_puzzleManager._matchMentu.Count > 0)
             {
+                // SEの再生
+                SoundManager._instance.PlaySE(SoundManager.SE_NAME.PUZZLE_MATCH);
+
                 // 次の手牌追加面子にセット
                 gameData._addHandMentu = _puzzleManager._matchMentu[0];
 

@@ -9,6 +9,9 @@ public class BattleController : MonoBehaviour
     // エフェクト待機時間
     private const float EFFECT_WAIT_TIME = 0.8f;
 
+    // バトルBGMの音量
+    private const float BATTLE_BGM_VOLUME = 1.0f;
+
     // ステージデータ
     private StageData _stageData;
 
@@ -79,6 +82,9 @@ public class BattleController : MonoBehaviour
         {
             // バトルの初期化
             InitBattle(gameData);
+
+            // BGMの切り替え
+            SoundManager._instance.PlayBGM(SoundManager.BGM_NAME.GAME_BATTLE, BATTLE_BGM_VOLUME, GameData.BGM_SWITCHING_DEFAULT_TIME);
         }
 
         // フェードイン
@@ -146,7 +152,7 @@ public class BattleController : MonoBehaviour
             _battleManager.PlayerAttack(_playerAttackData, gameData);
 
             // プレイヤーの攻撃エフェクトの再生
-            _battleViewManager.PlayPlayerAttackEffect(playerAttackData._role);
+            _battleViewManager.PlayPlayerAttackEffectAndSe(playerAttackData._role);
 
             // プレイヤーHPゲージの更新
             _battleViewManager.SetPlayerHp(_battleManager.GetPlayerHpRate());
